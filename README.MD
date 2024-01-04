@@ -1,4 +1,5 @@
 ###### Java OCP Exam Preparation
+
 <details>
   <summary>Chapter 1: Building Blocks 1</summary>
 
@@ -53,6 +54,7 @@
 - **Summary 51**
 - **Exam Essentials 52**
 - **Review Questions 54**
+
 </details>
 
 <details>
@@ -81,6 +83,7 @@
 - **Summary 92**
 - **Exam Essentials 92**
 - **Review Questions 94**
+
 </details>
 
 <details>
@@ -112,6 +115,7 @@
 - **Summary 139**
 - **Exam Essentials 140**
 - **Review Questions 142**
+
 </details>
 
 <details>
@@ -153,6 +157,7 @@
 - **Summary 208**
 - **Exam Essentials 209**
 - **Review Questions 210**
+
 </details>
 
 <details>
@@ -200,6 +205,7 @@
 - **Summary 263**
 - **Exam Essentials 264**
 - **Review Questions 265**
+
 </details>
 
 <details>
@@ -242,6 +248,7 @@
 - **Summary 326**
 - **Exam Essentials 327**
 - **Review Questions 330**
+
 </details>
 
 
@@ -286,6 +293,7 @@
 - **Summary 401**
 - **Exam Essentials 402**
 - **Review Questions 404**
+
 </details>
 
 <details>
@@ -319,6 +327,7 @@
 - **Summary 450**
 - **Exam Essentials 451**
 - **Review Questions 452**
+
 </details>
 
 
@@ -375,6 +384,7 @@
 - **Summary 519**
 - **Exam Essentials 520**
 - **Review Questions 521**
+
 </details>
 
 <details>
@@ -402,6 +412,7 @@
 - **Summary 578**
 - **Exam Essentials 579**
 - **Review Questions 581**
+
 </details>
 
 
@@ -447,6 +458,7 @@
 - **Summary 646**
 - **Exam Essentials 647**
 - **Review Questions 648**
+
 </details>
 
 
@@ -499,6 +511,7 @@
 - **Summary 711**
 - **Exam Essentials 712**
 - **Review Questions 713**
+
 </details>
 
 <details>
@@ -540,6 +553,7 @@
 - **Summary 770**
 - **Exam Essentials 770**
 - **Review Questions 772**
+
 </details>
 
 
@@ -584,6 +598,7 @@
 - **Summary 850**
 - **Exam Essentials 851**
 - **Review Questions 852**
+
 </details>
 
 
@@ -621,24 +636,43 @@
 - **Summary 897**
 - **Exam Essentials 898**
 - **Review Questions 900**
+
 </details>
 
-> **Chapter Notes**
-<details>
-  <summary>Chapter 1: Building Blocks</summary>
-
-- **main()** method:
- > - **Derle**: `javac -cp . com/mtopgul/buildingBlocks/mainMethod/Zoo.java`
- > - **Çalıştır**: `java -cp . com.mtopgul.buildingBlocks.mainMethod.Zoo`
- > - **Parametre geç**: `java -cp . com.mtopgul.buildingBlocks.mainMethod.Zoo Bronx "San Diego"`
- > - main() parametre formatları:
- >> - String[] args
- >> - String options []
- >> - String... friends
- > - public **final** static void main(**final** String[] args) {}
- >> - Burada `final` anahtar kelimeleri opsiyonel.
- > - **Single-File Source-Code**
- >> - Tek bir Java sınıfını aynı anda derleyip çalıştırmayı sağlar.
- >> - `java -cp . com/mtopgul/buildingBlocks/mainMetho
-      d/Zoo.java Bronx "Sam"`
-</details>
+> **CHAPTER 1: BUILDING BLOCKS**
+> ---
+> - **main()** method:
+> - **Derle**: `javac -cp . com/mtopgul/buildingBlocks/mainMethod/Zoo.java`
+> - **Çalıştır**: `java -cp . com.mtopgul.buildingBlocks.mainMethod.Zoo`
+> - **Parametre geç**: `java -cp . com.mtopgul.buildingBlocks.mainMethod.Zoo Bronx "San Diego"`
+> - main() parametre formatları:
+>> - String[] args
+>> - String options []
+>> - String... friends
+> - public **final** static void main(**final** String[] args) {}
+> - Burada `final` anahtar kelimeleri opsiyonel.
+> ---
+> - **Single-File Source-Code**
+> - Tek bir Java sınıfını aynı anda derleyip çalıştırmayı sağlar.
+> - `java -cp . com/mtopgul/buildingBlocks/mainMethod/Zoo.java Bronx "Sam"`
+>
+> ---
+> - **Compiling and Running Code with Packages**
+    > **Derleme:**
+> - `1.` `javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/b/ClassB.java`
+> - `2.` `javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/b/*.java`
+> - `3.` `javac -cp . javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/a/ClassA.java com/mtopgul/buildingBlocks/packagesAndImports/b/ClassB.java`
+> - `4.` `javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/a/*.java com/mtopgul/buildingBlocks/packagesAndImports/b/*.java`
+>
+> - **Başka dizine derleme ve çalıştırma:**
+> - `javac -d classes -cp . com/mtopgul/buildingBlocks/packagesAndImports/a/ClassA.java com/mtopgul/buildingBlocks/packagesAndImports/b/ClassB.java`
+> - `java -cp classes com.mtopgul.buildingBlocks.packagesAndImports.b.ClassB`
+>---
+> - **Important `javac` options:**
+>
+> | Option |  Description  |
+> |:-----|:--------:|
+> | **-cp** | Location of classes needed to compile the program |
+> | **-classpath**   |  |
+> | **--class-path**   |  |
+> | **-d**   | Directory in which to place generated class files |
