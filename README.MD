@@ -658,12 +658,13 @@
 >
 > ---
 > - **Compiling and Running Code with Packages**
-    > **Derleme:**
+> - _Derleme:_
 > - `1.` `javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/b/ClassB.java`
 > - `2.` `javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/b/*.java`
 > - `3.` `javac -cp . javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/a/ClassA.java com/mtopgul/buildingBlocks/packagesAndImports/b/ClassB.java`
 > - `4.` `javac -cp . com/mtopgul/buildingBlocks/packagesAndImports/a/*.java com/mtopgul/buildingBlocks/packagesAndImports/b/*.java`
 >
+> 
 > - **Başka dizine derleme ve çalıştırma:**
 > - `javac -d classes -cp . com/mtopgul/buildingBlocks/packagesAndImports/a/ClassA.java com/mtopgul/buildingBlocks/packagesAndImports/b/ClassB.java`
 > - `java -cp classes com.mtopgul.buildingBlocks.packagesAndImports.b.ClassB`
