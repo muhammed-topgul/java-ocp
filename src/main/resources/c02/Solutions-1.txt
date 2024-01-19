@@ -1,0 +1,23 @@
+✅ 01 -> A,D,G
+✅ 02 -> A,B,D
+✅ 03 -> B,C,D,F
+✅ 04 -> B
+✅ 05 -> A,C
+✅ 06 -> F
+✅ 07 -> D
+❌ 08 -> A
+✅ 09 -> A,D,E   (❗ Sorunun cevabı doğru fakat soruyu yanlış okumuşum)
+✅ 10 -> G
+✅ 11 -> D
+✅ 12 -> D
+✅ 13 -> F
+☑️ 14 -> B,D,E,G    (B,E,G %75)
+✅ 15 -> D
+✅ 16 -> B
+✅ 17 -> C,F
+✅ 18 -> C
+✅ 19 -> B,F
+✅ 20 -> A,D,E
+❌ 21 -> B        (❗ Cevap E. Dikkatsizlik sonucu yanlış)
+
+🎯 89.3/100
