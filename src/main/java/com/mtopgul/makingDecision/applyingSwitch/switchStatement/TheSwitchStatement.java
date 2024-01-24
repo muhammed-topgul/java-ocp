@@ -1,4 +1,4 @@
-package com.mtopgul.makingDecision.switchStatements;
+package com.mtopgul.makingDecision.applyingSwitch.switchStatement;
 
 /**
  * @author muhammed-topgul
@@ -43,9 +43,5 @@ public class TheSwitchStatement {
 
     final int getCookies() {
         return 4;
-    }
-
-    public static void main(String[] args) {
-
     }
 }
