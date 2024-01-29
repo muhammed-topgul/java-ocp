@@ -1,0 +1,24 @@
+✅ 01 -> F
+❌ 02 -> C,E
+✅ 03 -> A,C,D
+✅ 04 -> A,C,D
+✅ 05 -> B
+❌ 06 -> B      (java.util.Math methodlarını incele)
+✅ 07 -> A,E
+☑️ 08 -> A,F    (StringBuilder methodlarını incele)
+✅ 09 -> A,C,F
+☑️ 10 -> A
+❌ 11 -> F      (LocalDate ve LocalTime methodlarını incele)
+☑️ 12 -> A,C,D  (String methodlarını incele)
+✅ 13 -> B
+✅ 14 -> A,F
+✅ 15 -> C,E
+☑️ 16 -> B,E,F  (String immutabledır)
+✅ 17 -> A,G    (String methodlarını incele)
+✅ 18 -> C,F
+☑️ 19 -> B,D
+☑️ 20 -> B,D   (Time sınıflarını ve methodlarını incele)
+✅ 21 -> A,C
+✅ 22 -> A
+
+🎯 72.64/100
