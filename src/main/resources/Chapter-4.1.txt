@@ -1,0 +1,24 @@
+✅ 01 -> F
+✅ 02 -> C,E,F
+✅ 03 -> A,C,D
+☑️ 04 -> A,C,D,E  * (string = string.intern() şeklinde yapılırsa mevcut string pool'a eklenir)
+✅ 05 -> B
+✅ 06 -> C
+✅ 07 -> A,E
+✅ 08 -> A,B,F
+✅ 09 -> A,C,F
+✅ 10 -> A
+✅ 11 -> E
+✅ 12 -> A,D,E
+✅ 13 -> B
+✅ 14 -> A,F
+✅ 15 -> C,F
+☑️ 16 -> B,D,E      (String indent() ve translateEscapes() methodlarını tekrar incele)
+✅ 17 -> A,G
+✅ 18 -> C,F
+✅ 19 -> A,B,D
+☑️ 20 -> B,D   *    (ChronoUnit.HOURS.between(dateTime1, dateTime2) GMT olarak saat farkını hesaplar)
+✅ 21 -> A,C
+✅ 22 -> A
+
+🎯 93.2/100
