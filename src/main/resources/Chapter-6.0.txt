@@ -1,0 +1,28 @@
+✅ 01 -> E
+☑️ 02 -> B,F  * (Dikkatsizlik)
+✅ 03 -> B,C
+✅ 04 -> F
+❌ 05 -> C     * (Dikkatsizlik)
+☑️ 06 -> E     * (Bilgisizlik)
+✅ 07 -> A
+✅ 08 -> D
+☑️ 09 -> B,C,E * (Dikkatsizlik)
+✅ 10 -> A,C
+✅ 11 -> C
+✅ 12 -> C
+✅ 13 -> A,G
+✅ 14 -> B,E,F
+✅ 15 -> C
+✅ 16 -> D
+✅ 17 -> C,F
+☑️ 18 -> D,G  * (Bilgisizlik)
+✅ 19 -> F
+❌ 20 -> C    * (Dikkatsizlik)
+☑️ 21 -> B,C,E,F,G  * (İngilizce sorunu)
+✅ 22 -> D
+✅ 23 -> B
+✅ 24 -> C
+☑️ 25 -> B,C,E    * (Dikkatsizlik)
+✅ 26 -> D
+
+🎯 80.85/100
