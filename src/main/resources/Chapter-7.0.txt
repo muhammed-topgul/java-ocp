@@ -1,0 +1,32 @@
+✅ 01 -> B,D
+✅ 02 -> A,B,D,E
+✅ 03 -> C
+✅ 04 -> C
+❌ 05 -> F  (Dikkatsizlik)
+✅ 06 -> D,E
+✅ 07 -> E
+☑️ 08 -> A         (3/1)
+✅ 09 -> A,E,F
+✅ 10 -> A,B,C,E
+✅ 11 -> B
+✅ 12 -> A,B,E
+✅ 13 -> F
+☑️ 14 -> B,C,D,E     (4/3) (Dikkatsizlik) (sealed classes: sealed sınıflar permits listesinde olmayan sınıfflar tarafından indirect olarak extend edilebilirler)
+❌ 15 -> B,C,F      (Anonymous ve Inner class: final class anonymous olarak kullanılamaz)
+✅ 16 -> E
+✅ 17 -> E,G
+✅ 18 -> E
+✅ 19 -> G
+✅ 20 -> A,D,F
+✅ 21 -> F
+☑️ 22 -> C,D,E,G    (3/2)  (Inner ve Nested class object initialization: Inner sınıflarda container sınıfın nesnesi olusturulmadan (non-static methodlar ve sınıf dısından) nesnesi olusturulamaz)
+✅ 23 -> D
+✅ 24 -> B,E
+✅ 25 -> B
+☑️ 26 -> F  (2/1)     (Enumların constructorları public olamaz)
+✅ 27 -> B,C,D,G
+✅ 28 -> A,B,D
+❌ 29 -> G     (Dikkatsizlik)
+❌ 30 -> G    (Sealed sınıflara tekrar bak: sealed sınıfı extend eden sınıf mutlaka (final, sealed veya non-sealed olarak işaretlenmei)
+               permits listesinde bulunan sınıf mutlaka sealed sınıfı implement etmeli)
+🎯 80.05/100
