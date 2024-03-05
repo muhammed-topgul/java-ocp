@@ -16,11 +16,17 @@ public class DequeMethods {
         deque.offerLast(4);   // [1, 2, 3, 4]
         deque.addLast(5);     // [1, 2, 3, 4, 5]
 
-        deque.poll();      // [2, 3, 4, 5]
-        deque.pollFirst(); // [3, 4, 5]
-        deque.peek();      // [3, 4, 5]
-        deque.peekLast();      // [3, 4, 5]
-        deque.peekFirst();      // [3, 4, 5]
+        deque.poll();            // [2, 3, 4, 5]
+        deque.pollFirst();       // [3, 4, 5]
+        deque.peek();            // [3, 4, 5]
+        deque.peekLast();        // [3, 4, 5]
+        deque.getLast();         // [3, 4, 5]
+        deque.peekFirst();       // [3, 4, 5]
+        deque.getFirst();        // [3, 4, 5]
+
+        deque.removeFirst();     // [4, 5]
+        deque.removeLast();      // [4]
+
         System.out.println(deque);
     }
 }
