@@ -1,0 +1,22 @@
+☑️ 01 -> A,D (Dikkatsizlik) 1/3  (Hangi veri yapısı)
+✅ 02 -> C,G
+✅ 03 -> B
+✅ 04 -> B,F
+✅ 05 -> B
+☑️ 06 -> B    (Dikkatsizlik) 1/2 (Comparator)
+✅ 07 -> B,F
+❌ 08 -> D   (Dikkatsizlik) (Comparator)
+✅ 09 -> A,B,D
+✅ 10 -> A,B,E,F
+✅ 11 -> B,E
+❌ 12 -> E     (Bilgisizlik)  (TreeSet)
+✅️ 13 -> A
+☑️ 14 -> A,B,C,F (Dikkatsizlik)   2/4 (Generic hiding)
+☑️ 15 -> A,B  (Bilgisizlik)   1/3   List, Queue methodları
+✅ 16 -> E
+❌ 17 -> D    (Bilgisizlik)  Map methodları
+✅ 18 -> B
+✅ 19 -> F
+✅ 20 -> B,D,F
+
+🎯 73.3/100
