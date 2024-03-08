@@ -2,9 +2,11 @@ package com.mtopgul.streams.using;
 
 import com.mtopgul.Util;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -52,7 +54,33 @@ public class TerminalOperations {
         primates().forEach(System.out::println);
 
         // reduce()
+        Util.divide("reduce()");
+        var array = new String[]{"w", "o", "l", "f"};
+        var wolf = "";
+        for (var s : array) {
+            wolf += s;
+        }
+        System.out.println(wolf);
 
+        wolf = Arrays.stream(array).reduce("", (s, c) -> s + c);
+        System.out.println(wolf);
+
+        wolf = Arrays.stream(array).reduce("", String::concat);
+        System.out.println(wolf);
+
+        Stream<Integer> stream = Stream.of(3, 5, 6);
+        System.out.println(stream.reduce(1, (a, b) -> a * b)); // 90
+        BinaryOperator<Integer> opt = (a, b) -> a * b;
+        Stream<Integer> empty = Stream.empty();
+        Stream<Integer> oneElement = Stream.of(3);
+        Stream<Integer> threeElements = Stream.of(3, 5, 6);
+        oneElement.reduce(opt).ifPresent(System.out::println);    // 3
+        empty.reduce(opt).ifPresent(System.out::println);         // No output
+        threeElements.reduce(opt).ifPresent(System.out::println); // 90
+
+        Stream<String> newStream = Stream.of("w", "o", "l", "f!");
+        int length = newStream.reduce(0, (i, s) -> i + s.length(), (a, b) -> a + b);
+        System.out.println(length); // 5
     }
 
     private static Stream<String> primates() {
