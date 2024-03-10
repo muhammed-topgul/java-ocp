@@ -2,12 +2,10 @@ package com.mtopgul.streams.using;
 
 import com.mtopgul.Util;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -81,9 +79,28 @@ public class TerminalOperations {
         Stream<String> newStream = Stream.of("w", "o", "l", "f!");
         int length = newStream.reduce(0, (i, s) -> i + s.length(), (a, b) -> a + b);
         System.out.println(length); // 5
+
+        // collect()
+        Stream<String> wolfStream = wolfStream();
+        StringBuilder newWolf = wolfStream.collect(() -> new StringBuilder(), (sb, newStr) -> sb.append(newStr), (sb1, sb2) -> sb1.append(sb2));
+        System.out.println(newWolf); // wolf
+
+        Set<String> set = wolfStream().collect(() -> new TreeSet<>(), (ts, str) -> ts.add(str), (ts1, ts2) -> ts1.addAll(ts2));
+        System.out.println(set);     // [f, l, o, w]
+
+        set = wolfStream().collect(Collectors.toCollection(() -> new TreeSet<>()));
+        System.out.println(set);     // [f, l, o, w]
+
+        set = wolfStream().collect(Collectors.toSet());
+        System.out.println(set);     // [f, w, l, o]
+
     }
 
-    private static Stream<String> primates() {
+    private static Stream<String> wolfStream() {
+        return Stream.of("w", "o", "l", "f");
+    }
+
+    public static Stream<String> primates() {
         return Stream.of("Monkey", "Gorilla", "Bonobo", "Ape");
     }
 
