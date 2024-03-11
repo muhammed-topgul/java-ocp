@@ -13,6 +13,10 @@ public final class Util {
     }
 
     public static void divide(String title) {
-        System.out.println("\n----------" + title + " ----------");
+        divide(title, 1);
+    }
+
+    public static void divide(String title, int newLineCount) {
+        System.out.println("\n".repeat(newLineCount) + "----------" + title + "----------");
     }
 }
