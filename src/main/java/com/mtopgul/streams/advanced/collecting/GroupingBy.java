@@ -23,7 +23,7 @@ public class GroupingBy {
                 .collect(Collectors.groupingBy(String::length, Collectors.toSet()));
         System.out.println(map2);
 
-        Map<Integer, Set<String>> map3 = animalStream()
+        TreeMap<Integer, Set<String>> map3 = animalStream()
                 .collect(Collectors.groupingBy(
                         String::length,
                         () -> new TreeMap<>(Comparator.reverseOrder()),
@@ -31,7 +31,7 @@ public class GroupingBy {
                 ));
         System.out.println(map3); // {6=[tigers], 5=[lions, bears]}
 
-        Map<Integer, List<String>> map4 = animalStream()
+        TreeMap<Integer, List<String>> map4 = animalStream()
                 .collect(Collectors.groupingBy(
                         String::length,
                         TreeMap::new,
