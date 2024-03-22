@@ -1,0 +1,27 @@
+:::Abbreviation:::
+-------------------------------------------------------------------------------
+| Use for                 | Abbreviation            | Long form               |
+-------------------------------------------------------------------------------
+Directory for class file  | -d                      | n/a
+Module path               | -p                      | --module-path
+Module name               | -m                      | --module
+
+
+:::Compile Module:::
+01. javac --module-path mods -d feeding feeding/zoo/animal/feeding/*.java feeding/module-info.java
+02. javac -p mods -d feeding feeding/zoo/animal/feeding/*.java feeding/module-info.java
+03. javac -p mods -d feeding feeding/zoo/animal/feeding/*.java feeding/*.java
+04. javac -p mods -d feeding feeding/zoo/animal/feeding/Task.java feeding/module-info.java
+
+
+:::Run Module:::
+01. java --module-path feeding --module zoo.animal.feeding/zoo.animal.feeding.Task
+02. java -p feeding -m zoo.animal.feeding/zoo.animal.feeding.Task
+
+
+:::Create Jar:::
+01. jar -cvf mods/zoo.animal.feeding.jar -C feeding/ .
+
+
+:::Run Jar:::
+01. java -p mods -m zoo.animal.feeding/zoo.animal.feeding.Task
