@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author muhammed-topgul
  * @since 27/03/2024 16:40
  */
-public class ReentrantLockTryLockExample {
+public class ReentrantLockTryLockExample01 {
     public static void main(String[] args) throws InterruptedException {
         Lock lock = new ReentrantLock();
         new Thread(() -> printHello(lock)).start();
@@ -21,7 +21,7 @@ public class ReentrantLockTryLockExample {
                 lock.unlock();
             }
         } else {
-            System.out.println("Unable to acquire lock, doing something else");
+            System.err.println("Unable to acquire lock, doing something else");
         }
     }
 
