@@ -10,6 +10,7 @@ target/
 *.ipr
 *.jar
 *.class
+*.xml
 
 ### Eclipse ###
 .apt_generated
