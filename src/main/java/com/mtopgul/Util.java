@@ -1,5 +1,10 @@
 package com.mtopgul;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -22,6 +27,36 @@ public final class Util {
 
     public static void divide(String title, int newLineCount) {
         System.out.println("\n".repeat(newLineCount) + "----------" + title + "----------");
+    }
+
+    public static void createFile(Path path) throws IOException {
+        createFile(path.toString());
+    }
+
+    public static void createFile(String fileName) throws IOException {
+        Path filePath = Path.of(fileName);
+        if (!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }
+    }
+
+    public static void createFile(String directory, String fileName) throws IOException {
+        Path filePath = createDir(directory).resolve(fileName);
+        if (!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }
+    }
+
+    public static Path createDir(Path directory) throws IOException {
+        return createDir(directory.toString());
+    }
+
+    public static Path createDir(String directory) throws IOException {
+        Path dir = Path.of(directory);
+        if (!Files.exists(dir)) {
+            return Files.createDirectory(dir);
+        }
+        return dir;
     }
 
     public static void main(String[] args) {
