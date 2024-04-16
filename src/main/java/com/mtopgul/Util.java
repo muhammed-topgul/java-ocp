@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -14,6 +17,11 @@ import java.util.Locale;
  * @since 15/02/2024 09:20
  */
 public final class Util {
+
+    private static final String url = "jdbc:postgresql://localhost:5432/zoo_db";
+    private static final String username = "postgres";
+    private static final String password = "postgres";
+
     private Util() {
     }
 
@@ -57,6 +65,10 @@ public final class Util {
             return Files.createDirectory(dir);
         }
         return dir;
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, username, password);
     }
 
     public static void main(String[] args) {

@@ -1,11 +1,11 @@
 package com.mtopgul.jdbc.interfacesOfJdbc;
 
+import com.mtopgul.Util;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * @author muhammed-topgul
@@ -13,28 +13,22 @@ import java.sql.Statement;
  */
 public class SetupDatabase {
     public static void main(String[] args) throws SQLException {
-        // Database connection parameters
-        String url = "jdbc:postgresql://localhost:5432/zoo_db";
-        String username = "postgres";
-        String password = "postgres";
-
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Statement statement = connection.createStatement();
+        try (Connection connection = Util.getConnection()) {
+            // Statement statement = connection.createStatement();
             dropExisting(connection);
             createTables(connection);
             createStoredProcedures(connection);
-
-            printCount(connection, "SELECT count(*) FROM names");
+            printCount(connection);
         }
     }
 
     private static void dropExisting(Connection connection) throws SQLException {
-        run(connection, "DROP PROCEDURE read_e_names IF EXISTING");
-        run(connection, "DROP PROCEDURE read_e_names_by_letter IF EXISTING");
-        run(connection, "DROP PROCEDURE magic_number IF EXISTING");
-        run(connection, "DROP PROCEDURE double_number IF EXISTS");
-        run(connection, "DROP TABLE names IF EXISTS");
-        run(connection, "DROP TABLE exhibits IF EXISTS");
+        run(connection, "DROP PROCEDURE IF EXISTS read_e_names");
+        run(connection, "DROP PROCEDURE IF EXISTS read_e_names_by_letter");
+        run(connection, "DROP PROCEDURE IF EXISTS magic_number");
+        run(connection, "DROP PROCEDURE IF EXISTS double_number");
+        run(connection, "DROP TABLE IF EXISTS names");
+        run(connection, "DROP TABLE IF EXISTS exhibits");
     }
 
     private static void createTables(Connection connection) throws SQLException {
@@ -62,34 +56,36 @@ public class SetupDatabase {
 
     private static void createStoredProcedures(Connection connection) throws SQLException {
         String noParams = """
-                CREATE PROCEDURE read_e_names()
-                READS SQL DATA DYNAMIC RESULT SETS 1
-                BEGIN ATOMIC
-                DECLARE result CURSOR WITH RETURN FOR SELECT * FROM names WHERE LOWER(name) LIKE 'e%';
-                OPEN result;
-                END""";
+                CREATE OR REPLACE FUNCTION read_e_names()
+                RETURNS TABLE (id INT, name VARCHAR) AS $$
+                BEGIN
+                    RETURN QUERY SELECT id, name FROM names WHERE LOWER(name) LIKE 'e%';
+                END;
+                $$ LANGUAGE plpgsql;""";
 
         String inParam = """
-                CREATE PROCEDURE read_names_by_letter(IN prefix VARCHAR(10))
-                READS SQL DATA DYNAMIC RESULT SETS 1
-                BEGIN ATOMIC
-                DECLARE result CURSOR WITH RETURN FOR
-                SELECT * FROM names WHERE LOWER(name) LIKE CONCAT(LOWER(prefix), '%');
-                OPEN result;
-                END""";
+                CREATE OR REPLACE FUNCTION read_names_by_letter(IN prefix VARCHAR(10))
+                RETURNS TABLE (id INT, name VARCHAR) AS $$
+                BEGIN
+                    RETURN QUERY SELECT id, name FROM names WHERE LOWER(name) LIKE CONCAT(LOWER(prefix), '%');
+                END;
+                $$ LANGUAGE plpgsql;""";
 
         String inOutParam = """
-                CREATE PROCEDURE double_number(INOUT num INT) READS SQL DATA
-                  DYNAMIC RESULT SETS 1
-                  BEGIN ATOMIC 
-                  SET num = num * 2; 
-                  END""";
+                CREATE OR REPLACE FUNCTION double_number(INOUT num INT)
+                RETURNS INT AS $$
+                BEGIN
+                    num := num * 2;
+                END;
+                $$ LANGUAGE plpgsql;""";
 
         String outParam = """
-                CREATE PROCEDURE magic_number(OUT num INT) READS SQL DATA
-                      BEGIN ATOMIC
-                     SET num = 42;
-                      END""";
+                CREATE OR REPLACE FUNCTION magic_number(OUT num INT)
+                RETURNS INT AS $$
+                BEGIN
+                    num := 42;
+                END;
+                $$ LANGUAGE plpgsql;""";
 
         run(connection, noParams);
         run(connection, inParam);
@@ -103,8 +99,8 @@ public class SetupDatabase {
         }
     }
 
-    private static void printCount(Connection connection, String sql) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    private static void printCount(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM names");
         ResultSet resultSet = preparedStatement.executeQuery();
         try (preparedStatement; resultSet) {
             resultSet.next();
