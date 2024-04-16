@@ -18,7 +18,7 @@ import java.util.Locale;
  */
 public final class Util {
 
-    private static final String url = "jdbc:postgresql://localhost:5432/zoo_db";
+    private static final String url = "jdbc:hsqldb:file:zoo_db"; /*"jdbc:postgresql://localhost:5432/zoo_db";*/
     private static final String username = "postgres";
     private static final String password = "postgres";
 
