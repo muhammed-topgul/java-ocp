@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class TestConnect {
     public static void main(String[] args) throws SQLException {
-        try (Connection connection = Util.getConnection()) {
+        try (Connection connection = Util.getHsqlConnection()) {
             System.out.println(connection);
         }
     }

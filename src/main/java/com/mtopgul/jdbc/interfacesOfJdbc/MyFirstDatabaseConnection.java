@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public class MyFirstDatabaseConnection {
     public static void main(String[] args) throws SQLException {
-        try(Connection connection = Util.getConnection()) {
+        try(Connection connection = Util.getHsqlConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM exhibits");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class BatchingStatementExample {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
         batchRegister(connection, 200, 1, "Jonas", "Adam");
     }
 

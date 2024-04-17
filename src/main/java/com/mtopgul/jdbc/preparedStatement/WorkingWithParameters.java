@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class WorkingWithParameters {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
 
         register(connection);
         register(connection, 100, 1, "Admin");

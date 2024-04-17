@@ -14,7 +14,7 @@ import java.sql.Statement;
  */
 public class SetupDatabase {
     public static void main(String[] args) throws Exception {
-        try (Connection conn = Util.getConnection(); Statement stmt = conn.createStatement()) {
+        try (Connection conn = Util.getHsqlConnection(); Statement stmt = conn.createStatement()) {
             dropExisting(conn);
             createTables(conn);
             createStoredProcedures(conn);
@@ -74,16 +74,16 @@ public class SetupDatabase {
 
         String inOutParam = """
                 CREATE PROCEDURE double_number(INOUT num INT) READS SQL DATA
-                  DYNAMIC RESULT SETS 1
-                  BEGIN ATOMIC 
-                  SET num = num * 2; 
-                  END""";
+                DYNAMIC RESULT SETS 1
+                BEGIN ATOMIC
+                SET num = num * 2;
+                END""";
 
         String outParam = """
                 CREATE PROCEDURE magic_number(OUT num INT) READS SQL DATA
-                      BEGIN ATOMIC
-                     SET num = 42;
-                      END""";
+                BEGIN ATOMIC
+                SET num = 42;
+                END""";
 
         run(conn, noParams);
         run(conn, inParam);

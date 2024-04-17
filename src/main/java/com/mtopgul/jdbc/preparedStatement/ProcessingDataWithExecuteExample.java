@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class ProcessingDataWithExecuteExample {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
 
         execute(connection, "SELECT * FROM exhibits");
         execute(connection, "UPDATE exhibits SET name = '' " + "WHERE name = 'None'");

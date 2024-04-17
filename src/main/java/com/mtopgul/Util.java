@@ -1,8 +1,6 @@
 package com.mtopgul;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -18,7 +16,8 @@ import java.util.Locale;
  */
 public final class Util {
 
-    private static final String url = "jdbc:hsqldb:file:zoo_db"; /*"jdbc:postgresql://localhost:5432/zoo_db";*/
+    private static final String hsqlUrl = "jdbc:hsqldb:file:zoo_db"; /*"jdbc:postgresql://localhost:5432/zoo_db";*/
+    private static final String pglUrl = "jdbc:postgresql://localhost:5432/zoo_db";
     private static final String username = "postgres";
     private static final String password = "postgres";
 
@@ -67,7 +66,15 @@ public final class Util {
         return dir;
     }
 
-    public static Connection getConnection() throws SQLException {
+    public static Connection getHsqlConnection() throws SQLException {
+        return getConnection(hsqlUrl);
+    }
+
+    public static Connection getPgConnection() throws SQLException {
+        return getConnection(pglUrl);
+    }
+
+    public static Connection getConnection(String url) throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }
 

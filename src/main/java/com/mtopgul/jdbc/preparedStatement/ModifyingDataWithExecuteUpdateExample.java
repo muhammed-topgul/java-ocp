@@ -16,7 +16,7 @@ public class ModifyingDataWithExecuteUpdateExample {
         var updateSql = "UPDATE exhibits SET name = '' " + "WHERE name = 'None'";
         var deleteSql = "DELETE FROM exhibits WHERE id = 10";
 
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
 
         try(PreparedStatement ps = connection.prepareStatement(insertSql)) {
             int rowsAffected = ps.executeUpdate();

@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class UpdatingMultipleRecordsExample {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
 
         var sql = "INSERT INTO names VALUES (?, ?, ?);";
 

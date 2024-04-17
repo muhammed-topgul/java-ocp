@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public class CallingProcedureWithParameters {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
         String sql = "{call read_names_by_letter(?)}";
 
         try (CallableStatement cs = connection.prepareCall(sql)) {

@@ -14,7 +14,7 @@ public class ReadingDataWithExecuteQueryExample {
     public static void main(String[] args) throws SQLException {
         var sql = "SELECT * FROM exhibits";
 
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
         try (var ps = connection.prepareStatement(sql)) {
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {

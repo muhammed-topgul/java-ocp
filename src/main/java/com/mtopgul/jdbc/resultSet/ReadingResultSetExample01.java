@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class ReadingResultSetExample01 {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
         String sql = "SELECT id, name FROM exhibits";
         var idToNameMap = new HashMap<Integer, String>();
 

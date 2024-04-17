@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class ReadingResultSetExample02 {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Util.getConnection();
+        Connection connection = Util.getHsqlConnection();
         var sql = "SELECT count(*) as counter FROM exhibits";
 
         try (var ps = connection.prepareStatement(sql); var rs = ps.executeQuery()) {
