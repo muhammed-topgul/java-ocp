@@ -1,0 +1,28 @@
+✅ 01 -> A,D,G
+✅ 02 -> A,B,D
+✅ 03 -> B,C,D,F
+✅ 04 -> B
+☑️ 05 -> C,F
+❌ 06 -> B            (Dikkatsizlik)
+✅ 07 -> D
+❌ 08 -> D
+✅ 09 -> A,D,E
+✅ 10 -> G
+✅ 11 -> D
+✅ 12 -> D
+✅ 13 -> F
+✅ 14 -> B,E,G
+✅ 15 -> D
+✅ 16 -> B
+✅ 17 -> C,F
+✅ 18 -> C
+✅ 19 -> B,F
+✅ 20 -> A,D,E
+❌ 21 -> A
+
+🎯 81/100
+
+# Eksiklikler
+1. Operator önceliği tablosunu ezberle. (Table 2.1 Order of operator precedence)
+2. Complement operatorunu(~) öğren.
+   # -1 * value - 1
