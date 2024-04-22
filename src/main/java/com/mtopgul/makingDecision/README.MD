@@ -6,7 +6,7 @@
 
 ---
 #### `Pattern Matching`
-- `Pattern mathcing`, boilerplate kodları azaltmak için kullanılar yeni bir araçtır.
+- `Pattern mathcing`, boilerplate kodları azaltmak için kullanılan yeni bir araçtır.
 - `Integer` üzerinde bulunan `compareTo()` methodunu çağırmak için `cast` işlemi gerekli.
 - Java 16'dan <u>önce</u> `cast` işlemi:
 >```java
@@ -36,7 +36,7 @@
 > }
 > ```
 
-- **Subtypes**
+**Subtypes**
 - `Pattern variable`'ın tipi ifadenin sol tarafındaki değişkenin bir alt türü olmalıdır.
 - Aynı tipte olamaz.
 - Bu kural _traditional_ `instanceof` için geçerli <u>değildir</u>.
@@ -45,7 +45,7 @@
 > if(value instanceof Integer) {}
 > if(value instanceof Integer data) {}  // DOES NOT COMPILE
 >```
-- Aşağıda ki örnek derlenir. Çünkü `Integer`, `Number`'ın tipinin alt tipidir.
+- Aşağıda ki örnek derlenir. Çünkü `Integer`, `Number`'ın alt tipidir.
 > ```java
 > Number value = 123;
 > if(value instanceof Integer) {}
@@ -53,7 +53,7 @@
 >```
 
 **Limitations of Subtype Enforcement**
-- Eğer ifadenin sol tarafı `interface` ise ifadenin sağ tarafı `non-final` tipte olmadığı sürece kod <u>derlenir</u>. 
+- Eğer ifadenin sol tarafı `interface` ise ifadenin sağ tarafı `final` tipte olmadığı sürece kod <u>derlenir</u>. 
   Hierarşik olarak iki sınıf birbiriyle alakasız olsa bile derlenir. 
 > ```java
 > /*
