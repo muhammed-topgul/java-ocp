@@ -3,8 +3,8 @@
 ---
 #### `if-else Statement`
 - `0` ve `1` Java'da `boolean` olarak değerlendirilmez.
-
 ---
+
 #### `Pattern Matching`
 - `Pattern mathcing`, boilerplate kodları azaltmak için kullanılan yeni bir araçtır.
 - `Integer` üzerinde bulunan `compareTo()` methodunu çağırmak için `cast` işlemi gerekli.
@@ -91,7 +91,7 @@ void printIntegerTwice(Number number) {
   System.out.print(data.intValue()); // DOES NOT COMPILE
 }
 
-// COMPILE
+// COMPILES
 // Methodun son satırına ulaşıldığında number parametresinin Integer'i devralması gerektiği ve
 // bu nedenle if ifadesi sona erdikten sonra bile verilerin kapsamda kaldığı anlamına gelir.
 void printOnlyIntegers(Number number) {
@@ -100,9 +100,9 @@ void printOnlyIntegers(Number number) {
   System.out.print(data.intValue());
 }
 ```
-
-
 ---
+
+
 #### `The switch Statement`
 - `default` opsiyoneldir ve `switch statement`'in herhangi bir yerinde olabilir.
 > **Combining case Value**
@@ -127,7 +127,7 @@ void printOnlyIntegers(Number number) {
 switch(month) {} // Perfetcly valid
 ```
 
-**Exiting with break Statements**
+**Exiting with _break_ Statements**
 ```java
  // Eğer printSeason(2); çağrılısa
 //  WinterSpringUnknownSummerFall yazdırır. Çünkü break; kullanılmamış.
@@ -147,7 +147,7 @@ public void printSeason(int month) {
 }
 ```
 
-**Selecting switch Data Types**
+**Selecting _switch_ Data Types**
 - `switch statement` tarafından desteklenen veri tipleri:
 > - `byte` ve `Byte`
 > - `short` ve `Short`
@@ -187,7 +187,7 @@ void feedAnimals() {
 }
 ```
 
-**The switch Expression**
+**The _switch_ Expression**
 ```java
 public void printDayOfWeek(int day) {
   var result = switch (day) {
@@ -230,7 +230,7 @@ int size = switch (measurement) {
 };
 ```
 
-**Applying a case Block**
+**Applying a _case_ Block**
 ```java
 int fish = 5;
 int length = 12;
@@ -310,3 +310,99 @@ String getWeather(Season value) {
 }
 ```
 
+---
+
+#### Working with _for_ Loops
+
+1. Creating an Infinitive Loop
+```java
+for( ; ; )
+    System.out.println("Hello, World");
+```
+
+2. Adding Multiple Terms to the for Statement
+```java
+int x = 0;
+for(long y = 0, z = 4; x < 5 && y < 10; x++, y++) {
+    System.out.print(y + " ");
+}
+System.out.print(x + " ");
+```
+
+3. Redeclaring a Variable in the Initialization Block
+```java
+int x = 0;
+for(int x = 4; x < 5; x++) {  // DOES NOT COMPILE
+    System.out.print(x + " ");  
+}
+
+for(x = 0; x < 5; x++) {     // COMPILES
+    System.out.print(x + " ");  
+}
+```
+
+4. Using Incompatible Data Types in the Initialization Block
+```java
+int x = 0;
+// Başlatma bloğundaki değişkenlerin tümü aynı türde olmalıdır.
+for(long y = 0, int z = 4; x < 5; x++) // DOES NOT COMPILE
+    System.out.print(y + " ");
+
+for(long y = 0, z = 4; x < 5; x++)     // COMPILES
+    System.out.print(y + " ");
+```
+
+5. Using Loop Variables Outside the Loop
+```java
+for(long y = 0, x = 4; x < 5 && y < 10; x++, y++)
+    System.out.print(y + " ");
+System.out.print(x); // DOES NOT COMPILE
+```
+
+**The for-each Loop**
+- for-each döngüsünü kullanabilmek için nesnenin tipi:
+- 1. Built-in Java arrayleri
+- 2. `java.lang.Iterable` arayüzünü `implements` eden nesneler.
+
+```java
+public void printNames(String[] names) {
+  for(int counter=0; counter<names.length; counter++)
+      System.out.println(names[counter]);
+}
+
+public void printNames(String[] names) {
+  for(var name : names)
+      System.out.println(name);
+}
+```
+
+
+**Unreachable Code**
+```java
+int checkDate = 0;
+while(checkDate<10) {
+   checkDate++;
+   if(checkDate>100) {
+       break;
+       checkDate++; // DOES NOT COMPILE
+    }
+}
+```
+
+```java
+int minute = 1;
+WATCH: while(minute>2) {
+    if(minute++>2) {
+        continue WATCH;
+        System.out.print(minute); // DOES NOT COMPILE
+      }
+} 
+```
+
+```java
+int hour = 2;
+switch(hour) {
+   case 1: return; hour++; // DOES NOT COMPILE
+   case 2:
+}
+```
