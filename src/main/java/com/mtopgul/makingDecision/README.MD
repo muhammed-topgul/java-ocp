@@ -406,3 +406,26 @@ switch(hour) {
    case 2:
 }
 ```
+---
+
+**Ek Notlar**
+1. `switch` value olarak `Long` tipi kullanılamaz.
+2. Flow scoping:
+```java
+// 43. satıra gelindiğinde guppy değişkeni zaten scope içerisinde tanımlanmış olur.
+// Bu yüzden 43. satır derlenmez.
+40: void getFish(Object fish) {
+41:     if (!(fish instanceof String guppy))
+42:         System.out.print("Eat!");
+43:     else if (!(fish instanceof String guppy)) {
+44:         throw new RuntimeException();
+45:     }
+46:     System.out.print("Swim!");
+47: }
+```
+3. `do-while` döngdüsünde `do` için '{}' sadece çoklu satırlar için zorunludur. Aşağıda ki kod derlenir.
+```java
+int y = -2;
+do System.out.print(++y + " ");
+while(y <= 5);
+```
