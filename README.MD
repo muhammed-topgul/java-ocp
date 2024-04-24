@@ -643,6 +643,8 @@
 #### Chapter Notes
  - [Chapter 01: Building Blocks]
  - [Chapter 03: Making Decisions]
+ - [Chapter 04: Core APIs]
 
 [Chapter 01: Building Blocks]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/buildingBlocks/README.MD>
 [Chapter 03: Making Decisions]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/makingDecision/README.MD>
+[Chapter 04: Core APIs]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/coreApis/README.MD>

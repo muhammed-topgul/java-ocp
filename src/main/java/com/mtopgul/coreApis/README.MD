@@ -139,12 +139,54 @@ System.out.println(text.stripTrailing().length()); // 4
 >  - Pozitif bir sayı ile çağrılırsa, her satırın başına eşit sayıda boşluk ekler.
 >  - Negatif bir sayı ile çağrılırsa, her satırın başından o sayıdaki boşluk karakterini silmeye çalışır.
 >  - 0 ile çağrılırsa bir etkisi olmayacaktır.
->  - Boşluk karakterlerini normalize eder. Yani _\n_ karakteri yoksa ekler ve varsa standart (_\n_) tipe çevirir. (Windows için yeni satır _\r\n_) 
+>  - Boşluk karakterlerini normalize eder.
+>   - Satır sonu karakteri (Windows için satır sonu **_\r\n_**, Mac için satır sonu **_\n_**) var ise normalize eder. (_Normalize_: **_\n_**)
+>   - Satır sonu karakteri (**_\n_**) yoksa ekler.
+
+> **stripIndent()** methodu;
+> - Başta bulunan tüm tesadüfi boşlukları siler.
+> - Satır sonu karakteri var ise normalize eder.
+> - Satır sonu karakteri yok ise <u>eklemez</u>.
+
 ```java
 public String indent(int numberSpaces);
 public String stripIndent();
 
-var name = "animals";
-System.out.println(name.length()); // 7
+var block = """
+        a
+         b
+        c""";
+
+var concat = " a\n"
+        + "  b\n"
+        + " c";
+
+System.out.println(block.length());                // 6
+System.out.println(concat.length());               // 9
+System.out.println(block.indent(1).length());      // 10
+System.out.println(concat.indent(-1).length());    // 7
+System.out.println(concat.indent(-4).length());    // 6
+System.out.println(concat.stripIndent().length()); // 6
 ```
----
+- **translateEscapes()**
+```java
+public String translateEscapes();
+
+System.out.println("1\t2");           // 1	2
+System.out.println("1\t2".length());  // 3
+System.out.println("1\\t2");          // 1\t2
+System.out.println("1\\t2".length()); // 4
+        
+System.out.println("1\\t2".translateEscapes()); // 1	2
+```
+
+- **isEmpty()** _and_ **isBlank()**
+```java
+public boolean isEmpty();
+public boolean isBlank();
+
+System.out.println(" ".isEmpty()); // false
+System.out.println("".isEmpty()); // true
+System.out.println(" ".isBlank()); // true
+System.out.println("".isBlank()); // true
+```
