@@ -190,3 +190,129 @@ System.out.println("".isEmpty()); // true
 System.out.println(" ".isBlank()); // true
 System.out.println("".isBlank()); // true
 ```
+
+- **format()**
+```java
+public static String format(String format, Object args...);
+public static String format(Locale loc, String format, Object args...);
+public String formatted(Object args...);
+
+var name = "Kate";
+var orderId = 5;
+
+// All print: Hello Kate, order 5 is ready
+System.out.println("Hello " + name + ", order " + orderId + " is ready");
+System.out.println(String.format("Hello %s, order %d is ready", name, orderId));
+System.out.println("Hello %s, order %d is ready".formatted(name, orderId));
+```
+_**Table 4.2** Common formatting symbols_
+
+| Sembol | Açıklama                                                       |
+|:------:|:---------------------------------------------------------------|
+| **%s** | Her tür için uygulanır ama genellikle _**String**_ değerlerine |
+| **%d** | **int** ve **long** gibi tamsayi değerlerine uygulanır         |
+| **%f** | **float** ve **double** gibi kayan nokta değerlerine uygulanır |
+| **%n** | Satır sonu ekler                                               |
+
+```java
+var name = "James";
+var score = 90.25;
+var total = 100;
+System.out.println("%s:%n Score: %f out of %d".formatted(name, score, total));
+// James:
+//  Score: 90.250000 out of 100
+```
+
+- Yanlış sembolün kullanılması çalışma zamanında hataya neden olur.
+```java
+System.out.println("Food: %f tons".formatted(2.0)); // Food: 2.000000 tons
+System.out.println("Food: %s tons".formatted(2.0)); // Food: 2.0 tons
+System.out.println("Food: %d tons".formatted(2.0)); // IllegalFormatConversionException
+```
+
+> **format() with Flags**
+> - Java _%_ ile _sembol karakteri_ arasındaki isteğe bağlı _flag_'leri de destekler.
+> - Varsayılan olarak **%f**, noktadan sonraki altı rakamı yazdırır.
+> - Noktadan sonra bir sayı görüntülemek için **%f** yerine **%.1f** kullanılır.
+> - **format()** methodu noktadan sonra sayıyı kısaltırken <u>_yuvarlama_</u> işlemi yapar.
+>```java
+>System.out.println("%f".formatted(90.250000));   // 90.250000
+>System.out.println("%.1f".formatted(90.250000)); // 90.3
+>System.out.println("%.1f".formatted(90.240000)); // 90.2
+>
+>var pi = 3.14159265359;
+>System.out.format("[%f]",pi);     // [3.141593]
+>System.out.format("[%12.8f]",pi); // [  3.14159265]
+>System.out.format("[%012f]",pi);  // [00003.141593]
+>System.out.format("[%12.2f]",pi); // [        3.14]
+>System.out.format("[%.3f]",pi);   // [3.142]
+>``` 
+---
+#### `Using the StringBuilder Class`
+**Creating a _StringBuilder_**
+```java
+StringBuilder sb1 = new StringBuilder();         // Boş bir StringBuilder oluşturur.
+StringBuilder sb2 = new StringBuilder("animal"); // animal içeren StringBuilder oluşturur. 
+StringBuilder sb3 = new StringBuilder(10);       // Oluşturulan StringBuilder'ın kapasitesini belirtir.
+```
+
+**Important _String_ Methods**
+- **_String_ ile Ortak Methodlar**
+  - **substring()**, **indexOf()**, **length()** ve **charAt()**.
+
+
+- **append()**
+```java
+public StringBuilder append(String str);
+
+// int, char, char[] gibi parametre alan 10'dan fazla append() methodu mevcut.
+var sb = new StringBuilder().append(1).append('c');
+sb.append("-").append(true);
+System.out.println(sb); // 1c-true
+```
+
+- **insert()**
+```java
+var sb = new StringBuilder("animals");
+sb.insert(7, "-");  // animals-
+sb.insert(0, "-");  // -animals-
+sb.insert(4, "-");  // -ani-mals-
+sb.insert(15, "-"); // exception
+```
+
+- **delete()** _and_ **deleteCharAt()** 
+> **delete()** methodu **deleteCharAt()** methodundan daha esnektir. Eğer **delete()** methoduna _String_'in boyunu
+> geçen bir parametre verilirse Java dizinin sonuna kadar siler. <u>Hata fırlatmaz</u>.
+> Fakat **deleteCharAt()** methoduna _String_'in boyunu geçen bir parametre verilirse <u>hata fırlatır.</u>
+```java
+public StringBuilder delete(int startIndex, int endIndex);
+public StringBuilder deleteCharAt(int index);
+
+var sb = new StringBuilder("abcdefgh");
+System.out.println(sb.delete(2, 4));    // abefgh
+System.out.println(sb.delete(3, 30));   // abe
+System.out.println(sb.deleteCharAt(1)); // ae
+System.out.println(sb.deleteCharAt(3)); // exception
+```
+
+- **replace()**
+```java
+public StringBuilder replace(int startIndex, int endIndex, String newString);
+
+var builder = new StringBuilder("pigeon dirty");
+builder.replace(3, 6, "***");
+System.out.println(builder); // pig*** dirty
+
+
+var builder = new StringBuilder("pigeon dirty");
+builder.replace(3, 100, "");
+System.out.println(builder); // pig
+```
+
+- **reverse()**
+```java
+public StringBuilder reverse();
+var sb = new StringBuilder("ABC");
+sb.reverse();
+System.out.println(sb); // CBA
+```
