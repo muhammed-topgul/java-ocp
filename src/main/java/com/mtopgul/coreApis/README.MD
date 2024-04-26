@@ -316,3 +316,100 @@ var sb = new StringBuilder("ABC");
 sb.reverse();
 System.out.println(sb); // CBA
 ```
+---
+#### `Understanding Arrays`
+**Array Oluşturmak**
+```java
+int[] numbers = new int[3];
+int[] moreNumbers = new int[] {42, 55, 99};
+int[] moreNumbers = {42, 55, 99}; // anonymous array
+
+// 5 tanımda geçerlidir
+int[] numAnimals;
+int [] numAnimals2;
+int []numAnimals3;
+int numAnimals4[];
+int numAnimals5 [];
+```
+
+> - Çoklu "Arrays" Tanımı
+>
+>```java
+>int[] ids, types;
+>// ids ve types array tipindedir
+>
+>int ids[], types;
+>// ids array, types int tipindedir
+>``` 
+
+**Casting**
+```java
+3: String[] strings = { "stringValue" };
+4: Object[] objects = strings;
+5: String[] againStrings = (String[]) objects;
+6: againStrings[0] = new StringBuilder(); // DOES NOT COMPILE
+7: objects[0] = new StringBuilder();      // Exception
+```
+- Satır 6 derlenmez çünkü _String[]_ dizisine sadece _String_ nesneleri eklenebilir.
+- Satır 7 **ArrayStoreException** fırlatır. Dizinin referansı _Object[]_ olsa bile dizi _String[]_ tipindedir.
+
+**Searching**
+- Sıralı olmayan dizilerde sonuç belirsizdir.
+```java
+int[] numbers = {2,4,6,8};
+System.out.println(Arrays.binarySearch(numbers, 2)); // 0
+System.out.println(Arrays.binarySearch(numbers, 4)); // 1
+System.out.println(Arrays.binarySearch(numbers, 1)); // -1
+System.out.println(Arrays.binarySearch(numbers, 3)); // -2
+System.out.println(Arrays.binarySearch(numbers, 9)); // -5
+
+int[] numbers = new int[] {3,2,1};
+System.out.println(Arrays.binarySearch(numbers, 2)); // 1
+System.out.println(Arrays.binarySearch(numbers, 3)); // Belirsiz
+```
+
+**Comparing**
+
+- **Arrays.compare()**
+  - **Pozitif** bir sayı, ilk dizinin ikinciden büyük olduğu anlamına gelir.
+  - **Negatif** bir sayı, ilk dizinin ikinciden daha küçük olduğu anlamına gelir.
+  - **Sıfır** dizilerin aynı olduğu anlamına gelir.
+
+Dizileri karşılaştırma kuralları;
+- Her iki dizi aynı uzunlukla ve aynı elemanlara aynı sırada sahipse <u>sıfır</u> döndürür.
+- Bütün elemanlar aynıysa ancak ikinci dizinin sonunda fazladan eleman varsa <u>negatif</u> sayı döndürür.
+- Bütün elemanlar aynıysa ancak birinci dizinin sonunda fazladan eleman varsa <u>pozitif</u> sayı döndürür.
+- İlk dizide farklı olan elaman daha küçükse <u>negatif</u> sayı döndürür.
+- İlk dizide farklı olan elaman daha büyükse <u>pozitif</u> sayı döndürür.
+  - **null** tüm tiplerden daha küçüktür.
+  - **String**'lerde eğer birisi diğerinin <u>prefix</u>'i ise daha küçüktür.
+  - Karakterler için sayılar harflerden daha küçüktür.
+  - Karakterler için büyük harfler küçük harflerden küçüktür.
+
+_**Table 4.4** Arrays.compare() examples_
+
+| 1. Array               | 2. Array                | Sonuç     | Açıklama                                     |
+|:-----------------------|:------------------------|:----------|:---------------------------------------------|
+| **new int[] {1, 2}**   | **new int[] {1}**       | Pozitif   | Elemenlar aynı fakat ilk array daha uzun     |
+| **new int[] {1, 2}**   | **new int[] {1, 2}**    | Sıfır     | İki array de aynı                            |
+| **new String[] {"a"}** | **new String[] {"aa"}** | Negatif   | İlk eleman ikinci elemanın _substring_'i     |
+| **new String[] {"a"}** | **new String[] {"A"}**  | Pozitif   | Büyük harf küçük harften küçüktür            |
+| **new String[] {"a"}** | **new String[] {null}** | Pozitif   | **null** tüm tiplerden küçüktür              |
+| **new String[] {1}**   | **new String[] {"a"}**  | Derlenmez | İki farklı tipte ki array karşılaştırılamaz. |
+
+- **Arrays.mismatch()**
+  - Eğer dizişer eşit ise **mismatch()** _-1_ döner. Aksi takdirde farklılığın olduğu ilk _index_'i döner.
+```java
+System.out.println(Arrays.mismatch(new int[]{1}, new int[]{1}));                // -1
+System.out.println(Arrays.mismatch(new String[]{"a"}, new String[]{"A"}));      // 0
+System.out.println(Arrays.mismatch(new int[]{1, 2}, new int[]{1}));             // 1
+System.out.println(Arrays.mismatch(new int[]{1, 2, 3, 4}, new int[]{1, 2, 4})); // 2
+```
+
+Table 4.5** Equality vs. comparison vs. mismatch_
+
+| Method         | Diziler Aynı Olduğunda | Diziler Aynı Olduğunda        |
+|:---------------|:-----------------------|:------------------------------|
+| **equals()**   | **true**               | **false**                     |
+| **compare()**  | **0**                  | **Pozitif veya negatif sayı** |
+| **mismatch()** | **-1**                 | **Sıfır veya negatif sayı**   |
