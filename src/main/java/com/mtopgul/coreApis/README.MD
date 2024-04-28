@@ -413,3 +413,114 @@ Table 4.5** Equality vs. comparison vs. mismatch_
 | **equals()**   | **true**               | **false**                     |
 | **compare()**  | **0**                  | **Pozitif veya negatif sayı** |
 | **mismatch()** | **-1**                 | **Sıfır veya negatif sayı**   |
+
+---
+#### `Math API`
+
+- **min()** _and_ **max()**
+> İki method da hangi parametre tipini alırsa, tip olarak onu döner.
+```java
+public static int min(int a, int b);
+public static long min(long a, long b);
+public static double min(double a, double b);
+public static float min(float a, float b);
+
+public static int max(int a, int b);
+public static long max(long a, long b);
+public static double max(double a, double b);
+public static float max(float a, float b);
+```
+
+- **round()**
+> - En yakın sayıya yuvarlar. Eğer küsürat **.5** veya büyükse yukarı, yoksa aşağı yuvarlar.
+> - **double** ve **float** tipinde parametre alır. Parametre tipi **double** olursa **long**, **float** olursa **int** tipinde döner.
+```java
+public static long round(double num);
+public static int round(float num);
+
+long low = Math.round(123.45);       // 123
+long high = Math.round(123.50);      // 124
+int fromFloat = Math.round(123.45f); // 123
+```
+
+- **ceil()** _and_ **floor()**
+```java
+public static double ceil(double num);
+public static double floor(double num);
+
+double c = Math.ceil(3.14);  // 4.0
+double f = Math.floor(3.14); // 3.0 
+```
+- **pow()**
+```java
+public static double pow(double number, double exponent);
+
+double squared = Math.pow(5, 2); // 25.0
+```
+
+---
+#### `Dates and Times`
+**Creating Dates and Times**
+- **now()**
+```java
+System.out.println(LocalDate.now());       // 2024-04-28
+System.out.println(LocalTime.now());       // 22:58:16.891992500
+System.out.println(LocalDateTime.now());   // 2024-04-28T22:58:16.891992500
+System.out.println(ZonedDateTime.now());   // 2024-04-28T22:58:16.892992300+03:00[Europe/Istanbul]
+System.out.println(OffsetDateTime.now());  // 2024-04-28T22:58:16.892992300+03:00
+```
+
+- **of()**
+
+**LocalDate.of()**
+```java
+public static LocalDate of(int year, int month, int dayOfMonth);
+public static LocalDate of(int year, Month month, int dayOfMonth);
+
+LocalDate date1 = LocalDate.of(2024, 4, 28);
+LocalDate date2 = LocalDate.of(2024, Month.APRIL, 28);
+        
+System.out.println(date1); // 2024-04-28
+System.out.println(date2); // 2024-04-28
+```
+
+**LocalTime.of()**
+```java
+public static LocalTime of(int hour, int minute);
+public static LocalTime of(int hour, int minute, int second);
+public static LocalTime of(int hour, int minute, int second, int nanos);
+
+LocalTime time1 = LocalTime.of(23, 21);
+LocalTime time2 = LocalTime.of(23, 21, 16);
+LocalTime time3 = LocalTime.of(23, 21, 16, 987654321);
+
+System.out.println(time1); // 23:21
+System.out.println(time2); // 23:21:16
+System.out.println(time3); // 23:21:16.987654321
+```
+
+**LocalDateTime.of()**
+```java
+public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute);
+public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second);
+public static LocalDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanos);
+// Others take a Month reference:
+public static LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute);
+public static LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute, int second);
+public static LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute, int second, int nanos);
+
+// One takes an existing LocalDate and LocalTime:
+public static LocalDateTime of(LocalDate date, LocalTime time);
+```
+
+**ZonedDateTime.of()**
+```java
+public static ZonedDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanos, ZoneId zone);
+public static ZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone);
+public static ZonedDateTime of(LocalDateTime dateTime, ZoneId zone);
+
+var zone = ZoneId.of("US/Eastern");
+var zoned1 = ZonedDateTime.of(2022, 1, 20, 6, 15, 30, 200, zone);
+var zoned2 = ZonedDateTime.of(date1, time1, zone);
+var zoned3 = ZonedDateTime.of(dateTime1, zone);
+```
