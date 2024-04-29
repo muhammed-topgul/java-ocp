@@ -524,3 +524,211 @@ var zoned1 = ZonedDateTime.of(2022, 1, 20, 6, 15, 30, 200, zone);
 var zoned2 = ZonedDateTime.of(date1, time1, zone);
 var zoned3 = ZonedDateTime.of(dateTime1, zone);
 ```
+
+**Manipulating Dates and Times**
+- Date ve Time sınıfları <u>immutable</u>'dır.
+
+**LocalDate.plusX()** _and_ **LocalDate.minusX()**
+```java
+// plus
+var date = LocalDate.of(2022, Month.JANUARY, 20);
+System.out.println(date);// 2022-01-20
+
+date = date.plusDays(5);
+System.out.println(date); // 2022-01-25
+
+date = date.plusWeeks(3);
+System.out.println(date); // 2022-02-15
+
+date = date.plusMonths(2);
+System.out.println(date); // 2022-04-15
+
+date = date.plusYears(1);
+System.out.println(date); // 2023-04-15
+
+// minus
+var date = LocalDate.of(2022, Month.JANUARY, 20);
+System.out.println(date); // 2022-01-20
+
+date = date.minusDays(5);
+System.out.println(date); // 2022-01-15
+
+date = date.minusWeeks(3);
+System.out.println(date); // 2021-12-25
+
+date = date.minusMonths(2);
+System.out.println(date); // 2021-10-25
+
+date = date.minusYears(1);
+System.out.println(date); // 2020-10-25
+```
+
+**LocalTime.plusX()** _and_ **LocalTime.minusX()**
+```java
+// plus
+var time = LocalTime.of(9, 12, 30, 450000000);
+System.out.println(time); // 09:12:30.450
+
+time = time.plusHours(5);
+System.out.println(time); // 14:12:30.450
+
+time = time.plusMinutes(35);
+System.out.println(time); // 14:47:30.450
+
+time = time.plusSeconds(10);
+System.out.println(time); // 14:47:40.450
+
+time = time.plusNanos(100);
+System.out.println(time); // 14:47:40.450000100
+
+// minus
+var time = LocalTime.of(9, 12, 30, 450000000);
+System.out.println(time); // 09:12:30.450
+
+time = time.minusHours(5);
+System.out.println(time); // 04:12:30.450
+
+time = time.minusMinutes(35);
+System.out.println(time); // 03:37:30.450
+
+time = time.minusSeconds(10);
+System.out.println(time); // 03:37:20.450
+
+time = time.minusNanos(100);
+System.out.println(time); // 03:37:20.449999900
+```
+
+**LocalDateTime.plusX()** _and_ **LocalDateTime.minusX()**
+```java
+var date = LocalDate.of(2024, Month.JANUARY, 20);
+var time = LocalTime.of(5, 15);
+var dateTime = LocalDateTime.of(date, time);
+System.out.println(dateTime); // 2024-01-20T05:15
+
+dateTime = dateTime.plusYears(5);
+System.out.println(dateTime); // 2029-01-20T05:15
+
+dateTime = dateTime.minusDays(2);
+System.out.println(dateTime); // 2029-01-18T05:15
+
+dateTime = dateTime.plusHours(15);
+System.out.println(dateTime); // 2029-01-18T20:15
+
+dateTime = dateTime.minusNanos(500000000);
+System.out.println(dateTime); // 2029-01-18T20:14:59.500
+
+LocalDateTime dateTime = LocalDateTime.of(date, time)
+        .minusDays(1)
+        .minusHours(10)
+        .plusSeconds(30);
+System.out.println(dateTime); // 2024-01-18T19:15:30
+```
+
+```java
+// LocalDate sınıfı immutable'dır
+var date = LocalDate.of(2024, Month.JANUARY, 20);
+date.plusDays(10);
+System.out.println(date); // 2024-01-20
+
+
+// Derlenmez
+// LocalDate sınıfı üzerinden sadece; YIL, AY ve GÜN manipulasyonları yapılabilir
+var date = LocalDate.of(2024, Month.JANUARY, 20);
+date = date.plusMinutes(1); // DOES NOT COMPILE
+```
+
+**Periods**
+> Java'da YIL, AY, GÜN ve HAFTA zaman dilimleri oluşturabilmek için kullanılan yardımcı sınıftır.
+> 
+> Aşağıdaki örnekte _Period_ kullanmasaydık _performAnimalEnrichment_ methodunun reusable olmasını engellemiş olurduk.
+>
+> Örneğin ay yerine hafta, gün veya yıl eklemek istersek her seferinde o methodu yeniden yazmanız gerekirdi.
+> 
+> Bknz: performAnimalEnrichmentV1(). Her bir zaman için yeniden yazılması gerekiyor.
+
+```java
+public static void main(String[] args) {
+    var start = LocalDate.of(2022, Month.JANUARY, 1);
+    var end = LocalDate.of(2022, 3, 30);
+    Period period = Period.ofMonths(3);
+    performAnimalEnrichment(start, end, period);
+}
+
+private static void performAnimalEnrichment(LocalDate start, LocalDate end, Period period) {
+    var upto = start;
+    while (upto.isBefore(end)) {
+        System.out.println("Give new toy: " + upto);
+        upto = upto.plus(period); // add a month
+        // period yerine plusMonth(1) ile ekleme yapsaydık performAnimalEnrichment methodu
+        // reusable olmayacaktı. Period ile bu methodu faklı şekilde çalıştırabiliriz.
+        // Period.ofYears(3), Period.ofMonths(3), Period.ofWeeks(3) ve Period.ofDays(3)
+    }
+}
+
+private static void performAnimalEnrichmentV1(LocalDate start, LocalDate end) {
+  var upto = start;
+  while (upto.isBefore(end)) {
+    System.out.println("give new toy: " + upto);
+    upto = upto.plusMonths(1); // add a month
+  }
+}
+```
+
+**Period** Oluşturmak
+>-  _Period_ çıktısı _P_ ile başlar.
+>- _Period_, _LocalTime_ ile birlikte kullanılamz.
+>- _Period_ gün ve daha büyük zaman dilimleri için kullanılabilir.
+>- _Period_ ile GÜN, HAFTA, AY ve YIL zaman dilimi oluşturulabilir. 
+```java
+Period annually = Period.ofYears(1);          // P1Y
+Period quarterly = Period.ofMonths(3);        // P3M
+Period everyThreeWeeks = Period.ofWeeks(3);   // P21D
+Period everyOtherDay = Period.ofDays(2);      // P2D
+Period everyYearAndWeek = Period.of(1, 0, 7); // P1Y7D
+
+Period period = Period.of(2, 3, 5); // P2Y3M5D
+```
+
+> _Period_ oluştururken method chain yapılamaz. Çünkü oluşturma methodları **static**'tir.
+> 
+> Aşağıdaki kod parçaları aynıdır. İkiside 1 haftalık period oluşturur.
+```java
+var wrong = Period.ofYears(1).ofWeeks(1); // every week
+
+var wrong = Period.ofYears(1);
+wrong = Period.ofWeeks(1);
+```
+
+```java
+var date = LocalDate.of(2022, 1, 20);
+var time = LocalTime.of(6, 15);
+var dateTime = LocalDateTime.of(date, time);
+var period = Period.ofMonths(1);
+
+System.out.println(date.plus(period));     // 2022-02-20
+System.out.println(dateTime.plus(period)); // 2022-02-20T06:15
+System.out.println(time.plus(period));     // Exceptio
+```
+
+**Duration** Oluşturmak
+>- _Duration_ çıktısı _PT_ ile başlar. Period of Time.
+>- _Duration_ SAAT, DAKİKA ve SANİYE zaman dilimi oluşturulabilir.
+>- _Duration_ için doğrudan _of()_ factory methodu yok. Eğer 1 saat 30 dk demek istiyorsanız 90 dakika olarak tanımlamalısınız.
+```java
+Duration daily = Duration.ofDays(1);                // PT24H
+Duration hourly = Duration.ofHours(1);              // PT1H
+Duration everyMinute = Duration.ofMinutes(1);       // PT1M
+Duration everyTenSeconds = Duration.ofSeconds(10);  // PT10S
+Duration everyMilli = Duration.ofMillis(1);         // PT0.001S
+Duration everyNano = Duration.ofNanos(1);           // PT0.000000001S
+```
+
+>- Yukardaki örneği _ChronoUnit_ ile yeniden yazalım.
+```java
+var daily = Duration.of(1, ChronoUnit.DAYS);
+var hourly = Duration.of(1, ChronoUnit.HOURS);
+var everyMinute = Duration.of(1, ChronoUnit.MINUTES);
+var everyTenSeconds = Duration.of(10, ChronoUnit.SECONDS);
+var everyMilli = Duration.of(1, ChronoUnit.MILLIS);
+var everyNano = Duration.of(1, ChronoUnit.NANOS);
+```
