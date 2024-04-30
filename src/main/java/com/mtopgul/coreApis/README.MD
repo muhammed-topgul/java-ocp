@@ -710,6 +710,8 @@ System.out.println(dateTime.plus(period)); // 2022-02-20T06:15
 System.out.println(time.plus(period));     // Exceptio
 ```
 
+**Duration**
+
 **Duration** Oluşturmak
 >- _Duration_ çıktısı _PT_ ile başlar. Period of Time.
 >- _Duration_ SAAT, DAKİKA ve SANİYE zaman dilimi oluşturulabilir.
@@ -732,3 +734,152 @@ var everyTenSeconds = Duration.of(10, ChronoUnit.SECONDS);
 var everyMilli = Duration.of(1, ChronoUnit.MILLIS);
 var everyNano = Duration.of(1, ChronoUnit.NANOS);
 ```
+
+>- _ChronoUnit_ iki _Tmporal_ zamanın birbirinden ne kadar uzakta olduğunu belirlemenin harika bir yoludur.
+> ```java
+> var one = LocalTime.of(5, 15);
+> var two = LocalTime.of(6, 30);
+> var date = LocalDate.of(2016, 1, 20);
+> var dateTime = LocalDateTime.of(date, two);
+> 
+> System.out.println(ChronoUnit.HOURS.between(one, two));        // 1
+> System.out.println(ChronoUnit.HOURS.between(two, one));        // -1
+> System.out.println(ChronoUnit.MINUTES.between(one, two));      // 75
+> System.out.println(ChronoUnit.MINUTES.between(two, one));      // -75
+> System.out.println(ChronoUnit.MINUTES.between(one, dateTime)); // 75
+> System.out.println(ChronoUnit.MINUTES.between(one, date));     // Exception
+> ```
+> 
+>- Zaman nesnesini _ChronoUnit_ ile _truncate_ edebiliriz.
+> ```java
+> LocalTime time = LocalTime.of(3, 12, 45);
+> System.out.println(time);      // 03:12:45
+> 
+> LocalTime truncated = time.truncatedTo(ChronoUnit.MINUTES);
+> System.out.println(truncated); // 03:12
+> 
+> truncated = time.truncatedTo(ChronoUnit.HOURS);
+> System.out.println(truncated); // 03:00
+> 
+> truncated = time.truncatedTo(ChronoUnit.DAYS);
+> System.out.println(truncated); // 00:00
+> ```
+
+- **plus()** and **minus()** _Duration_
+  - _Period_ ile aynı şekilde çalışır.
+  - _Duration_ _LocalTime_ ve _LocalTime_ içeren sınıflar ile çalışır.
+
+```java
+var date = LocalDate.of(2022, 1, 20);
+var time = LocalTime.of(6, 15);
+var dateTime = LocalDateTime.of(date, time);
+
+Duration duration = Duration.ofHours(6);
+
+System.out.println(dateTime.plus(duration)); // 2022-01-20T12:15
+System.out.println(time.plus(duration));     // 12:15
+System.out.println(date.plus(duration));     // Exception
+
+
+Duration duration = Duration.ofDays(6);
+
+System.out.println(dateTime.plus(duration)); // 2022-01-26T06:15
+System.out.println(time.plus(duration));     // 06:15
+System.out.println(date.plus(duration));     // Exception
+```
+
+- **Period** vs **Duration**
+  - _LocalDate_ ile çalışıyorsak _Period_ zorunludur.
+  - _LocalTime_ ile çalışıyorsak _Duration_ zorunludur.
+
+_**Table 4.7** Where to use Duration and Period_
+
+|                   | **Can use with** Period? | **Can use with** Duration? |
+|:------------------|:-------------------------|:---------------------------|
+| **LocalDate**     | Yes                      | No                         |
+| **LocalDateTime** | Yes                      | Yes                        |
+| **LocalTime**     | No                       | Yes                        |
+| **ZonedDateTime** | Yes                      | Yes                        |
+
+
+**Instants**
+- _Instant_ sınıfı _GMT_ saat diliminde belirli bir anı temsil eder.
+```java
+Instant now = Instant.now();
+// do something time consuming
+Instant later = Instant.now();
+
+Duration between = Duration.between(now, later);
+System.out.println(between.toMillis());                    // 1025
+System.out.println(ChronoUnit.MILLIS.between(now, later)); // 1025
+```
+
+- Eğer _ZonedDateTime_ nesnemiz varsa _Instant_'a çevirebiliriz.
+  - Aşağıdaki örnekte, _ZonedDateTime_ bir _time zone_ içerir. _Instant_ ise _time zon_'u siler ve _GMT_'deki bir **Instant of time in GMT**' e çevirir.
+  - _LocalDateTime_ _Instant_'a doğrudan çevrilemez. Çünkü _time zone_ bilgisi içermez.
+```java
+var date = LocalDate.of(2022, 5, 25);
+var time = LocalTime.of(11, 55, 00);
+var zone = ZoneId.of("US/Eastern");
+var zonedDateTime = ZonedDateTime.of(date, time, zone);
+var instant = zonedDateTime.toInstant();
+
+System.out.println(zonedDateTime); // 2022-05-25T11:55-04:00[US/Eastern]
+System.out.println(instant);       // 2022-05-25T15:55:00Z
+```
+
+**Yaz Saati Uygulaması Hesaplaması**
+- Saatler Amerika'da **13 Mart 02:00**'da bir saat ileri alınır.
+- **13 Mart** gününde saat **02:30** hiç var olmayacak.
+- **6 Kasım 02:00** da ise bir saat geri alınır.
+
+```java
+// Saati ileri alma
+var date = LocalDate.of(2022, Month.MARCH, 13);
+var time = LocalTime.of(1, 30);
+var zone = ZoneId.of("US/Eastern");
+var zonedDateTime = ZonedDateTime.of(date, time, zone);
+
+System.out.println(zonedDateTime);             // 2022-03-13T01:30-05:00[US/Eastern]
+System.out.println(zonedDateTime.getHour());   // 1
+System.out.println(zonedDateTime.getOffset()); // -05:00
+
+zonedDateTime = zonedDateTime.plusHours(1);
+
+System.out.println(zonedDateTime);             // 2022-03-13T03:30-04:00[US/Eastern]
+System.out.println(zonedDateTime.getHour());   // 3
+System.out.println(zonedDateTime.getOffset()); // -04:00
+```
+- İki değer değişti;
+  - i. Saat 1:30 dan 3:30'a geçti.
+  - ii. Offset -05:00 ten -04:00'a geçti.
+
+```java
+// Saati geri alma
+var date = LocalDate.of(2022, Month.NOVEMBER, 6);
+var time = LocalTime.of(1, 30);
+var zone = ZoneId.of("US/Eastern");
+var zonedDateTime = ZonedDateTime.of(date, time, zone);
+
+System.out.println(zonedDateTime); // 2022-11-06T01:30-04:00[US/Eastern]
+
+zonedDateTime = zonedDateTime.plusHours(1);
+System.out.println(zonedDateTime); // 2022-11-06T01:30-05:00[US/Eastern]
+
+zonedDateTime = zonedDateTime.plusHours(1);
+System.out.println(zonedDateTime); // 2022-11-06T02:30-05:00[US/Eastern]
+```
+
+- Tek bir değer değişti;
+  - i. Offset -04:00 ten -05:00'e geçti.
+  - ii. Saat **01:00** ve **02:00** aralığı iki kez yaşanmış oldu.
+
+Java 13 Mart 02:30 tarihinin US/Eastern'de var olmadığını biliyor.
+```java
+var date = LocalDate.of(2022, Month.MARCH, 13);
+var time = LocalTime.of(2, 30);
+var zone = ZoneId.of("US/Eastern");
+var dateTime = ZonedDateTime.of(date, time, zone);
+System.out.println(dateTime); // 2022–03–13T03:30–04:00[US/Eastern]
+```
+
