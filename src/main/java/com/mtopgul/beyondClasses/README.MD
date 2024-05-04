@@ -110,3 +110,152 @@ public class Bunny implements Hop {
       }
   }
   ```
+
+---
+### `Enums`
+- Her **enum** değeri _JVM_ üzerinde sadece bir kez başlatılır. Bu yüzden _equals()_ ve _==_ ile karşılaştırma yapılabilir.
+- **enum** sınıfı başka bir sınıfı **extends** edemez ve hiçbir sınıf **enum** sınıfını **extends** edemez.
+- **enum** sınıfı bir **interface**'i **implements** edebilir.
+- Tüm **enum** _constructor_'ları implicit olarak **private**'dır.
+
+```java
+enum Season {
+    WINTER, SPRING, SUMMER, FALL;
+}
+```
+
+- _Enums_' lar ve _**switch** Statements_
+
+```java
+Season summer = Season.SUMMER;
+var message = switch (summer) {
+    case Season.WINTER -> "Get out the sled!"; // DOES NOT COMPILE
+    case SUMMER -> "It is summer";
+    case 0 -> "Time for the poll";             // DOES NOT COMPILE
+    default -> "Is it summer yet?";
+}
+```
+
+- _Enum_ sınıfının herhangi bir değeri ilk kez çağrıldığında Java tüm _enum_ değerlerini yükler. Sonraki çağrımlarda Java zaten 
+  yüklenmiş olan _enum_ değerlerini döndürür.
+  - _Enum_ sınıfı içerisinde _main()_ method çalıştırılırsa Java yine tüm _enum_ değerlerini yükler.
+```java
+enum NumberEnum {
+    ONE(1),
+    TWO(2),
+    THREE(3);
+
+    private NumberEnum(int number) {
+        System.out.println("This is " + number);
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        NumberEnum one = NumberEnum.ONE;      // This is 1
+        NumberEnum two = NumberEnum.TWO;      // This is 2
+        NumberEnum three = NumberEnum.THREE;  // This is 3
+
+        NumberEnum one1 = NumberEnum.ONE;     // Hiç bir şey bastırmaz. JVM üzerinde yüklü olan mevcut enum değeri kullanılır.
+        NumberEnum two1 = NumberEnum.TWO;     // Hiç bir şey bastırmaz. JVM üzerinde yüklü olan mevcut enum değeri kullanılır.
+        NumberEnum three1 = NumberEnum.THREE; // Hiç bir şey bastırmaz. JVM üzerinde yüklü olan mevcut enum değeri kullanılır.
+    }
+}
+```
+
+- **enum** sınıfı bir **interface**'i **implements** edebilir.
+- _Enum_ sınıfı içerisinde _concrete_ bir method tanımlanabilir.
+- _Enum_ sınıfı içerisinde **abstract** method tanımlanabilir.
+- Eğer _enum_ sınıfı içerisinde **abstract** bir method tanımlanırsa ve bir **interface**'i **implements** ederse 
+  mevcut _soyut method_'ların mutlaka gövdesini yazmalıdır.
+```java
+public interface Weather {
+    // Tüm enum değerleri bu methoda gövde vermek zorunda.
+    double getAverageTemperature();
+}
+
+public enum Season implements Weather {
+    WINTER(101) {
+        @Override
+        public String getHours() {
+            return "10am-3pm";
+        }
+
+        @Override
+        public String getRules() {
+            return super.getRules() + " plus extra winter rules";
+        }
+
+        @Override
+        public double getAverageTemperature() {
+            return -12.5;
+        }
+    },
+    SPRING(102) {
+        @Override
+        public String getHours() {
+            return "9am-7pm";
+        }
+
+        @Override
+        public double getAverageTemperature() {
+            return 8.7;
+        }
+    },
+    SUMMER(103) {
+        @Override
+        public String getHours() {
+            return "9am-7pm";
+        }
+
+        @Override
+        public double getAverageTemperature() {
+            return 33.5;
+        }
+    },
+    FALL(104) {
+        @Override
+        public String getHours() {
+            return "9am-5pm";
+        }
+
+        @Override
+        public double getAverageTemperature() {
+            return 17.9;
+        }
+    };
+
+
+    private final int code;
+
+    Season(int code) {
+        this.code = code;
+    }
+
+    // Tüm enum değerleri bu methoda gövde vermek zorunda.
+    public abstract String getHours();
+
+    // Tüm enum değerleri bu methoda gövde vermek zorunda değil.
+    public String getRules() {
+        return "Be careful!";
+    }
+}
+```
+
+```java
+enum Season implements Weather {
+    WINTER, SPRING, SUMMER, FALL;
+
+    public String getHours() {
+        return "9am-5pm";
+    }
+    
+    public String getRules() {
+        return "Be careful!";
+    }
+
+    public double getAverageTemperature() {
+        return 30;
+    }
+}
+```

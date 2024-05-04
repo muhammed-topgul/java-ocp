@@ -646,9 +646,11 @@
  - [Chapter 04: Core APIs]
  - [Chapter 05: Methods]
  - [Chapter 06: Class Design]
+ - [Chapter 07: Beyond Classes]
 
 [Chapter 01: Building Blocks]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/buildingBlocks/README.MD>
 [Chapter 03: Making Decisions]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/makingDecision/README.MD>
 [Chapter 04: Core APIs]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/coreApis/README.MD>
 [Chapter 05: Methods]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/methods/README.MD>
 [Chapter 06: Class Design]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/classDesign/README.MD>
+[Chapter 07: Beyond Classes]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/beyondClasses/README.MD>
