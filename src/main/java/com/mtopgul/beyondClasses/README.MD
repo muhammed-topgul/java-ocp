@@ -259,3 +259,99 @@ enum Season implements Weather {
     }
 }
 ```
+
+
+---
+### `Sealing Classes`
+**_Sealed_ Sınıf Oluşturma**
+  - **permits** listesinde olan her sınıf **sealed** sınıfı **extends** etmelidir.
+  - **sealed** ve **abstract** anahtar kelimeleri yaygın kullanılır fakat zorunlu değildir.
+  - **sealed** sınıfı doğrudan kalıtan sınıflar mutlaka **final**, **sealed** veya **non-sealed** anahtar kelimelerinden
+    birini mutlaka kullanmalıdır.
+  - **sealed** sınıflar ile onu kalıtan _subclass_'ları aynı paket veya aynı _named module_ içerisinde olmalıdır. 
+```java
+public abstract sealed class Bear permits Kodiak, Panda {
+}
+
+public final class Kodiak extends Bear {
+}
+
+public non-sealed class Panda extends Bear {
+}
+```
+
+**_Subclass Modifier_ Belirleme**
+  - **sealed** sınıfı doğrudan kalıtan sınıflar mutlaka **final**, **sealed** veya **non-sealed** anahtar kelimelerinden
+    birini mutlaka kullanmalıdır.
+
+- A **final** Subclass
+```java
+public sealed class Antelope permits Gazelle {}
+
+public final class Gazelle extends Antelope {}
+
+public class George extends Gazelle {} // DOES NOT COMPILE
+```
+
+- A **sealed** Subclass
+```java
+public sealed class Mammal permits Equine {}
+
+public sealed class Equine extends Mammal permits Zebra {}
+
+public final class Zebra extends Equine {}
+```
+
+- A **non-sealed** Subclass
+```java
+public sealed class Wolf permits Timber {}
+
+public non-sealed class Timber extends Wolf {}
+
+public class MyWolf extends Timber {}
+
+public class MyFurryWolf extends MyWolf {}
+```
+
+**Omitting the permits Clause**
+- **permits** anahtar kelimesini kullanmak her zaman zorunlu değildir.
+  - Eğer **sealed** sınıf ve onu kalıtan alt sınıf aynı _.java_ dosyası içerisinde ise kullanmak opsiyoneldir.
+```java
+public sealed class Snake /*permits Cobra*/ {}
+
+final class Cobra extends Snake {}
+```
+  - **permits** anahtar kelimesi _nested_ alt sınıflar içinde opsiyoneldir.
+```java
+public sealed class Snake /*permits Snake.Cobra*/ {
+    final class Cobra extends Snake {}
+}
+```
+_**Table 7.3** Usage of the permits clause in sealed classes_
+
+| Doğrudan alt sınıfların konumu         | permits anahtar kelimesi                 |
+|:---------------------------------------|:-----------------------------------------|
+| **sealed** sınıftan farklı bir dosyada | Zorunlu                                  |
+| **sealed** sınıf ile aynı dosyada      | Kullanılabilir, ama <u>zorunlu değil</u> |
+| **sealed** sınıfın nested sınıfı       | Kullanılabilir, ama <u>zorunlu değil</u> |
+
+### `Sealing Interfaces`
+```java
+public sealed interface Swims permits Duck, Swan, Floats {}
+
+public final class Duck implements Swims {}
+
+public final class Swan implements Swims {}
+
+// Interface permitted to extend sealed interface
+public non-sealed interface Floats extends Swims {}
+```
+> _Note: _Interface_'ler implicit olarak **abstract**'tır. Bu yüzden **sealed interface**'i **implements** eden 
+> bir **interface** sadece **sealed** ve **non-sealed** anahtar kelimeleri ile işaretlenebilir._
+
+**Sealed Sınıf Kuralları**
+1. _Sealed_ sınıf **sealed** ve **permits** anahtar kelimeleri ile birlikte tanımlanır.
+2. _Sealed_ sınıflar doğrudan alt sınıflarıyla aynı pakette veya _named module_'de bildirilmelidir.
+3. _Sealed_ sınıfın doğrudan alt sınıfları **final**, **sealed** veya **non-sealed** ile işaretlenmelidir.
+4. _Sealed_ sınıf ile doğrudan alt sınıfları aynı dosya içerisindeyse veya alt sınıf _nested_ ise **permits** opsiyoneldir.
+5. _Interface_'ler **sealed** olarak tanımlanabilirler.
