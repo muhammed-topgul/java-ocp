@@ -265,8 +265,8 @@ enum Season implements Weather {
 ### `Sealing Classes`
 **_Sealed_ Sınıf Oluşturma**
   - **permits** listesinde olan her sınıf **sealed** sınıfı **extends** etmelidir.
-  - **sealed** ve **abstract** anahtar kelimeleri yaygın kullanılır fakat zorunlu değildir.
-  - **sealed** sınıfı doğrudan kalıtan sınıflar mutlaka **final**, **sealed** veya **non-sealed** anahtar kelimelerinden
+  - **sealed** ifadesi ve **abstract** anahtar kelimesi yaygın olarak birlikte kullanılır fakat zorunlu değildir.
+  - **sealed** sınıfı doğrudan kalıtan sınıflar mutlaka **final**, **sealed** veya **non-sealed** ifadelerinden
     birini mutlaka kullanmalıdır.
   - **sealed** sınıflar ile onu kalıtan _subclass_'ları aynı paket veya aynı _named module_ içerisinde olmalıdır. 
 ```java
@@ -281,8 +281,9 @@ public non-sealed class Panda extends Bear {
 ```
 
 **_Subclass Modifier_ Belirleme**
-  - **sealed** sınıfı doğrudan kalıtan sınıflar mutlaka **final**, **sealed** veya **non-sealed** anahtar kelimelerinden
-    birini mutlaka kullanmalıdır.
+- **sealed** sınıfı doğrudan kalıtan sınıflar mutlaka **final**, **sealed** veya **non-sealed** ifadelerinden
+birini mutlaka kullanmalıdır.
+
 
 - A **final** Subclass
 ```java
@@ -314,14 +315,14 @@ public class MyFurryWolf extends MyWolf {}
 ```
 
 **Omitting the permits Clause**
-- **permits** anahtar kelimesini kullanmak her zaman zorunlu değildir.
+- **permits** ifadesini kullanmak her zaman zorunlu değildir.
   - Eğer **sealed** sınıf ve onu kalıtan alt sınıf aynı _.java_ dosyası içerisinde ise kullanmak opsiyoneldir.
 ```java
 public sealed class Snake /*permits Cobra*/ {}
 
 final class Cobra extends Snake {}
 ```
-  - **permits** anahtar kelimesi _nested_ alt sınıflar içinde opsiyoneldir.
+  - **permits** ifadesi _nested_ alt sınıflar içinde opsiyoneldir.
 ```java
 public sealed class Snake /*permits Snake.Cobra*/ {
     final class Cobra extends Snake {}
@@ -329,7 +330,7 @@ public sealed class Snake /*permits Snake.Cobra*/ {
 ```
 _**Table 7.3** Usage of the permits clause in sealed classes_
 
-| Doğrudan alt sınıfların konumu         | permits anahtar kelimesi                 |
+| Doğrudan alt sınıfların konumu         | permits ifadesi                          |
 |:---------------------------------------|:-----------------------------------------|
 | **sealed** sınıftan farklı bir dosyada | Zorunlu                                  |
 | **sealed** sınıf ile aynı dosyada      | Kullanılabilir, ama <u>zorunlu değil</u> |
@@ -347,11 +348,75 @@ public final class Swan implements Swims {}
 public non-sealed interface Floats extends Swims {}
 ```
 > _Note: _Interface_'ler implicit olarak **abstract**'tır. Bu yüzden **sealed interface**'i **implements** eden 
-> bir **interface** sadece **sealed** ve **non-sealed** anahtar kelimeleri ile işaretlenebilir._
+> bir **interface** sadece **sealed** ve **non-sealed** ifadeleri ile işaretlenebilir._
 
 **Sealed Sınıf Kuralları**
-1. _Sealed_ sınıf **sealed** ve **permits** anahtar kelimeleri ile birlikte tanımlanır.
+1. _Sealed_ sınıf **sealed** ve **permits** ifadeleri ile birlikte tanımlanır.
 2. _Sealed_ sınıflar doğrudan alt sınıflarıyla aynı pakette veya _named module_'de bildirilmelidir.
 3. _Sealed_ sınıfın doğrudan alt sınıfları **final**, **sealed** veya **non-sealed** ile işaretlenmelidir.
 4. _Sealed_ sınıf ile doğrudan alt sınıfları aynı dosya içerisindeyse veya alt sınıf _nested_ ise **permits** opsiyoneldir.
 5. _Interface_'ler **sealed** olarak tanımlanabilirler.
+
+---
+### `Records`
+```java
+public record Crane() {}
+
+public record Crane(int numberEggs, String name) {}
+
+Crane mommy = new Crane(4, "Cammy");
+System.out.println(mommy.numberEggs()); // 4 
+System.out.println(mommy.name());       // Cammy
+System.out.println(mommy);              // Crane[numberEggs=4, name=Cammy]
+```
+
+- **Record'lara Otomatik Eklenen Alanlar**
+1. **Constructor**
+2. **Access method**
+3. **equals()**
+4. **hashCode()**
+5. **toString()**
+
+```java
+Crane mommy = new Crane(4, "Cammy");
+
+Crane mommyCopy = new Crane(4, "Cammy");
+System.out.println(mommyCopy);                                      // Crane[numberEggs=4, name=Cammy]
+System.out.println(mommyCopy.equals(mommy));                        // true
+System.out.println(mommyCopy.hashCode() + ", " + mommy.hashCode()); // 64874007, 64874007
+```
+
+- **record**'lar ve **record** fieldları implicit olarak **final**'dir. Yani kalıtılamazlar.
+```java
+public record BlueCrane() extends Crane {} // DOES NOT COMPILE
+```
+
+- **record**'lar başka bir sınıfı kalıtamaz.
+```java
+public class Dobby {}
+
+public record BlueCrane() extends Dobby {} // DOES NOT COMPILE
+```
+
+- **record**'lar başka bir **interface**'i **implements** edebilirler.
+```java
+public interface Bird {}
+
+public record Crane(int numberEggs, String name) implements Bird {}
+```
+**Constructor Oluşturma**
+- Long (Canonical) Constructor
+  - Tüm fieldlar implicit olarak **final**'dır. Bu yüzden tün fieldlara değer atanmalıdır.
+```java
+public record Crane(int numberEggs, String name) {
+    // Long or Canonical constructor
+    public Crane(int numberEggs, String name) {
+        this.numberEggs = numberEggs;
+        this.name = name;
+    }
+}
+
+public record Crane(int numberEggs, String name) {
+    public Crane(int numberEggs, String name) {} // DOES NOT COMPILE
+}
+```
