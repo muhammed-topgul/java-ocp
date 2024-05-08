@@ -771,3 +771,85 @@ _**Table 7.4** Modifiers in nested classes_
 | Access modifiers    | All         | All                 | None        | None            |
 | **abstract**        | Yes         | Yes                 | Yes         | No              |
 | **final**           | Yes         | Yes                 | Yes         | No              |
+
+---
+### `Polymorpism`
+
+- **Anonymous Class**
+1. _Subtype_'tan _supertype_'a _explicit casting_ gerekmez.
+2. _Supertype_'tan _subtype_'a _explicit casting_ gerekli.
+3. Uyumsuz tip dönüşümü _runtime_'da _ClassCastException_ fırlatır.
+4. Derleyici ilişkisiz tipler arasında dönüşüme izin vermez.
+
+
+- **Disallowed Casts**
+```java
+public class Bird {}
+
+public class Fish {}
+
+Fish fish = new Fish();
+Bird bird = (Bird) fish; // DOES NOT COMPILE
+```
+
+```java
+public class Animal {}
+
+public class Bird extends Animal {}
+
+public class Fish extends Animal {}
+
+Bird bird = new Bird();
+Animal animal = bird;
+Fish fish = (Fish) animal; // ClassCastException
+```
+
+- Java sınıflar için ilişkisiz türlerde dönüşüm için derleme zamanında hata fırlatabilir. Fakat _interface_'ler
+  için bunu yapamaz. Çünkü _interface_ de çoklu kalıtım söz konusu olduğu için tipinden her zaman emin olamaz.
+
+```java
+interface Canine {}
+
+interface Dog {}
+
+class Wolf implements Canine {}
+
+public class BadCasts {
+    public static void main(String[] args) {
+       Wolf wolf = new Wolf();
+       Dog badWolf = (Dog) wolf; // ClassCastException
+    }
+}
+```
+
+```java
+interface Canine {}
+
+interface Dog {}
+
+final class Wolf implements Canine {}
+
+public class BadCasts {
+  public static void main(String[] args) {
+    Wolf wolf = new Wolf();
+    Dog badWolf = (Dog) wolf; // DOES NOT COMPILE
+  }
+}
+```
+
+```java
+interface Canine {}
+
+interface Dog {}
+
+class Wolf implements Canine {}
+
+class SubWolf extends Wolf implements Dog {}
+
+public class BadCasts {
+    public static void main(String[] args) {
+       Wolf wolf = new SubWolf();
+       Dog badWolf = (Dog) wolf; // OK
+    }
+}
+```
