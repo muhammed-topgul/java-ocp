@@ -405,11 +405,11 @@ public interface Bird {}
 public record Crane(int numberEggs, String name) implements Bird {}
 ```
 **Constructor Oluşturma**
-- Long (Canonical) Constructor
+- **Long Constructor**
   - Tüm fieldlar implicit olarak **final**'dır. Bu yüzden tün fieldlara değer atanmalıdır.
 ```java
 public record Crane(int numberEggs, String name) {
-    // Long or Canonical constructor
+    // Long constructor
     public Crane(int numberEggs, String name) {
         this.numberEggs = numberEggs;
         this.name = name;
@@ -418,5 +418,60 @@ public record Crane(int numberEggs, String name) {
 
 public record Crane(int numberEggs, String name) {
     public Crane(int numberEggs, String name) {} // DOES NOT COMPILE
+}
+```
+
+- **Compact Constructor**
+    - Özel bir _constructor_ tipidir. Hiç parametre almaz. _Record_'un aldığı parametreleri dönüştürmek veya
+      valide etmek için kullanılır.
+```java
+public record Crane(int numberEggs, String name) {
+    public Crane{
+        if (numberEggs < 0) {
+            throw new IllegalArgumentException();
+        }
+        // this.name = name.toUpperCase(); // DOES NOT COMPILE
+        name = name.toUpperCase();
+    }
+}
+```
+
+- **Overloaded Constructor**
+    - _Overloaded Constructor_ **this()** ile başka bir _constructor_'u çağırmalıdır.
+```java
+public record Crane(int numberEggs, String name) {
+    public Crane(String firstName, String lastName) {
+        this(0, firstName, lastName);
+    }
+
+    public Crane(int numberEggs, String firstName, String lastName) {
+        this(numberEggs, firstName + " " + lastName);
+        numberEggs = 10;      // NO EFFECT
+        this.numberEggs = 20; // DOES NOT COMPILE
+    }
+}
+```
+
+- **Customizing Records**
+    - Long, Overloaded ve Compact constructor oluşturabiliriz.
+    - Accessors, _equals()_, _hashCode()_, _toString()_ methodlarını override edebiliriz.
+    - Accessors methodları override ettiğimizde _@Override_ anotasyonunu kullanabiliriz.
+    - **static** değişken tanımlayabiliriz.
+    - _instance_ değişken tanımlayamayız. (**private** olsa bile)
+```java
+public record Crane(int numberEggs, String name) {
+    private static int type = 10;
+    public int size;          // DOES NOT COMPILE
+    private boolean friendly; // DOES NOT COMPILE
+
+    @Override
+    public int numberEggs() {
+        return 10;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
 ```
