@@ -475,3 +475,299 @@ public record Crane(int numberEggs, String name) {
     }
 }
 ```
+
+---
+### `Nested Classes`
+- Başka bir sınıfın içinde tanımlanan sınıflara _nested class_ denir.
+- 4 tip _nested class_ vardır.
+  1. **_Inner class_**: _class member_ seviyesinde **static** olmayan bir sınıftır.
+  2. **_Static nested class_**: _class member_ seviyesinde **static** bir sınıftır.
+  3. **_Local class_**: Method içerisinde tanımlanmış bir sınıftır.
+  4. **_Anonymous class_**: İsmi olyan bir _local class_'ın özel durumudur.
+
+
+- **Inner Class**
+  - Member level.
+  - **public**, **protected**, _package_ veya **private** olarak tanımlanabilir.
+  - **abstract** veya **final** olarak işaretlenebilir.
+  - Başka bir **class** veya **interface**'i kalıtabilir.
+  - _Outer class_'ın **private** dahil tüm üyelerine erişebilir.
+```java
+public class Home {
+    private String greeting = "hi";
+
+    protected class Room {
+        public int repeat = 3;
+
+        public void enter() {
+            for (int i = 0; i < repeat; i++) {
+                greet(greeting);
+            }
+        }
+
+        private static void greet(String message) {
+            System.out.println(message);
+        }
+    }
+
+    public void enterRoom() {
+        var room = new Room();
+        room.enter();
+    }
+
+    public static void main(String[] args) {
+        new Home().enterRoom();
+    }
+}
+```
+
+- _Inner Class Nesnesi Oluşturmak_
+```java
+public class Test {
+    public static void main(String[] args) {
+        Home.Room room = new Home().new Room();
+        room.enter();
+
+        var home = new Home();
+        Home.Room room1 = home.new Room();
+        room1.enter();
+    }
+}
+```
+
+- _Inner Class Üyelerine Ulaşmak_
+  - _Inner class_ dış sınıfın üyeleri ile aynı isimde değişken tanımlayabilir.
+```java
+public class A {
+    private int x = 10;
+
+    class B {
+        private int x = 20;
+
+        class C {
+            private int x = 30;
+
+            public void allTheX() {
+                System.out.println(x);        // 30
+                System.out.println(this.x);   // 30
+                System.out.println(B.this.x); // 20
+                System.out.println(A.this.x); // 10
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        A a = new A();
+        A.B b = a.new B();
+        A.B.C c = b.new C();
+        c.allTheX();
+
+        A a = new A();
+        B b = a.new B();   // OK çünkü B sınıf seviyesinde
+        B.C c = b.new C(); // Java C'nin nerde olduğunu bilmiyor. Bu yüzden B.C'e ihtiyaç var
+        c.allTheX();
+    }
+}
+```
+> - Inner class için instance gerekir.
+> ```java
+> public class Fox {
+>     private class Den {
+>     }
+> 
+>     public void goHome() {
+>         new Den(); // OK
+>     }
+> 
+>     public static void visitFriend() {
+>         new Den();           // DOES NOT COMPILE
+>         new Fox().new Den(); // OK
+>     }
+> }
+> 
+> class Squirrel {
+>     public void visitFox() {
+>         new Den();           // DOES NOT COMPILE
+>         new Fox().new Den(); // DOES NOT COMPILE
+>     }
+> }
+> ```
+
+- **_static_ Nested Class**
+  - Member level.
+  - _Enclosing_ sınıf olmadan nesnesi yaratılabilir.
+  - _Outer sınıf_'ın instance değişken ve methodlarına erişemez.
+  - **public**, **protected**, _package_ veya **private** olarak tanımlanabilir.
+  - **abstract** veya **final** olarak işaretlenebilir.
+  - Başka bir **class** veya **interface**'i kalıtabilir.
+  
+```java
+public class Park {
+    private abstract static class Horse {
+    }
+    
+    public static class Ride extends Horse {
+        private final int price = 6;
+
+        public int getPrice() {
+            return price;
+        }
+    }
+
+    public static void main(String[] args) {
+        var ride = new Ride();
+        System.out.println(ride.price);
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        Park.Ride ride = new Park.Ride();
+        System.out.println(ride.getPrice());
+    }
+}
+```
+
+- **Local Class**
+  - Method, initializer block veya constructor içinde tanomlanabilir.
+  - Tanımlandığı blok içerisinde geçerlidir. Blok tamamlandığında kullanım dışıdır.
+  - _Access modifier_ alamaz.
+  - **final** veya **abstract** olarak işaretlenebilir.
+  - Instance method içerisinde tanımlanırsa enclosing sınıfın tüm alan ve methodlarına erişebilir.
+  - **final** ve _effectively final_ olan lokal değişkenlere erişebilirler.
+```java
+public class PrintNumbers {
+    private int length = 5;
+
+    private void print(int result) {
+        System.out.println(result);
+    }
+
+    public void calculate() {
+        final int width = 20;
+
+        class Calculator {
+            public int multiply() {
+                return length * width;
+            }
+        }
+
+        var calculator = new Calculator();
+        print(calculator.multiply());
+    }
+
+    public static void main(String[] args) {
+        PrintNumbers printer = new PrintNumbers();
+        printer.calculate(); // 100
+    }
+}
+```
+> Java her bir _inner class_ için ayrı bir _.class_ doyası oluşturur. Eğer lokal değişkenler **final** veya
+> _effectively final_ ise Java o değişkenleri basitçe kopyalayıp yeni sınıfı oluşturur.
+> ```java
+> public void processData(int initial) {
+>   final int length = 5;
+>   int width = 10;
+>   int height = 2;
+> 
+>   class VolumeCalculator {
+>     public int multiply() {
+>       return initial * length * width * height; // DOES NOT COMPILE
+>     }
+>   }
+>   // Not compile because of width
+>   // not final or effectively final
+>   width = 2;
+> }
+> ```
+
+- **Anonymous Class**
+  - _Local class_'ın özel bir türü.
+  - Bir **class**'ı veya **interface**'i kalıtmak zorunda.
+  - _Interface_ ile **class** arasında ki fark; **interface**'in tüm methodları varsayılan olarak **public**.
+  - _Anonim sınıf_ method dışında da tanımlanabilir.
+```java
+// Soyut sınıf örnek
+public class ZooGiftShop {
+    abstract class SaleTodayOnly {
+        protected abstract int dollarsOff();
+    }
+
+    public int admission(int basePrice) {
+        var sale = new SaleTodayOnly() {
+            @Override
+            protected int dollarsOff() {
+                return basePrice - 3;
+            }
+        };
+        return basePrice - sale.dollarsOff();
+    }
+}
+```
+
+```java
+// Interface örnek
+public class ZooGiftShop {
+  interface SaleTodayOnly {
+    int dollarsOff();
+  }
+
+  public int admission(int basePrice) {
+    var sale = new SaleTodayOnly() {
+      @Override
+      public int dollarsOff() {
+        return basePrice - 3;
+      }
+    };
+    return basePrice - sale.dollarsOff();
+  }
+}
+```
+
+```java
+// Sınıf örnek
+public class ZooGiftShop {
+    class SaleTodayOnly {
+        protected int dollarsOff() {
+            return 5;
+        }
+    }
+
+    public int admission(int basePrice) {
+        var sale = new SaleTodayOnly() {
+            @Override
+            protected int dollarsOff() {
+                return basePrice - 3;
+            }
+        };
+        return basePrice - sale.dollarsOff();
+    }
+}
+```
+
+```java
+// Field seviye anonim sınıf örnek
+public class ZooGiftShop {
+  private final SaleTodayOnly saleTodayOnly = new SaleTodayOnly() {
+    @Override
+    protected int dollarsOff() {
+      return 1;
+    }
+  };
+
+
+  class SaleTodayOnly {
+    protected int dollarsOff() {
+      return 5;
+    }
+  }
+}
+```
+
+_**Table 7.4** Modifiers in nested classes_
+
+| Permitted modifiers | Inner class | static nested class | Local class | Anonymous class |
+|:--------------------|:------------|:--------------------|:------------|:----------------|
+| Access modifiers    | All         | All                 | None        | None            |
+| **abstract**        | Yes         | Yes                 | Yes         | No              |
+| **final**           | Yes         | Yes                 | Yes         | No              |
