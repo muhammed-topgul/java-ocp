@@ -1,0 +1,40 @@
+✅ 01 -> B,D
+✅ 02 -> A,B,D,E
+✅ 03 -> C
+❌ 04 -> B
+✅ 05 -> E
+✅ 06 -> D,E
+✅ 07 -> E
+✅ 08 -> A,B,C
+☑️ 09 -> A,C,E,F
+✅ 10 -> A,B,C,E
+✅ 11 -> B
+✅ 12 -> A,B,E
+✅ 13 -> F
+✅ 14 -> A,C,D,E
+❌ 15 -> C,F
+✅ 16 -> E
+✅ 17 -> E,G
+✅ 18 -> E
+✅ 19 -> G
+✅ 20 -> A,D,F
+✅ 21 -> F
+✅ 22 -> C,D,G
+✅ 23 -> D
+✅ 24 -> B,E
+✅ 25 -> B
+✅ 26 -> C,F
+✅ 27 -> B,C,D,G
+☑️ 28 -> A,B,C,D
+✅ 29 -> F
+✅ 30 -> C,E
+
+#Q04: Sealed sınıfı kalıtan bir sınıf mutlaka final, sealed veya non-sealed olarak işaretlenmeli.
+#Q13: Switch null reference ile çalıştırılırsa NullPointerException fırlatır.
+#Q15: final sınıflar anonymous olarak kullanılamazlar.
+#Q18: Inner sınıfları kullanabilmek için outer sınıfın instance'ına ihtiyaç var.
+      Outer sınıf inner sınıfın private field ve methodlarına ulaşabilir.
+#Q20: final anahtar kelimesi methodu override veya hiding'ten korur.
+#Q28: private, static ve abstract anahtar kelimeleri methodlarda bir arada kullanılamaz. Fakat sınıflar için bu kural geçerli değildir
+
+🎯 91.5/100
