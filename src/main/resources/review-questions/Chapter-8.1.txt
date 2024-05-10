@@ -1,0 +1,28 @@
+✅ 01 -> A
+✅ 02 -> C
+✅ 03 -> A,C
+✅ 04 -> A,F
+☑️ 05 -> C,E
+✅ 06 -> A,C
+✅ 07 -> E
+❌ 08 -> A,C,E
+✅ 09 -> A,F
+✅ 10 -> A,B,C
+❌ 11 -> B
+✅ 12 -> A
+❌ 13 -> C
+☑️ 14 -> A,B,E
+✅ 15 -> A,F
+☑️ 16 -> A,C
+✅ 17 -> C
+❌ 18 ->
+✅ 19 -> F
+✅ 20 -> E
+✅ 21 -> A,E,F
+
+#Q03: Object sınıfında bulunan public methodlar functional interface için soyut method olarak sayılmaz.
+#Q05: Java, int, long ve double olmak üzere 3 primitive stream destekler. Bunun yanısıra BooleanSupplier sınıfıda mevcuttur.
+#Q10: Lambda functionları, local sınıflar gibi dışsarıdan sadece final veya effectively final olan değişkenleri kullanabalir.
+#Q11: Lambdalar var'a assign edilemez. Çünkü lambda ifadeler context'ten tip çıkarımında bulunur.
+
+🎯 73.6/100
