@@ -361,3 +361,223 @@ BinaryOperator<String> b2 = (s1, s2) -> s1.concat(s2);
 System.out.println(b1.apply("baby ", "check")); // baby check
 System.out.println(b2.apply("baby ", "check")); // baby check
 ```
+
+---
+### `Convenience Methods on Functional Interfaces`
+
+_Tablo 8.5_ sadece ana arayüzleri göstermektedir. _BiConsumer_, _BiFunction_ ve _BiPredicate_ arayüzleri aynı 
+methodlara sahiptir.
+
+_**Table 8.5** Convenience methods_
+
+| Interface instance | Method return type | Method name | Method parameters |
+|:-------------------|:-------------------|:------------|:------------------|
+| Consumer           | Consumer           | andThen()   | Consumer          |
+| Function           | Function           | andThen()   | Function          |
+| Function           | Function           | compose()   | Function          |
+| Predicate          | Predicate          | and()       | Predicate         |
+| Predicate          | Predicate          | or()        | Predicate         |
+| Predicate          | Predicate          | negate()    | -                 |
+
+```java
+Predicate<String> brownEggs = s -> s.contains("egg") && s.contains("brown");
+Predicate<String> otherEggs = s -> s.contains("egg") && !s.contains("brown");
+
+System.out.println(brownEggs.test("brown egg"));  // true
+System.out.println(otherEggs.test("yellow egg")); // true
+
+Predicate<String> egg = s -> s.contains("egg");
+Predicate<String> brown = s -> s.contains("brown");
+
+brownEggs = egg.and(brown);
+otherEggs = egg.and(brown.negate());
+Predicate<String> chicken = s -> s.contains("chicken");
+Predicate<String> eggOrChicken = egg.or(chicken);
+
+System.out.println(brownEggs.test("brown egg"));  // true
+System.out.println(otherEggs.test("yellow egg")); // true
+System.out.println(eggOrChicken.test("chicken")); // true
+```
+
+```java
+Consumer<String> c1 = x -> System.out.print("1: " + x);
+Consumer<String> c2 = x -> System.out.print(",2: " + x);
+
+Consumer<String> combined = c1.andThen(c2);
+combined.accept("Annie"); // 1: Annie,2: Annie
+```
+
+```java
+Function<Integer, Integer> before = x -> x + 1;
+Function<Integer, Integer> after = x -> x * 2;
+
+Function<Integer, Integer> combined = after.compose(before);
+
+System.out.println(combined.apply(3)); // 8
+```
+
+---
+### `Functional Interfaces for Primitives`
+
+Bir çoğu **double**, **long** ve **int** tipindedir. Bunun tek istisnası _BooleanSupplier_'dır.
+
+**Functional Interfaces for boolean**
+```java
+@FunctionalInterface
+public interface BooleanSupplier {
+    boolean getAsBoolean();
+}
+```
+
+```java
+BooleanSupplier b1 = () -> true;
+BooleanSupplier b2 = () -> Math.random() > .5;
+System.out.println(b1.getAsBoolean()); // true
+System.out.println(b2.getAsBoolean()); // true or false
+```
+<br/>
+
+**Functional Interfaces for double, long and int**
+
+_**Table 8.6** Common functional interfaces for primitives_
+
+| Functional interface | Return type | Single abstract method | # of parameters        |
+|:---------------------|:------------|:-----------------------|:-----------------------|
+| DoubleSupplier       | **double**  | getAsDouble()          | 0                      |
+| IntSupplier          | **int**     | getAsInt()             |                        |
+| LongSupplier         | **long**    | getAsLong()            |                        |
+|                      |             |                        |                        |
+| DoubleConsumer       | **void**    | accept()               | 1 (**double**)         |
+| IntConsumer          |             |                        | 1 (**int**)            |
+| LongConsumer         |             |                        | 1 (**long**)           |
+|                      |             |                        |                        |
+| DoublePredicate      | **boolean** | test()                 | 1 (**double**)         |
+| IntPredicate         |             |                        | 1 (**int**)            |
+| LongPredicate        |             |                        | 1 (**long**)           |
+|                      |             |                        |                        |
+| DoubleFunction<R>    | R           | apply()                | 1 (**double**)         |
+| IntFunction<R>       |             |                        | 1 (**int**)            |
+| LongFunction<R>      |             |                        | 1 (**long**)           |
+|                      |             |                        |                        |
+| DoubleUnaryOperator  | **double**  | applyAsDouble()        | 1 (**double**)         |
+| IntUnaryOperator     | **int**     | applyAsInt()           | 1 (**int**)            |
+| LongUnaryOperator    | **long**    | applyAsLong()          | 1 (**long**)           |
+|                      |             |                        |                        |
+| DoubleBinaryOperator | **double**  | applyAsDouble()        | 2 (**long**, **long**) |
+| IntBinaryOperator    | **int**     | applyAsInt()           | 2 (**int**, **int**)   |
+| LongBinaryOperator   | **long**    | applyAsLong()          | 2 (**long**, **long**) |
+
+
+- **Supplier**
+```java
+DoubleSupplier ds = () -> 1.0;
+System.out.println(ds.getAsDouble()); // 1.0
+
+IntSupplier is = () -> 1;
+System.out.println(is.getAsInt());    // 1
+
+LongSupplier ls = () -> 1L;
+System.out.println(ls.getAsLong());   // 1
+```
+
+- **Consumer**
+```java
+DoubleConsumer dc = System.out::println;
+dc.accept(1.0);  // 1.0
+
+IntConsumer ic = System.out::println;
+ic.accept(1);    // 1
+
+LongConsumer lc = System.out::println;
+lc.accept(1);    // 1
+
+Consumer<Double> dc1 = System.out::println;
+dc1.accept(2.0); // 2.0
+
+BiConsumer<Integer, Integer> bc = (a, b) -> System.out.println(a + b);
+bc.accept(1, 2); // 3
+```
+
+- **Predicate**
+```java
+DoublePredicate ds = d -> d > 5.0;
+System.out.println(ds.test(7.0)); // true
+
+IntPredicate ip = i -> i > 5;
+System.out.println(ip.test(7)); // true
+
+LongPredicate lp = l -> l > 5;
+System.out.println(lp.test(7)); // true
+
+Predicate<Integer> ip1 = i -> i > 7;
+System.out.println(ip1.test(7)); // false
+
+BiPredicate<Long, Long> bp = (a, b) -> a > b;
+System.out.println(bp.test(3L, 5L)); // false
+```
+
+- **Function**
+```java
+DoubleFunction<Integer> df = d -> (int) d;
+System.out.println(df.apply(1.0)); // 1
+
+IntFunction<Integer> ifn = i -> i * 3;
+System.out.println(ifn.apply(1)); // 3
+
+LongFunction<Integer> lf = l -> (int) l;
+System.out.println(lf.apply(1)); // 1
+
+Function<Double, Integer> df1 = d -> d.intValue();
+System.out.println(df1.apply(5.0)); // 5
+```
+
+**Table 8.7** Primitive-specific functional interfaces_
+
+| Functional interface     | Return type | Single abstract method | # of parameters   |
+|:-------------------------|:------------|:-----------------------|:------------------|
+| ToDoubleFunction<T>      | **double**  | getAsDouble()          | 1 (T)             |
+| ToIntFunction<T>         | **int**     | getAsInt()             |                   |
+| ToLongFunction<T>        | **long**    | getAsLong()            |                   |
+|                          |             |                        |                   |
+| ToDoubleBiFunction<T, U> | **double**  | getAsLong()            | 2 (T, U)          |
+| ToIntBiFunction<T, U>    | **int**     | getAsInt()             |                   |
+| ToLongBiFunction<T, U>   | **long**    | getAsLong()            |                   |
+|                          |             |                        |                   |
+| DoubleToIntFunction      | **int**     | getAsInt()             | 1 (**double**)    |
+| DoubleToLongFunction     | **long**    | getAsLong()            |                   |
+| IntToDoubleFunction      | **double**  | getAsDouble()          | 1 (**int**)       |
+| IntToDoubleFunction      | **long**    | getAsLong()            |                   |
+| LongToDoubleFunction     | **double**  | getAsDouble()          | 1 (**long**)      |
+| LongToIntFunction        | **int**     | getAsInt()             |                   |
+|                          |             |                        |                   |
+| ObjDoubleConsumer<T>     | **void**    | accept()               | 2 (T, **double**) |
+| ObjIntConsumer<T>        |             |                        | 2 (T, **int**)    |
+| ObjLongConsumer<T>       |             |                        | 2 (T, **long**)   |
+
+
+---
+### `Variables in Lambdas`
+**Listing Parameters**
+
+Lambda için 3 şekilde parametre tanımlanabilir:
+1. Tip belirtmeden. **(x, y) -> x + y;**
+2. Tip belirterek. **(Integer x, Integer y) -> x + y;**
+3. **var** ile birlikte. **(var x, var y) -> x + y;**
+```java
+(var x, y) -> "Hello";                 // DOES NOT COMPILE
+(var x, Integer y) -> true;            // DOES NOT COMPILE
+(String x, var y, Integer z) -> true;  // DOES NOT COMPILE
+(Integer x, y) -> "goodbye";           // DOES NOT COMPILE
+```
+
+**Referencing Variables from Lambda Body**
+
+_**Table 8.8** Rules for accessing a variable from a lambda body inside a method_
+
+| Variable type     | Rule                                        |
+|:------------------|:--------------------------------------------|
+| Instance variable | Allowed                                     |
+| Static variable   | Allowed                                     |
+| Lambda parameter  | Allowed                                     |
+| Local variable    | Allowed if **final** or _effectively final_ |
+| Method parameter  | Allowed if **final** or _effectively final_ |
