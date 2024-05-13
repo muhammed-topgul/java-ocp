@@ -648,6 +648,7 @@
  - [Chapter 06: Class Design]
  - [Chapter 07: Beyond Classes]
  - [Chapter 08: Lambdas and Functional Interfaces]
+ - [Chapter 09: Collections and Generics]
 
 [Chapter 01: Building Blocks]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/buildingBlocks/README.MD>
 [Chapter 03: Making Decisions]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/makingDecision/README.MD>
@@ -656,3 +657,4 @@
 [Chapter 06: Class Design]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/classDesign/README.MD>
 [Chapter 07: Beyond Classes]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/beyondClasses/README.MD>
 [Chapter 08: Lambdas and Functional Interfaces]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/lambdas/README.MD>
+[Chapter 09: Collections and Generics]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/collectionsAndGenerics/README.MD>
