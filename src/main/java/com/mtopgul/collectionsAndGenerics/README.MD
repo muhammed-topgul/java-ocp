@@ -324,3 +324,347 @@ System.out.println(deque.pop());  // 1
 
 System.out.println(deque.peek()); // null
 ```
+
+---
+### `Map Interface`
+```java
+Map<String, String> map = Map.of("key1", "value1", "key2", " value2");
+map.put("key1", "new-value"); // UnsupportedOperationException
+System.out.println(map);
+
+Map<String, String> map = Map.ofEntries(
+        Map.entry("key1", "value1"),
+        Map.entry("key2", "value2")
+);
+map.put("key1", "new-value"); // UnsupportedOperationException
+System.out.println(map);
+```
+_Map_ arayüzünün iki tane faktori methodu vardır. Bunlar _Map.of(key, value)_ ve _Map.ofEntries(Map.entry(key, value))_
+iki method da geriye _immutable_ map döndürür.
+
+**Map Methods**
+
+![img.png](../../../../resources/img/table-9.6.png)
+```java
+Map<String, String> map = new HashMap<>();
+map.put("koala", "bamboo");
+map.put("lion", "meat");
+map.put("giraffe", "leaf");
+
+System.out.println(map.get("koala"));          // bamboo
+
+Set<String> keys = map.keySet();
+System.out.println(keys);                      // [koala, giraffe, lion]
+
+System.out.println(map.containsKey("lion"));   // true
+System.out.println(map.containsValue("lion")); // false
+
+System.out.println(map.size());                // 3
+
+map.clear();
+System.out.println(map.size());                // 0
+System.out.println(map.isEmpty());             // true
+```
+
+- **Iterating on Map**
+```java
+Map<Integer, Character> map = new HashMap<>();
+map.put(1, 'a');
+map.put(2, 'b');
+map.put(3, 'c');
+
+map.forEach((k, v) -> System.out.print(v)); // abc
+
+Collection<Character> values = map.values();
+values.forEach(System.out::print); // abc
+
+Set<Map.Entry<Integer, Character>> entries = map.entrySet();
+entries.forEach(e -> System.out.println(e.getKey() + ", " + e.getValue()));
+```
+
+- **Getting Values**
+```java
+Map<Character, String> map = new HashMap<>();
+map.put('x', "spot");
+
+System.out.println(map.get('x')); // spot
+System.out.println(map.getOrDefault('x', "default")); // spot
+
+System.out.println(map.get('y')); // null
+System.out.println(map.getOrDefault('y', "default")); // default
+```
+
+- **Putting if Absent**
+
+Eğer map üzerinde tanımlanmış key **null** ise veya hiç tanımlanmamış ise yeni değer atar, yoksa işlem yapmaz.
+```java
+Map<String, String> favorites = new HashMap<>();
+favorites.put("Jenny", "Bus Tour");
+favorites.put("Tom", null);
+
+System.out.println(favorites.putIfAbsent("Jenny", "Tram")); // Bus Tour
+System.out.println(favorites.putIfAbsent("Sam", "Tram"));   // null
+System.out.println(favorites.putIfAbsent("Tom", "Tram"));   // null
+
+System.out.println(favorites); // {Tom=Tram, Jenny=Bus Tour, Sam=Tram}
+```
+
+- **Merging Data**
+1. Eğer talep edilen key **null** değere sahipse, <u>mapping function çağırılmaz</u>. Mapping function üzerinde bulunan value
+   değeri key'in value'su doğrudan map'e olarak eklenir.
+   ```java
+   BiFunction<String, String, String> mapper = (v1, v2) -> v1.length() > v2.length() ? v1 : v2;
+
+   Map<String, String> favorites = new HashMap<>();
+   favorites.put("Sam", null);
+
+   favorites.merge("Sam", "Skyride", mapper); // Skyride
+   System.out.println(favorites);             // {Sam=Skyride}
+   ```
+2. Eğer talep edilen key map'te hiç yoksa <u>mapping function hiç çağırılmaz</u>. Mapping function üzerinde bulunan value
+   değeri key'in value'su doğrudan map'e olarak eklenir.
+   ```java
+   BiFunction<String, String, String> mapper = (v1, v2) -> v1.length() > v2.length() ? v1 : v2;
+
+   Map<String, String> favorites = new HashMap<>();
+   favorites.put("Sam", "Tram");
+
+   favorites.merge("Tom", "Skyride", mapper); // Skyride
+   System.out.println(favorites);             // {Tom=Skyride, Sam=Tram}
+   ```
+   
+3. Eğer talep edilen key **non-null** bir değere sahipse ve mapping function **null** değer dönüyorsa key map'tan <u>silinir</u>.
+   ```java
+   BiFunction<String, String, String> mapper = (v1, v2) -> null;
+
+   Map<String, String> favorites = new HashMap<>();
+   favorites.put("Sam", "Tram");
+
+   favorites.merge("Sam", "Skyride", mapper); // null
+   System.out.println(favorites);             // {}
+   ```
+4. Eğer talep edilen key **non-null** bir değere sahipse ve mapping function **non-null** bir değer dönüyorsa 
+   mapping function sonucu key'in value'su olarak eklenir.
+   ```java
+   BiFunction<String, String, String> mapper = (v1, v2) -> v1.length() > v2.length() ? v1 : v2;
+
+   Map<String, String> favorites = new HashMap<>();
+   favorites.put("Sam", "Tram");
+
+   favorites.merge("Sam", "Skyride", mapper); // Skyride
+   System.out.println(favorites);             // {Sam=Skyride}
+   ```
+
+
+```java
+BiFunction<String, String, String> mapper = (v1, v2) -> v1.length() > v2.length() ? v1 : v2;
+
+Map<String, String> favorites = new HashMap<>();
+favorites.put("Jenny", "Bus Tour");
+favorites.put("Tom", "Tram");
+favorites.put("Sam", null);
+
+String jenny = favorites.merge("Jenny", "Skyride", mapper);
+String tom = favorites.merge("Tom", "Skyride", mapper);
+String sam = favorites.merge("Sam", "Skyride", mapper);
+
+System.out.println(favorites); // {Tom=Skyride, Jenny=Bus Tour, Sam=Skyride}
+System.out.println(jenny);     // Bus Tour
+System.out.println(tom);       // Skyride
+System.out.println(sam);       // Skyride
+
+
+BiFunction<String, String, String> mapper = (v1, v2) -> null;
+Map<String, String> favorites = new HashMap<>();
+favorites.put("Jenny", "Bus Tour");
+favorites.put("Tom", "Bus Tour");
+
+System.out.println(favorites.merge("Jenny", "Skyride", mapper)); // null
+System.out.println(favorites.merge("Sam", "Skyride", mapper));   // Skyride
+
+System.out.println(favorites); // {Tom=Bus Tour, Sam=Skyride}
+```
+
+---
+### `Sorting Data`
+
+**Using Comparable**
+```java
+package java.lang;
+        
+public interface Comparable<T> {
+ int compareTo(T o);
+}
+```
+
+- İki obje aynıysa **0** döner.
+- Mevcut obje alınan objeden küçükse **negatif** bir sayı döner.
+- Mevcut obje alınan objeden büyükse **pozitif** bir sayı döner.
+
+```java
+class Duck implements Comparable<Duck> {
+    private final String name;
+
+    public Duck(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public int compareTo(Duck duck) {
+        return name.compareTo(duck.name);
+    }
+
+    public static void main(String[] args) {
+        var ducks = new ArrayList<Duck>();
+        ducks.add(new Duck("Quack"));
+        ducks.add(new Duck("Puddles"));
+
+        Collections.sort(ducks); // sort by name
+
+        System.out.println(ducks); // [Puddles, Quack]
+    }
+}
+```
+
+**Using Comparator**
+
+Comparator _java.util_ paketindedir.
+```java
+class Duck implements Comparable<Duck> {
+    private final String name;
+    private final int weight;
+
+
+    public Duck(String name, int weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+        return "%s(%d)".formatted(name, weight);
+    }
+
+    @Override
+    public int compareTo(Duck duck) {
+        return name.compareTo(duck.name);
+    }
+
+    public static void main(String[] args) {
+        var ducks = new ArrayList<Duck>();
+        ducks.add(new Duck("Quack", 7));
+        ducks.add(new Duck("Puddles", 10));
+
+        Collections.sort(ducks);   // sort by name
+        System.out.println(ducks); // [Puddles(10), Quack(7)]
+
+        Comparator<Duck> byWeight = new Comparator<>() {
+            @Override
+            public int compare(Duck d1, Duck d2) {
+                return d1.weight - d2.weight;
+            }
+        };
+
+        Collections.sort(ducks, byWeight); // sort by weight
+        System.out.println(ducks);         // [Quack(7), Puddles(10)]
+
+
+       Comparator<Duck> byWeight = Comparator.comparingInt(d -> d.weight);
+       ducks.sort(byWeight);      // sort by weight
+       System.out.println(ducks); // [Quack(7), Puddles(10)]
+    }
+}
+```
+
+**Comparable vs Comparator**
+![img.png](../../../../resources/img/table-9.10.png)
+
+**Comparing Multiple Fields**
+
+![img.png](../../../../resources/img/table-9.11.png)
+
+![img_1.png](../../../../resources/img/table-9.12.png)
+```java
+class Team implements Comparable<Team> {
+    private final String name;
+    private final int point;
+    private final int average;
+
+    public Team(String name, int point, int average) {
+        this.name = name;
+        this.point = point;
+        this.average = average;
+    }
+
+    @Override
+    public String toString() {
+        return "%s (p %d, a %d)".formatted(name, point, average);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public int getAverage() {
+        return average;
+    }
+
+    @Override
+    public int compareTo(Team team) {
+        return team.name.compareTo(team.getName());
+    }
+
+    public static void main(String[] args) {
+        var pl = new ArrayList<Team>();
+
+        pl.add(new Team("Arsenal", 95, 42));
+        pl.add(new Team("Liverpool", 93, 35));
+        pl.add(new Team("Manchester City", 95, 43));
+        pl.add(new Team("Tottenham", 92, 21));
+
+        Comparator<Team> sort = Comparator.comparing(Team::getPoint)
+                .thenComparing(Team::getAverage)
+                .reversed();
+
+        pl.sort(sort);
+        System.out.println(pl); // [Manchester City (p 95, a 43), Arsenal (p 95, a 42), Liverpool (p 93, a 35), Tottenham (p 92, a 21)]
+    }
+}
+
+public static void main(String[] args) {
+   var pl = new ArrayList<Team>();
+
+   pl.add(new Team("Arsenal", 95, 42));
+   pl.add(new Team("Liverpool", 93, 35));
+   pl.add(new Team("Manchester City", 95, 43));
+   pl.add(new Team("Tottenham", 92, 21));
+
+   Comparator<Team> sort = Comparator.comparingInt(Team::getPoint)
+           .thenComparingInt(Team::getAverage)
+           .reversed();
+
+   pl.sort(sort);
+   System.out.println(pl); // [Manchester City (p 95, a 43), Arsenal (p 95, a 42), Liverpool (p 93, a 35), Tottenham (p 92, a 21)]
+}
+
+public static void main(String[] args) {
+   var pl = new ArrayList<Team>();
+
+   pl.add(new Team("Arsenal", 95, 42));
+   pl.add(new Team("Liverpool", 93, 35));
+   pl.add(new Team("Manchester City", 95, 43));
+   pl.add(new Team("Tottenham", 92, 21));
+
+   pl.sort(Comparator.naturalOrder());
+   System.out.println(pl); // [Arsenal (p 95, a 42), Liverpool (p 93, a 35), Manchester City (p 95, a 43), Tottenham (p 92, a 21)]
+}
+```
