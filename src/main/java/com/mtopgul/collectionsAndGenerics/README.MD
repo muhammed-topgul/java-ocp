@@ -668,3 +668,181 @@ public static void main(String[] args) {
    System.out.println(pl); // [Arsenal (p 95, a 42), Liverpool (p 93, a 35), Manchester City (p 95, a 43), Tottenham (p 92, a 21)]
 }
 ```
+
+
+---
+### `Generics`
+
+**Overloading a Generic Method**
+
+1. Bir sınıfta aşağıda ki iki methoddan sadece birine izin verilir. Çünkü _type erasure_ her iki methodu da 
+_**protected void chew(List input) {}**_ olarak değiştirir.
+```java
+class LongTailAnimal {
+    protected void chew(List<Object> input) {}
+    protected void chew(List<Double> input) {} // DOES NOT COMPILE
+}
+```
+
+2. Yukarda ki ile aynı nedenle aşağıdaki kodda derlenmez.
+```java
+class LongTailAnimal {
+    protected void chew(List<Object> input) {}
+}
+
+class Anteater extends LongTailAnimal {
+    protected void chew(List<Double> input) {} // DOES NOT COMPILE
+}
+```
+3. Aşağıdaki kod derlenir. Çünkü ilk method parent methodu _override_ eder. İkinci method ise _overloaded_ methoddur.
+```java
+class LongTailAnimal {
+   protected void chew(List<Object> input) {}
+}
+
+class Anteater extends LongTailAnimal {
+   @Override
+   protected void chew(List<Object> input) {}
+   protected void chew(ArrayList<Double> input) {}
+}
+```
+
+**Returning Generic Types**
+
+Java'da method _overriding_ işleminde return type mutlaka kovaryant tipte olmalıdır. Generic tiplerde _type erasure_'dan 
+ötürü kovaryant olma durumu yoktur.
+
+```java
+class Mammal {
+    public List<CharSequence> play() {
+        return List.of("Java");
+    }
+
+    public CharSequence sleep() {
+        return "Java";
+    }
+}
+
+class Monkey extends Mammal {
+    public ArrayList<CharSequence> play() {
+        return new ArrayList<>();
+    }
+}
+
+class Goat extends Mammal {
+    public List<String> play() { // DOES NOT COMPILE
+        return new ArrayList<>();
+    }
+
+    public String sleep() {
+        return "Java 21";
+    }
+}
+```
+
+**Bounding Generic Types**
+
+![img.png](../../../../resources/img/table-9.13.png)
+
+**Un-Bounded** ve **Upper-Bounded Wildcards**
+
+- Değişken tipinde generik ifade **? extends** veya **?** olduğunda listeye yeni bir eleman ekleyemeyiz.
+- Diğer bir ifadeyle **Un-Bounded** ve **Upper-Bounded** generikler _immutable_'dır.
+- Generik ifade **? super String** gibi bir ifade ise sadece _String_ veya daha alt tipte değer eklenebilir. 
+  Fakat parametre olarak String veya daha geniş bir tipte parametre geçilebilir. 
+
+```java
+// Un-Bounded
+public static void main(String[] args) {
+    List<String> keywords = new ArrayList<>();
+    keywords.add("java");
+    printList1(keywords); // DOES NOT COMPILE
+    printList2(keywords);
+}
+
+public static void printList1(List<Object> list) {
+    for (Object x: list)
+        System.out.println(x);
+}
+
+public static void printList2(List<?> list) {
+    for (Object x: list)
+        System.out.println(x);
+}
+```
+
+```java
+static void addSound(List<?> list) {
+    list.add("Java"); // DOES NOT COMPILE
+}
+```
+
+```java
+// Upper-Bounded
+public static void main(String[] args) {
+    List<? extends Bird> birds = new ArrayList<Bird>();
+    birds.add(new Sparrow()); // DOES NOT COMPILE
+    birds.add(new Bird());    // DOES NOT COMPILE
+}
+```
+
+```java
+interface Flyer {
+    void fly();
+}
+
+class HangGlider implements Flyer {
+    @Override
+    public void fly() {
+    }
+}
+
+class Goose implements Flyer {
+    @Override
+    public void fly() {
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        groupOfFlyers(new ArrayList<HangGlider>());
+        groupOfFlyers(new ArrayList<Goose>());
+        
+        anyFlyer(new ArrayList<HangGlider>()); // DOES NOT COMPILE
+        anyFlyer(new ArrayList<Goose>());              // DOES NOT COMPILE
+    }
+
+    private static void anyFlyer(List<Flyer> flyers) {
+    }
+
+    private static void groupOfFlyers(List<? extends Flyer> flyers) {
+    }
+}
+```
+
+```java
+// Lower-Bounded
+class A {
+}
+
+class B extends A {
+}
+
+class C extends B {
+}
+
+public class Test {
+   public static void main(String[] args) {
+      addSound(new ArrayList<A>());
+      addSound(new ArrayList<B>());
+      addSound(new ArrayList<C>()); // DOES NOT COMPILE
+   }
+
+   public static void addSound(List<? super B> list) {
+      list.add(new A()); // DOES NOT COMPILE
+      list.add(new B());
+      list.add(new C());
+   }
+}
+```
+
