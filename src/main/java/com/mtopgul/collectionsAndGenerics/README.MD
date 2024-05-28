@@ -846,3 +846,27 @@ public class Test {
 }
 ```
 
+---
+#### `Review Quesions`
+
+**Q02**: **List<?>** değişken tipi **List<Object>** olarak değerlendirilir.
+```java
+List<?> q = List.of("mouse", "parrot"); // List<Object> q = List.of("mouse", "parrot");
+```
+
+**Q15**: Queue arayüzünün içinde sadece custom parametre alan bir remove methodu bulunmuyor. Sadece _Collection_ 
+içerisinde bulunan **remove(Object o)** ve kendi içinde bulunan **remove()** methodlarına sahip.
+```java
+List<?> q = List.of("mouse", "parrot"); // List<Object> q = List.of("mouse", "parrot");
+```
+
+**Q18**: _< T>_ sadece method return tipinden önce gelebilir.
+```java
+public static <T> T identity(T t) { // OK
+    return t;
+}
+
+public <T> static T identity(T t) { // DOES NOT COMPILE
+   return t;
+}
+```
