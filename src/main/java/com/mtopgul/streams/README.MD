@@ -186,3 +186,113 @@ stream.forEach(System.out::print); // monkeygorilladog
 Stream<Integer> s = Stream.of(1);
 for (Integer i : s) {} // DOES NOT COMPILE
 ```
+
+&#20; **reduce()**
+```java
+public T reduce(T identity, BinaryOperator<T> accumulator);
+public Optional<T> reduce(BinaryOperator<T> accumulator);
+public <U> U reduce(U identity, BiFunction<U,? super T,U> accumulator, BinaryOperator<U> combiner);
+```
+
+```java
+Stream<String> stream = Stream.of("w", "o", "l", "f");
+String reduce = stream.reduce("", (a, b) -> a + b);
+System.out.println(reduce);    // wolf
+
+Optional<String> opt = stream.reduce((a, b) -> a + b);
+System.out.println(opt.get()); // wolf
+```
+
+Parallel stream olmadığı sürece _BinaryOperator\<U> combiner_ parametresine ait kod yürütülmez.
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "dog");
+Integer length = stream.reduce(0, (i, s) -> i + s.length(), (a, b) -> {
+    System.out.println("Not used. Not a parallel stream!");
+    return a + b;
+});
+System.out.println(length); // 16
+
+
+Stream<String> stream = Stream.of("monkey", "gorilla", "dog");
+Integer length = stream.parallel().reduce(0, (i, s) -> i + s.length(), (a, b) -> {
+    System.out.println("Now used: " + a + " " + b); // Now used: 7 3    Now used: 6 10
+    return a + b;
+});
+System.out.println(length); // 16
+```
+
+Farklı tiplerde parametreler ile işlem yapabilmek için mutlaka 3. overloaded reduce'u kullanmak gerekiyor
+```java
+Stream<User> users = Stream.of(new User("John", 25), new User("Julie", 35));
+
+// int total = users.reduce(0, (i, user) -> i + user.age()); // DOES NOT COMPILE
+
+int total = users.reduce(0, (i, user) -> i + user.age(), Integer::sum);
+System.out.println(total); // 60
+```
+
+&#20; **collect()**
+
+- Reduction'ın belirli bir tipidir.
+- _Mutable reduction_ olarak adlandırılabilir.
+- Normal reductiona göre daha verimlidir. Çünkü accumulating işlemi sırasında aynı mutable objeyi kullanır.
+- 3 paremetreli collect() methodunun 3. parametresi sadece parallel streamlerde yürütülür.
+```java
+public <R,A> R collect(Collector<? super T, A,R> collector);
+public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
+```
+
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "dog");
+// StringBuilder result = stream.collect(() -> new StringBuilder(), (a, b) -> a.append(b), (a, b) -> a.append(b));
+StringBuilder result = stream.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
+System.out.println(result); // monkeygorilladog
+```
+
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "dog");
+
+Supplier<StringBuilder> supplier = () -> new StringBuilder();
+BiConsumer<StringBuilder, String> accumulator = (StringBuilder sb, String s) -> sb.append(s);
+BiConsumer<StringBuilder, StringBuilder> combiner = (StringBuilder sb1, StringBuilder sb2) -> sb1.append(sb2);
+
+StringBuilder result = stream.parallel()
+                             .collect(supplier, accumulator, combiner);
+System.out.println(result); // monkeygorilladog
+```
+
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "dog");
+TreeSet<String> set = stream.collect(
+        TreeSet::new,
+        TreeSet::add, // (TreeSet<String> ts, String s) -> ts.add(s),
+        TreeSet::addAll
+);
+System.out.println(set); // [dog, gorilla, monkey]
+```
+
+```java
+public static void main(String[] args) {
+    List<String> list1 = stream().collect(Collectors.toList());
+    List<String> list2 = stream().toList();
+    Set<String> set = stream().collect(Collectors.toSet());
+    TreeSet<String> treeSet = stream().collect(Collectors.toCollection(TreeSet::new));
+}
+
+private static Stream<String> stream() {
+    return Stream.of("monkey", "gorilla", "dog");
+}
+```
+
+**Common Intermediate Operations**
+
+&#20; **filter()**
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "donkey");
+stream.filter(s -> s.contains("e"))
+        .forEach(System.out::print); // monkeydonkey
+
+Stream<Integer> stream = Stream.iterate(0, i -> i < 10, i -> i + 1);
+stream.filter(i -> i % 2 == 0)
+        .forEach(System.out::print); // 02468
+```
