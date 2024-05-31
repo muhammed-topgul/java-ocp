@@ -296,3 +296,143 @@ Stream<Integer> stream = Stream.iterate(0, i -> i < 10, i -> i + 1);
 stream.filter(i -> i % 2 == 0)
         .forEach(System.out::print); // 02468
 ```
+
+&#20; **distinct()**
+```java
+Stream<String> stream = Stream.of("duck", "duck", "duck", "goose");
+stream.distinct()
+    .forEach(System.out::print); // duckgoose
+```
+
+&#20; **skip()** and **limit()**
+```java
+Stream.iterate(1, n -> n + 1)
+        .skip(5)
+        .limit(2)
+        .forEach(System.out::print); // 67
+```
+
+&#20; **map()**
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "dog");
+stream.map(String::length)
+        .forEach(System.out::print); // 673
+
+Stream.iterate(1, i -> i < 5, i -> ++i)
+        .map(i -> i * 10)
+        .forEach(System.out::print); // 10203040
+
+Stream.of("1", "2", "3", "4")
+        .map(Integer::parseInt)
+        .map(i -> i * 10)
+        .forEach(System.out::print); // 10203040
+```
+
+&#20; **flatMap()**
+
+flatMap() paremetre olarak stream alır.
+```java
+var zero = List.of();
+var one = List.of("Bonobo");
+var two = List.of("Mama Gorilla", "Baby Gorilla");
+
+Stream<List<?>> listStream = Stream.of(zero, one, two);
+listStream.flatMap(s -> s.stream())
+        .forEach(System.out::println);
+/*
+Bonobo
+Mama Gorilla
+Baby Gorilla
+*/
+```
+
+```java
+String[] text = "java is the best over the world!".split(" ");
+Arrays.stream(text)
+        .map(w -> w.split("")) // Stream<String[]>
+        .distinct()
+        .forEach(System.out::print); // [Ljava.lang.String;@448139f0[Ljava.lang.String;@7cca494b ...
+
+Arrays.stream(text)
+        .flatMap(w -> Arrays.stream(w.split("")))
+        .distinct()
+        .forEach(System.out::print); // javistheborwld!
+```
+
+```java
+Stream.of(List.of(1, 2), List.of(3, 4), List.of(5))
+        .forEach(System.out::print); // [1, 2][3, 4][5]
+
+Stream.of(List.of(1, 2), List.of(3, 4), List.of(5))
+        .flatMap(List::stream)
+        .forEach(System.out::print); // 12345
+```
+
+```java
+String[] a1 = {"1", "2"};
+String[] a2 = {"3", "4"};
+String[] a3 = {"5"};
+
+List<String[]> list = List.of(a1, a2, a3);
+list.stream()
+        .forEach(System.out::print); // [Ljava.lang.String;@404b9385[Ljava.lang.String;...
+
+list.stream()
+        .flatMap(Arrays::stream)
+        .forEach(System.out::print); // 12345
+```
+
+&#20; **Stream.concat()**
+
+Sadece iki streami concat edebiliriz.
+```java
+var one = Stream.of("a");
+var two = Stream.of("b", "c");
+
+Stream.concat(one, two)
+        .forEach(System.out::print); // abc
+```
+
+&#20; **sorted()**
+
+```java
+public Stream<T> sorted();
+public Stream<T> sorted(Comparator<? super T> comparator);
+```
+
+```java
+Stream.of("d", "c", "a", "b")
+        .sorted()
+        .forEach(System.out::print); // abcd
+
+Stream.of("d", "c", "a", "b")
+        .sorted(Comparator.reverseOrder())
+        .forEach(System.out::print); // dcba
+```
+
+```java
+String text = "java is the best over the world!";
+Comparator<String> byLength = (s1, s2) -> s1.length() - s2.length();
+        Arrays.stream(text.split(" "))
+        .distinct()
+        .sorted(byLength.thenComparing(Comparator.naturalOrder()))
+        .forEach(System.out::println);
+```
+
+&#20; **peek()**
+```java
+public Stream<T> peek(Consumer<? super T> action);
+```
+
+Java'nın yeni versiyonlarında **peek()** methodu **filter()** olmadan **count()** methodu ile çalışmıyor.
+```java
+long count = Stream.of("black bear", "brown bear", "grizzly")
+        .filter(s -> s.contains("a"))
+        .peek(System.out::println)
+         /*
+         black bear
+         brown bear
+         */
+        .count();
+System.out.println(count); // 2
+```
