@@ -436,3 +436,103 @@ long count = Stream.of("black bear", "brown bear", "grizzly")
         .count();
 System.out.println(count); // 2
 ```
+
+---
+### `Primitive Streams`
+
+Üç adet primitive stream vardır. **IntStream**, **LongStream** ve **DoubleStream**.
+
+**IntStream**: **int**, **short**, **byte** ve **char** için kullanılır.<br/>
+**LongStream**: **long** için kullanılır.<br/>
+**DoubleStream**: **double** ve **float** için kullanılır.
+```java
+Integer reduce = Stream.of(1, 2, 3)
+        .reduce(0, (a, b) -> a + b);
+
+int sum = Stream.of(1, 2, 3)
+        .mapToInt(x -> x)
+        .sum();
+
+OptionalDouble average = Stream.of(1, 2, 3)
+        .mapToInt(x -> x)
+        .average();
+
+System.out.println(reduce);                // 6
+System.out.println(sum);                   // 6
+System.out.println(average.getAsDouble()); // 2.0
+```
+
+**Table 10.5** Common primitive stream methods<br/>
+![img.png](../../../../resources/img/table-10.5.png)<br/>
+![img_1.png](../../../../resources/img/table-10.5.1.png)
+
+```java
+DoubleStream empty = DoubleStream.empty();
+System.out.println(empty);             // java.util.stream.DoublePipeline$Head@41629346
+
+DoubleStream oneValue = DoubleStream.of(3.14);
+oneValue.forEach(System.out::println); // 3.14
+
+DoubleStream varargs = DoubleStream.of(1.0, 1.1, 1.2);
+varargs.forEach(System.out::println);  // 1.0 1.1 1.2
+
+IntStream.range(1, 5)
+        .forEach(System.out::print); // 1234
+        
+LongStream.rangeClosed(1, 5)
+        .forEach(System.out::print); // 12345
+```
+
+**Mapping Streams**
+
+**Table 10.6** Mapping methods between types of streams
+![img.png](../../../../resources/img/table-10.6.png)
+
+```java
+Stream.of("Java", "Spring", "Hibernate")
+        .mapToInt(String::length)
+        .forEach(System.out::println); // 4 6 9
+
+Stream.of("Java", "Spring", "Hibernate")
+        .mapToDouble(String::length)
+        .forEach(System.out::println); // 4 6 9
+
+Stream.of("Java", "Spring", "Hibernate")
+        .mapToLong(String::length)
+        .forEach(System.out::println); // 4 6 9
+
+private static Stream<Integer> mapping(IntStream intStream) {
+    return intStream.mapToObj(x -> x);
+}
+
+private static Stream<Integer> boxing(IntStream intStream) {
+    return intStream.boxed();
+}
+```
+
+**Optional with Primitive Streams**
+
+Optional<Double> ile OptionalDouble arasında ki fark; Optional<Double> wrapper sınıflar için OptionalDouble ise 
+primitive'ler için.
+```java
+OptionalDouble average = IntStream.rangeClosed(1, 10)
+                .average();
+average.ifPresent(System.out::println);
+System.out.println(average.getAsDouble());
+System.out.println(average.orElseGet(() -> Double.NaN));
+```
+
+**Table 10.8** Optional types for primitives
+![img.png](../../../../resources/img/table-10.8.png)
+
+**Summarizing Statistic**
+```java
+IntStream intStream = IntStream.rangeClosed(1, 10);
+IntSummaryStatistics statistics = intStream.summaryStatistics();
+
+System.out.println(statistics.getCount());   // 10
+System.out.println(statistics.getAverage()); // 5.5
+System.out.println(statistics.getSum());     // 55
+System.out.println(statistics.getMin());     // 1
+System.out.println(statistics.getMax());     // 10
+```
