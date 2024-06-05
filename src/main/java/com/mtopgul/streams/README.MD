@@ -536,3 +536,129 @@ System.out.println(statistics.getSum());     // 55
 System.out.println(statistics.getMin());     // 1
 System.out.println(statistics.getMax());     // 10
 ```
+
+---
+### `Advanced Stream Pipeline Concepts`
+
+Stream'ler _lazy evaluate_'dir. Yani terminal operasyon çağrılanan kadar oluşturulmazlar. Aşağıda ki kodda 4. satırda
+stream ifadesi olsa bile oluşturulmaz. Stream 6. satırda terminal operation çağrıldığında oluşturulur. Bu yüzden count()
+methodu konsola 3 yazdırır.
+```java
+1: var cats = new ArrayList<String>();
+2: cats.add("Annie");
+3: cats.add("Ripley");
+4: var stream = cats.stream();
+5: cats.add("KC");
+6: System.out.println(stream.count()); // 3
+```
+
+**Chaining Optionals**
+
+_map()_, _flatMap()_ ve _filter()_'ı optional ile birlikte kullanabiliriz.
+```java
+private static void threeDigit(Optional<Integer> optional) {
+    if (optional.isPresent()) {
+        var num = optional.get();
+        var string = "" + num;
+        if (string.length() == 3) {
+            System.out.println(string);
+        }
+    }
+}
+
+private static void threeDigitV1(Optional<Integer> optional) {
+    optional.map(x -> "" + x)
+            .filter(x -> x.length() == 3)
+            .ifPresent(System.out::println);
+}
+
+private static void stringLength(Optional<String> optional) {
+    Optional<Integer> result = optional.map(String::length);
+    result.ifPresent(System.out::println);
+}
+```
+
+```java
+public static void main(String[] args) {
+    Optional<Integer> optional = Optional.of(100);
+
+    Optional<Integer> result = optional.flatMap(Test::calculator);
+    System.out.println(result.get());        // 1000
+
+    Optional<Optional<Integer>> result1 = optional.map(Test::calculator);
+    System.out.println(result1.get().get()); // 1000
+}
+
+private static Optional<Integer> calculator(Integer opt) {
+    return Optional.of(opt * 10);
+}
+```
+
+> **Checked Exceptions and Functional Interfaces**
+>```java
+>public class ExceptionCaseStudy {
+>    private static List<String> create() throws IOException {
+>        throw new IOException();
+>    }
+>
+>    private static List<String> createSafe() {
+>        try {
+>            return create();
+>        } catch (IOException e) {
+>            throw new RuntimeException(e);
+>        }
+>    }
+>
+>    private void good() throws IOException {
+>        ExceptionCaseStudy.create().stream().count();
+>    }
+>
+>    public void bad() throws IOException {
+>        Supplier<List<String>> supplier = ExceptionCaseStudy::create; // DOES NOT COMPILE
+>    }
+>
+>    public void ugly() {
+>        Supplier<List<String>> supplier = () -> {
+>            try {
+>                return ExceptionCaseStudy.create();
+>            } catch (IOException e) {
+>                throw new RuntimeException();
+>            }
+>        };
+>    }
+>
+>    public void best() {
+>        Supplier<List<String>> supplier = ExceptionCaseStudy::createSafe;
+>    }
+>}
+>```
+
+**Spliterator**
+
+Spliterator, list, Arrays veya stream üzerinden çağrılabilir.
+
+**Table 10.9** Spliterator methods
+![img.png](../../../../resources/img/table-10.9.png)
+
+&#20; **trySplit()**: Datanın yarısını içeren bir Spliterator döner. Birden çok sefer çağrılabilir. Split edilebilecek
+bir veri kalmadığında ise **null** döner.
+
+&#20; **tryAdvance()**: Spliterator' de kalan eleman varsa tek bir elemanı işler. Elemen işlenme durumuna göre 
+**true** veya **false** döner.
+
+&#20; **forEachRemaining()**: Spliterator' de kalan elemanları işler.
+
+```java
+var stream = List.of("bird-", "bunny-", "cat-", "dog-", "fish-", "lamb-", "mouse-");
+
+Spliterator<String> originalBagOfFood = stream.spliterator();
+
+Spliterator<String> emmasBag = originalBagOfFood.trySplit();
+emmasBag.forEachRemaining(System.out::print); // bird-bunny-cat-
+
+System.out.println();
+
+Spliterator<String> jillsBag = originalBagOfFood.trySplit();
+jillsBag.tryAdvance(System.out::println);     // dog-
+jillsBag.forEachRemaining(System.out::print); // fish-
+```
