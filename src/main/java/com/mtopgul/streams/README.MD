@@ -667,7 +667,11 @@ jillsBag.forEachRemaining(System.out::print); // fish-
 ---
 ### `Collecting Results`
 
-&#20; **joining()**
+collect() methodu sadece Stream<T> üzerinde vardır. Primitive stream'ler de mevcut değildir. (Örn: IntStream)
+
+&#20; **Collectors.joining()**
+
+Kullanabilmek için mutlaka string stream olması gerekiyor.
 
 ```java
 public static Collector<CharSequence, ?, String> joining()
@@ -692,5 +696,203 @@ public static void main(String[] args) {
 
 private static Stream<String> stream() {
     return Stream.of("lions", "tigers", "bears");
+}
+```
+
+**Table 10.10** Examples of grouping/partitioning collectors
+![img.png](../../../../resources/img/table-10.10.png)
+![img_2.png](../../../../resources/img/table-10.10.1.png)
+
+&#20; **Collectors.averagingX()**
+```java
+public static void main(String[] args) {
+    Double averageInt = stream()
+            .collect(Collectors.averagingInt(String::length));
+    
+    Double averageLong = stream()
+            .collect(Collectors.averagingLong(String::length));
+    
+    Double averageDouble = stream()
+            .collect(Collectors.averagingDouble(String::length));
+    
+    System.out.println(averageInt);    // 5.333333333333333
+    System.out.println(averageLong);   // 5.333333333333333
+    System.out.println(averageDouble); // 5.333333333333333
+}
+
+private static Stream<String> stream() {
+    return Stream.of("lions", "tigers", "bears");
+}
+```
+
+&#20; **Collectors.toCollection()**
+```java
+TreeSet<String> treeSet = stream()
+        .filter(s -> s.contains("e"))
+        .collect(Collectors.toCollection(TreeSet::new));
+
+HashSet<String> hashSet = stream()
+        .filter(s -> s.startsWith("t"))
+        .collect(Collectors.toCollection(HashSet::new));
+```
+
+&#20; **Collectors.toList()**, **Collectors.toSet()** and **toList()**
+```java
+List<String> list = stream()
+        .filter(s -> s.startsWith("t"))
+        .collect(Collectors.toList());
+
+Set<String> set = stream()
+        .filter(s -> s.startsWith("t"))
+        .collect(Collectors.toSet());
+
+list = stream()
+        .filter(s -> s.startsWith("t"))
+        .toList();
+
+set = stream()
+        .filter(s -> s.startsWith("t"))
+        .collect(Collectors.toUnmodifiableSet());
+```
+
+&#20; **Collectors.toMap()**
+
+toMap() methodunu üç overloaded versiyonu var.
+1. İki parametre alır. 
+   - Nasıl key oluşturacağını belirler. 
+   - Nasıl value oluşturacağını belirler.
+2. Üç parametre alır. 
+    - Nasıl key oluşturacağını belirler.
+    - Nasıl value oluşturacağını belirler.
+    - Eğer aynı keyler oluşursa ne yapacağı. (Birinciyi alabilir veya birinci ve ikinciyi birleştirebilir)
+3. Dört parametre alır.
+    - Nasıl key oluşturacağını belirler.
+    - Nasıl value oluşturacağını belirler.
+    - Eğer aynı keyler oluşursa ne yapacağı. (Birinciyi alabilir veya birinci ve ikinciyi birleştirebilir)
+    - Map tipini belirler.
+
+```java
+// 1.
+Map<String, Integer> map = stream()
+        .filter(s -> s.contains("i"))
+        .collect(Collectors.toMap(
+                k -> k.concat("_i"), 
+                v -> v.length()
+        ));
+
+System.out.println(map); // {tigers_i=6, lions_i=5}
+
+
+// 2.
+Map<Integer, String> hashMap = stream()
+        .collect(Collectors.toMap(
+                k -> k.length(),
+                v -> v,
+                (v1, v2) -> v1 + "," + v2
+        ));
+
+System.out.println(hashMap);                            // {5=lions, bears, eagle, 6=tigers}
+System.out.println(hashMap.getClass().getSimpleName()); // HashMap
+
+
+// 3.
+TreeMap<Integer, String> treeMap = stream()
+        .collect(Collectors.toMap(
+                String::length,
+                k -> k,
+                (v1, v2) -> v1 + "," + v2,
+                () -> new TreeMap<>(Comparator.reverseOrder())
+        ));
+System.out.println(treeMap);                            // {6=tigers, 5=lions,bears,eagle}
+System.out.println(treeMap.getClass().getSimpleName()); // TreeMap
+```
+
+&#20; **Collectors.groupingBy()**, **Collectors.partitioningBy()** and **Collectors.mapping()**
+
+groupingBy() stream içerisinde **null** değerlere izin vermez ve hata fırlatır.
+
+groupingBy() methodunun üç overloaded versiyonu vardır.
+1. Tek parametre alır.
+   - Nasıl key oluşturacağını belirler. (Varsayılan value List<T>)
+2. İki parametre alır.
+   - Nasıl key oluşturacağını belirler.
+   - Nasıl value oluşturacağını belirler.
+3. Üç parametre alır.
+   - Nasıl key oluşturacağını belirler.
+   - Map tipini belirler.
+   - Nasıl value oluşturacağını belirler.
+
+```java
+public static void main(String[] args) {
+    // 1.
+    Map<Integer, List<String>> mapList = stream()
+            .collect(Collectors.groupingBy(String::length));
+    
+    // 2.
+    Map<Integer, Set<String>> mapSet = stream()
+            .collect(
+                    Collectors.groupingBy(
+                            String::length,
+                            Collectors.toSet()
+                    ));
+    
+    // 3.
+    TreeMap<Integer, TreeSet<String>> treeMapTreeSet = stream()
+            .collect(
+                    Collectors.groupingBy(
+                            String::length,
+                            () -> new TreeMap<>(),
+                            Collectors.toCollection(TreeSet::new)
+                    ));
+}
+private static Stream<String> stream() {
+    return Stream.of("lions", "tigers", "bears", "eagle", "dog");
+}
+```
+
+&#20; **Other methods**
+
+```java
+public static void main(String[] args) {
+    Long count = stream()
+            .collect(Collectors.counting());
+    System.out.println(count); // 5
+   
+    List<String> list = stream()
+            .collect(Collectors.filtering(s -> s.contains("e"), Collectors.toList()));
+    System.out.println(list); // [tigers, bears, eagle]
+    
+    Optional<String> maxBy = stream()
+            .collect(Collectors.maxBy((a, b) -> Integer.compare(a.length(), b.length())));
+    System.out.println(maxBy); // Optional[tigers]
+    
+    Optional<String> minBy = stream()
+            .collect(Collectors.minBy(Comparator.comparingInt(String::length)));
+    System.out.println(minBy); // Optional[dog]
+    
+    DoubleSummaryStatistics doubleSummaryStatistics = stream()
+            .collect(Collectors.summarizingDouble(s -> s.length()));
+    System.out.println(doubleSummaryStatistics); // DoubleSummaryStatistics{count=5, sum=24.000000, min=3.000000, average=4.800000, max=6.000000}
+    
+    IntSummaryStatistics intSummaryStatistics = stream()
+            .collect(Collectors.summarizingInt(String::length));
+    System.out.println(intSummaryStatistics);   // IntSummaryStatistics{count=5, sum=24, min=3, average=4.800000, max=6}
+    
+    intSummaryStatistics = stream()
+            .mapToInt(String::length)
+            .summaryStatistics();
+    System.out.println(intSummaryStatistics); // IntSummaryStatistics{count=5, sum=24, min=3, average=4.800000, max=6}
+    
+    Integer summingInt = stream()
+            .collect(Collectors.summingInt(String::length));
+    System.out.println(summingInt);    // 24
+    
+    Double summingDouble = stream()
+            .collect(Collectors.summingDouble(String::length));
+    System.out.println(summingDouble); // 24.0
+}
+
+private static Stream<String> stream() {
+    return Stream.of("lions", "tigers", "bears", "eagle", "dog");
 }
 ```
