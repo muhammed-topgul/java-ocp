@@ -662,3 +662,35 @@ Spliterator<String> jillsBag = originalBagOfFood.trySplit();
 jillsBag.tryAdvance(System.out::println);     // dog-
 jillsBag.forEachRemaining(System.out::print); // fish-
 ```
+
+
+---
+### `Collecting Results`
+
+&#20; **joining()**
+
+```java
+public static Collector<CharSequence, ?, String> joining()
+public static Collector<CharSequence, ?, String> joining(CharSequence delimiter)
+public static Collector<CharSequence, ?, String> joining(CharSequence delimiter, CharSequence prefix, CharSequence suffix)
+
+    
+public static void main(String[] args) {
+    String s1 = stream()
+             .collect(Collectors.joining());
+
+    String s2 = stream()
+            .collect(Collectors.joining(", "));
+
+    String s3 = stream()
+            .collect(Collectors.joining(",", "{", "}"));
+
+    System.out.println(s1); // lionstigersbears
+    System.out.println(s2); // lions, tigers, bears
+    System.out.println(s3); // {lions,tigers,bears}
+}
+
+private static Stream<String> stream() {
+    return Stream.of("lions", "tigers", "bears");
+}
+```
