@@ -850,6 +850,83 @@ private static Stream<String> stream() {
 }
 ```
 
+&#20; **Collectors.partitioningBy()**
+
+groupingBy()'ın özel bir tipidir. Listeyi iki gruba ayırmak gibidir. Stream içerisinde **null** değerlere 
+izin vermez ve hata fırlatır. groupingBy() gibi Map'in tipini değiştiremeyiz.
+
+partitioningBy() methodunun üç overloaded versiyonu vardır.
+1. Tek parametre alır.
+   - Hangi koşula göre gruplayacağını belirler.
+2. İki parametre alır.
+   - Hangi koşula göre gruplayacağını belirler.
+   - Value tipini belirler.
+
+```java
+// 1.
+Map<Boolean, List<String>> mapList = stream()
+        .collect(Collectors.partitioningBy(s -> s.contains("i")));
+
+// 2.
+Map<Boolean, Set<String>> mapSet = stream()
+        .collect(Collectors.partitioningBy(
+                s -> s.contains("i"),
+                Collectors.toSet()
+        ));
+```
+
+&#20; **Collectors.teeing()**
+
+Stream üzerinde aynı anda iki işlemi collect edip sonuç almak için kullanılır.
+
+```java
+record Separations(String spaceSeparated, String commaSeparated) {}
+
+public static void main(String[] args) {
+    var list = List.of("x", "y", "z");
+    Separations separations = list.stream()
+            .collect(Collectors.teeing(
+                    Collectors.joining("-"),
+                    Collectors.joining("_"),
+                    Separations::new
+            ));
+    System.out.println(separations); // Separations[spaceSeparated=x-y-z, commaSeparated=x_y_z]
+}
+
+Double average = Stream.of(1, 2, 3, 4, 5)
+        .collect(Collectors.teeing(
+                Collectors.summingDouble(i -> i),
+                Collectors.counting(),
+                (a, b) -> a / b
+        ));
+
+System.out.println(average); // 3.0
+```
+
+```java
+record User(String name, int age) {
+}
+
+record Result(List<String> list1, int ageCount) {
+}
+
+public static void main(String[] args) {
+    List<User> users = List.of(
+            new User("John", 45),
+            new User("Maria", 23),
+            new User("Sam", 38));
+    
+    Result result = users.stream()
+            .collect(Collectors.teeing(
+                    Collectors.mapping(User::name, Collectors.toList()),
+                    Collectors.summingInt(User::age),
+                    Result::new
+            ));
+    System.out.println(result);
+}
+```
+
+
 &#20; **Other methods**
 
 ```java
