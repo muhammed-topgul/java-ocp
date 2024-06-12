@@ -131,6 +131,20 @@ class Bunny extends Hopper {
 
 ![img.png](../../../../resources/img/table-11.2.png)
 
+**TABLE 11.3** Checked exceptions
+
+![img.png](../../../../resources/img/table-11.3.png)
+
+**TABLE 11.4** Errors
+
+- Error'lar unchecked'dir.
+- JVM tarafından fırlatılırlar.
+- Handle or declare kuralına uymak zorunda değildirler.
+
+![img.png](../../../../resources/img/table-11.4.png)
+
+**Handling Exceptions**
+
 ---
 ### `Handling Exception`
 
