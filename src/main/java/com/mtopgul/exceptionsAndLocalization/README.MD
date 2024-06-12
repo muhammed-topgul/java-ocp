@@ -143,8 +143,6 @@ class Bunny extends Hopper {
 
 ![img.png](../../../../resources/img/table-11.4.png)
 
-**Handling Exceptions**
-
 ---
 ### `Handling Exception`
 
@@ -551,3 +549,39 @@ class TurkeyCage implements AutoCloseable {
     }
 }
 ```
+
+---
+### `Formatting Values`
+
+**Formatting Numbers**
+
+**Table 11.5** DecimalFormat symbols
+
+![img.png](../../../../resources/img/table-11.5.png)
+
+- NumberFormat sınıfında iki tane sayısal format methodu vardır.
+  ```java
+  public final String format(double number)
+  public final String format(long number)
+  ```
+- Sınav için iki sadece iki tane format karakteri bilmemiz yeterli. (_#_ ve _0_)
+- _#_, eğer rakam yoksa hiçbir şey eklemez.
+- _0_, rakam olmasa bile 0 ekler.
+
+```java
+double number = 1234.567;
+
+NumberFormat format1 = new DecimalFormat("###,###,###.0");
+System.out.println(format1.format(number)); // 1,234.6
+
+NumberFormat format2 = new DecimalFormat("##,##,##.0");
+System.out.println(format2.format(number)); // 12,34.6
+
+NumberFormat format3 = new DecimalFormat("000,000.00000");
+System.out.println(format3.format(number)); // 001,234.56700
+
+NumberFormat format4 = new DecimalFormat("Your balance $#,###,###.##");
+System.out.println(format4.format(number)); // Your balance $1,234.57
+```
+
+**Formatting Dates and Times**
