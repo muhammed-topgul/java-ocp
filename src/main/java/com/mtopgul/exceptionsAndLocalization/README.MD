@@ -346,19 +346,23 @@ try(FileInputStream fis = new FileInputStream("myFile.txt")) {
 
 - Bir sınıfın try with resouce ile kullanılabilmesi için _Closable_ doğal olarak onun parenti olan _AutoClosable_ 
   arayüzünü implement etmesi gerekir.
-- _Closable_ ve _AutoClosable_ farkı, close() methodunun fırlattığı exception tipidir.
+- _Closable_ ve _AutoClosable_ farkı, close() methodunun fırlattığı exception tipi ve bulundukları paketlerdir.
   ```java
+  package java.lang;
+  
   public interface AutoCloseable {
     void close() throws Exception;
   }
   ```
   ```java
+  package java.io;
+  
   public interface Closeable extends AutoCloseable {
     public void close() throws IOException;
   }
   ```
 - close() methodu eğer checked exception fırlatıyorsa exception **catch** block içerisinde mutlaka yakalanmalıdır.
-- Derleyici arka planda bizim yerimize **finally** bloğu ekleyecektir.
+- Derleyici arka planda bizim yerimize **finally** bloğu ekleyecektir. 
 ```java
 class HugeResource implements AutoCloseable {
     private final String fileName;
@@ -377,6 +381,172 @@ class HugeResource implements AutoCloseable {
             // Read the file
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+}
+```
+
+- Derleyicinin eklediği **finally** blok bizim tanımladığımız **catch** ve **finally** bloktan önce çalışır.
+```java
+/*
+  Below code prints:
+   Try block
+   res-1 closed.
+   Catch block
+   Finally block
+ */
+try (var in = new HugeResource("res-1")) {
+    System.out.println("Try block");
+    throw new Exception();
+} catch (Exception e) {
+    System.out.println("Catch block");
+} finally {
+    System.out.println("Finally block");
+}
+```
+
+- Try with resource'da birden fazla resource aynı anda birden çok resouce tanımlanabilir.
+  Resouce'lar kapatılırken tanımlandığı sıranın tersinde kapatılır.
+
+```java
+/*
+  Below code prints:
+   res-2 closed.
+   res-1 closed.      
+ */
+class HugeResource implements AutoCloseable {
+    private final String resourceName;
+
+    HugeResource(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
+    @Override
+    public void close() {
+        System.out.println(resourceName + " closed.");
+    }
+
+    public static void main(String[] args) {
+        // Önce out, sonra in kapatılır.
+        try (var in = new HugeResource("res-1");
+             var out = new HugeResource("res-2")) {
+            // Read the file
+        }
+    }
+}
+```
+
+- Birden fazla resource tanımlanırken, değişken tipi olarak _var_ ve sınıf ismi birlikte kullanılabilir.
+```java
+try (var in = new HugeResource("res-1");
+     HugeResource out = new HugeResource("res-2")) {
+    // Read the file
+}
+```
+- Resource'lar genelde _try-with-resource_ statement'ta tanımlanır. Try bloğundan önce de bu tanımlama yapılabilir. 
+  Bunun için ilgili resource değişkeninin **final** veya _effectively final_ olması gerekir.
+```java
+var in = new HugeResource("res-1");
+final var out = new HugeResource("res-2");
+try (in; out) {
+    System.out.println("Try block");
+}
+```
+
+```java
+var in = new HugeResource("res-1");
+final var out = new HugeResource("res-2");
+try (in; out) { // DOES NOT COMPILE
+    System.out.println("Try block");
+}
+in = new HugeResource("res-3");
+```
+
+**Suppressed Exceptions**
+
+Try-with-resource da birden fazla exception fırlatılıyorsa, fırlatılan ilk primary, diğerleri suppressed exceptions'dır.
+```java
+/*
+  Below code prints:
+   Primary: Cannot put turkeys in
+   Suppressed: Cage door does not close      
+ */
+class TurkeyCage implements AutoCloseable {
+    @Override
+    public void close() throws IllegalStateException {
+        throw new IllegalStateException("Cage door does not close");
+    }
+
+    public static void main(String[] args) {
+        try (TurkeyCage cage = new TurkeyCage()) {
+            // Primary exception
+            throw new UnsupportedOperationException("Cannot put turkeys in");
+        } catch (RuntimeException e) {
+            System.out.println("Primary: " + e.getMessage()); // Cannot put turkeys in
+            for (Throwable throwable : e.getSuppressed()) {
+                System.out.println("Suppressed: " + throwable.getMessage()); // Cage door does not close
+            }
+        }
+    }
+}
+```
+
+```java
+/*
+  Below code prints:
+   Caught: cage-3 Cage door does not close
+   Suppressed: cage-2 Cage door does not close
+   Suppressed: cage-1 Cage door does not close      
+ */
+class TurkeyCage implements AutoCloseable {
+  private final String name;
+
+  public TurkeyCage(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public void close() throws IllegalStateException {
+    throw new IllegalStateException(name + " Cage door does not close");
+  }
+
+  public static void main(String[] args) {
+    try (var cage1 = new TurkeyCage("cage-1");
+         var cage2 = new TurkeyCage("cage-2");
+         var cage3 = new TurkeyCage("cage-3")) {
+      // Do something
+    } catch (RuntimeException e) {
+      System.out.println("Caught: " + e.getMessage()); // cage-3 Cage door does not close
+      for (Throwable throwable : e.getSuppressed()) {
+        System.out.println("Suppressed: " + throwable.getMessage()); // cage-2 Cage door does not close ...
+      }
+    }
+  }
+}
+```
+
+- Eğer **finally** blokta exception fılatılırsa diğer bütün exception'ları ezer ve program sonlanır.
+```java
+/*
+  Below code prints:
+   Exception in thread "main" java.lang.UnsupportedOperationException: Unsupported operation.      
+ */
+class TurkeyCage implements AutoCloseable {
+    @Override
+    public void close() throws IllegalStateException {
+        throw new IllegalStateException("Cage door does not close");
+    }
+
+    public static void main(String[] args) {
+        try (TurkeyCage cage = new TurkeyCage()) {
+            throw new RuntimeException("Cannot put turkeys in");
+        } catch (IllegalStateException e) {
+            System.out.println("Primary: " + e.getMessage()); // Cannot put turkeys in
+            for (Throwable throwable : e.getSuppressed()) {
+                System.out.println("Suppressed: " + throwable.getMessage()); // Cage door does not close
+            }
+        } finally {
+            throw new UnsupportedOperationException("Unsupported operation.");
         }
     }
 }
