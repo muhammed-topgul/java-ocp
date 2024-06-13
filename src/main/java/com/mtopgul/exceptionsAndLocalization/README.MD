@@ -585,3 +585,108 @@ System.out.println(format4.format(number)); // Your balance $1,234.57
 ```
 
 **Formatting Dates and Times**
+
+```java
+LocalDate date = LocalDate.of(2022, Month.OCTOBER, 20);
+LocalTime time = LocalTime.of(11, 12, 34);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+date.format(DateTimeFormatter.ISO_LOCAL_DATE); // 2022-10-20
+time.format(DateTimeFormatter.ISO_LOCAL_TIME); // 11:12:34
+dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME); // 2022-10-20T11:12:34
+
+date.format(DateTimeFormatter.ISO_LOCAL_TIME); // Exception
+time.format(DateTimeFormatter.ISO_LOCAL_DATE); // Exception
+```
+
+**Customizing the Date/Time Format**
+
+**Table 11.6** Common date/time symbols
+
+![img.png](../../../../resources/img/table-11.6.png)
+
+**Table 11.7** Supported date/time symbols
+
+![img.png](../../../../resources/img/table-11.7.png)
+
+> MMMM: October
+> 
+> MMM: Oct
+> 
+> MM: 10
+> 
+> hh: 01
+> 
+> HH: 13
+```java
+LocalDate date = LocalDate.of(2022, Month.OCTOBER, 20);
+LocalTime time = LocalTime.of(13, 12, 34);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+var format1 = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm");
+System.out.println(dateTime.format(format1)); // October 20, 2022 at 01:12
+
+var format2 = DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' hh:mm");
+System.out.println(dateTime.format(format2)); // Oct 20, 2022 at 01:12
+
+var format3 = DateTimeFormatter.ofPattern("MM dd, yyyy 'at' HH:mm");
+System.out.println(dateTime.format(format3)); // 10 20, 2022 at 13:12
+
+var format4 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+System.out.println(dateTime.format(format4)); // 20/10/2022 13:12:34
+
+var format5 = DateTimeFormatter.ofPattern("MM_yyyy_-_dd");
+System.out.println(dateTime.format(format5)); // 10_2022_-_20
+
+var format6 = DateTimeFormatter.ofPattern("h:mm z Z");
+System.out.println(ZonedDateTime.now().format(format6)); // 8:56 TRT +0300
+
+var format7 = DateTimeFormatter.ofPattern("h:mm z");
+System.out.println(dateTime.format(format7)); // Exception****
+```
+
+Date/Time sınıfları format() methoduna sahiptir ve formatter alır. Formatter sınıf da format() methoduna sahiptir ve 
+date/time alır. İki method da aynı çıktıyı üretir.
+```java
+LocalDate date = LocalDate.of(2022, Month.OCTOBER, 20);
+LocalTime time = LocalTime.of(13, 12, 34);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+System.out.println(dateTime.format(format)); // 20/10/2022 13:12:34System.out.println(format.format(dateTime)); // 20/10/2022 13:12:34
+```
+
+**Adding Custom Text Values**
+
+Kaçış karakter olarak tek tırnak _(')_ kullanılır. Tek tırnak arasını formatter text olarak görür.
+```java
+LocalDate date = LocalDate.of(2022, Month.OCTOBER, 20);
+LocalTime time = LocalTime.of(13, 12, 34);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+var f1 = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+var f2 = DateTimeFormatter.ofPattern("HH:mm");
+System.out.println(dateTime.format(f1) + " at " + dateTime.format(f2)); // October 20, 2022 at 13:12
+
+var format1 = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' HH:mm");
+System.out.println(dateTime.format(format1)); // October 20, 2022 at 13:12
+
+var format2 = DateTimeFormatter.ofPattern("MMMM dd', Party''s at' HH:mm");
+System.out.println(dateTime.format(format2)); // October 20, Party's at 13:12
+
+var format3 = DateTimeFormatter.ofPattern("'System format, HH:mm: 'HH:mm");
+System.out.println(dateTime.format(format3)); // System format, HH:mm: 13:12
+
+var format4 = DateTimeFormatter.ofPattern("'NEW!'yyyy', yay!'");
+System.out.println(dateTime.format(format4)); // NEW!2022, yay!
+
+var format5 = DateTimeFormatter.ofPattern("The time is hh:mm");
+System.out.println(dateTime.format(format5)); // Exception
+
+var format6 = DateTimeFormatter.ofPattern("'The time is hh:mm");
+System.out.println(dateTime.format(format6)); // Exception
+```
+
+---
+### `Internationalization and Localization`
