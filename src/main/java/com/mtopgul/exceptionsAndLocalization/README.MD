@@ -690,3 +690,151 @@ System.out.println(dateTime.format(format6)); // Exception
 
 ---
 ### `Internationalization and Localization`
+
+**Figure 11.6** Locale formats
+
+![img.png](../../../../resources/img/figure-11.6.png)
+
+```java
+Locale locale = Locale.getDefault();
+System.out.println(locale);               // en_GB
+System.out.println(locale.getLanguage()); // en
+System.out.println(locale.getCountry());  // GB
+```
+
+**Picking a Locale**
+
+```java
+System.out.println(Locale.GERMAN);  // de
+System.out.println(Locale.GERMANY); // de_DE
+```
+
+```java
+Locale trLocale = new Locale("tr", "TR");
+System.out.println(trLocale);       // tr_TR
+
+Locale trLocale = new Locale.Builder()
+        .setLanguage("tr")
+        .setRegion("TR")
+        .build();
+System.out.println(trLocale); // tr_TR
+```
+
+```java
+System.out.println(Locale.getDefault()); // en_GB
+Locale.setDefault(new Locale("tr", "TR"));
+System.out.println(Locale.getDefault()); // tr_TR
+```
+
+**Formatting Numbers**
+
+![img_1.png](../../../../resources/img/table-11.8.png)
+
+&#20; **Number**
+```java
+int attendeesPerYear = 3_200_000;
+int attendeesPerMonth = attendeesPerYear / 12;
+
+NumberFormat us = NumberFormat.getInstance(Locale.US);
+System.out.println(us.format(attendeesPerMonth)); // 266,666
+
+NumberFormat fr = NumberFormat.getInstance(Locale.FRANCE);
+System.out.println(fr.format(attendeesPerMonth)); // 266 666
+
+NumberFormat tr = NumberFormat.getInstance(new Locale("tr", "TR"));
+System.out.println(tr.format(attendeesPerMonth)); // 266.666
+```
+
+&#20; **Currency**
+```java
+double price = 48;
+
+NumberFormat usd = NumberFormat.getCurrencyInstance(Locale.US);
+System.out.println(usd.format(price)); // $48.00
+
+NumberFormat eur = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+System.out.println(eur.format(price)); // 48,00 €
+
+NumberFormat tl = NumberFormat.getCurrencyInstance(new Locale("tr", "TR"));
+System.out.println(tl.format(price)); // ₺48,00
+```
+
+&#20; **Percentage**
+
+Yakın olan üste veya alta yuvarlar.
+```java
+double successRate = 0.802;
+
+var us = NumberFormat.getPercentInstance(Locale.US);
+System.out.println(us.format(successRate)); // 80%
+
+var fr = NumberFormat.getPercentInstance(Locale.FRANCE);
+System.out.println(fr.format(successRate)); // 80 %
+
+var tr = NumberFormat.getPercentInstance(new Locale("tr", "TR"));
+System.out.println(tr.format(successRate)); // %80
+```
+
+**Parsing Numbers**
+
+_parse()_ methodu checked _ParseException_ fırlatır. Bu yüzden yakalanması gerekir.
+
+```java
+public Number parse(String source) throws ParseException
+```
+
+```java
+String s1 = "40.45";
+String s2 = "50.53";
+String s3 = "60ABC";
+
+NumberFormat us = NumberFormat.getInstance(Locale.US);
+System.out.println(us.parse(s1)); // 40.45
+System.out.println(us.parse(s2)); // 50.53
+System.out.println(us.parse(s3)); // 60
+
+NumberFormat fr = NumberFormat.getInstance(Locale.FRANCE);
+System.out.println(fr.parse(s1)); // 40
+System.out.println(fr.parse(s2)); // 50
+System.out.println(fr.parse(s3)); // 60
+
+NumberFormat tr = NumberFormat.getInstance(new Locale("tr", "TR"));
+System.out.println(tr.parse(s1)); // 4045
+System.out.println(tr.parse(s2)); // 5053
+System.out.println(tr.parse(s3)); // 60
+```
+
+**CompactNumberFormat**
+
+Yakın olan üste veya alta yuvarlar.
+```java
+public static void main(String[] args) {
+  long number = 7_123_456;
+
+  var usLong = nf(Locale.US, NumberFormat.Style.LONG);
+  var usShort = nf(Locale.US, NumberFormat.Style.SHORT);
+
+  System.out.println(usLong.format(number));  // 7 million
+  System.out.println(usShort.format(number)); // 7M
+
+  var frLong = nf(Locale.FRANCE, NumberFormat.Style.LONG);
+  var frShort = nf(Locale.FRANCE, NumberFormat.Style.SHORT);
+
+  System.out.println(frLong.format(number));  // 7 millions
+  System.out.println(frShort.format(number)); // 7 M
+
+  var trLong = nf(new Locale("tr", "TR"), NumberFormat.Style.LONG);
+  var trShort = nf(new Locale("tr", "TR"), NumberFormat.Style.SHORT);
+  System.out.println(trLong.format(number));  // 7 milyon
+  System.out.println(trShort.format(number)); // 7 Mn
+}
+
+private static NumberFormat nf(Locale locale, NumberFormat.Style style) {
+  return NumberFormat.getCompactNumberInstance(locale, style);
+}
+```
+
+**Localizing Dates**
+
+**Table 11.9** Factory methods to get a DateTimeFormatter
+![img.png](img.png)
