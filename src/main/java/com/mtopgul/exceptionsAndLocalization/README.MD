@@ -837,4 +837,129 @@ private static NumberFormat nf(Locale locale, NumberFormat.Style style) {
 **Localizing Dates**
 
 **Table 11.9** Factory methods to get a DateTimeFormatter
-![img.png](img.png)
+![img.png](../../../../resources/img/table-11.9.png)
+
+```java
+LocalDate date = LocalDate.of(2005, 5, 12);
+LocalTime time = LocalTime.of(22, 14, 8);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+Locale locale = new Locale("tr", "TR");
+String formatDate = DateTimeFormatter
+        .ofLocalizedDate(FormatStyle.SHORT)
+        .withLocale(locale)
+        .format(date);
+
+String formatTime = DateTimeFormatter
+        .ofLocalizedTime(FormatStyle.SHORT)
+        .withLocale(locale)
+        .format(time);
+
+String formatDateTime = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.LONG)
+        .withLocale(locale)
+        .format(dateTime);
+
+System.out.println(formatDate);     // 12.05.2005
+System.out.println(formatTime);     // 22:14
+System.out.println(formatDateTime); // 12.05.2005 22:14
+```
+
+---
+### `Loading Properties with Resource Bundles`
+
+```java
+public static void main(String[] args) {
+    printUsername(new Locale("tr", "TR")); // Zoo_tr_TR
+    printUsername(Locale.US);                                // Zoo_en_US
+    printUsername(Locale.ENGLISH);                           // Zoo_en
+    printUsername(new Locale("en", "GB")); // Zoo_en_GB
+    printUsername(new Locale("en", "CA")); // Zoo_en_CA
+    printUsername(new Locale("fr", "FR")); // Zoo_fr_FR
+    printUsername(new Locale("it", "IT")); // Zoo default
+
+
+    ResourceBundle resourceBundle = ResourceBundle.getBundle("Zoo", Locale.US);
+    System.out.println(resourceBundle.getString("not_exist")); // MissingResourceException
+}
+
+private static void printUsername(Locale locale) {
+    ResourceBundle resourceBundle = ResourceBundle.getBundle("Zoo", locale);
+    System.out.println(resourceBundle.getString("username"));
+}
+```
+
+```java
+/*
+ * Below code prints:
+ * helloByName: Hello, {0} and {1}
+ * name: The Zoo
+ * hello: Hello
+ * open: The zoo is open
+ * username: Zoo_en_US
+ */
+ResourceBundle rb = ResourceBundle.getBundle("Zoo", new Locale("en", "US"));
+rb.keySet()
+        .forEach(key -> System.out.println(key + ": " + rb.getString(key)));
+```
+
+Resource bundle okuyabilmemiz için 2 yol vardır.
+
+```java
+ResourceBundle.getBundle("name");
+ResourceBundle.getBundle("name", locale);
+```
+
+Java'da varsayılan lokali _English/US_ ve aranan lokal _French/France_ için dosyayı bulma yolu.
+
+1. _Zoo_fr_FR.properties_ istenen lokal.
+2. _Zoo_fr.properties_ istenen lokal dil olmadan.
+3. _Zoo_en_US.properties_ varsayılan lokal.
+4. _Zoo_en.properties_ varsayılan lokal dil olmadan.
+5. _Zoo.properties_ varsayılan bundle.
+6. MissingResourceException Lokal veya varsayılan bundle yoksa.
+
+**Table 11.11** Picking a resource bundle for French/France with default locale English/US
+
+![img_1.png](../../../../resources/img/table-11.11.png)
+
+
+```java
+Locale.setDefault(new Locale("hi"));
+ResourceBundle rb = ResourceBundle.getBundle("Zoo", new Locale("en"));
+```
+
+Yukarda ki Java kodunda dosyalara bakacağı sıra:
+1. _Zoo_en.properties_
+2. _Zoo_hi.properties_
+3. _Zoo.properties_
+
+Eğer talep edilen dosya _fr_FR_ ve varsayılan lokal _en_US_ ise JVM sadece _fr_FR_ veya _fr_ bundleları olmadığı 
+durumlarda _en_US_ dosyasından veri sağlar. Eğer property key hiç bir dosyada bulunmazsa _MissingResourceException_ fırlatılır.
+
+**Table 11.12** Selecting resource bundle properties
+
+![img.png](../../../../resources/img/table-11.12.png)
+
+&#20; **Formatting Messages**
+
+```java
+/*
+  helloByName=Hello, {0} and {1}      
+ */
+ResourceBundle rb = ResourceBundle.getBundle("Zoo");
+String message = rb.getString("helloByName");
+System.out.println(MessageFormat.format(message, "Muhammed", "Topgül")); // Hello, Muhammed and Topgül
+```
+
+```java
+Properties props = new Properties();
+props.setProperty("name", "Our zoo");
+props.setProperty("open", "10am");
+
+System.out.println(props.getProperty("camel")); // null
+System.out.println(props.getProperty("camel", "Default")); // Default
+
+System.out.println(props.get("camel")); // null
+System.out.println(props.get("camel", "Default")); // DOES NOT COMPILE
+```
