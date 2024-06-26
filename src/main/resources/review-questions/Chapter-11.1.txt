@@ -11,27 +11,18 @@
 ☑️ 11 -> B,E  2/3
 ✅ 12 -> B,C
 ✅ 13 -> A,B
-✅ 14 ->
-✅ 15 ->
-✅ 16 ->
-✅ 17 ->
-✅ 18 ->
-✅ 19 ->
-✅ 20 ->
-✅ 21 ->
-✅ 22 ->
-✅ 23 ->
-✅ 24 ->
-✅ 25 ->
-✅ 26 ->
+✅ 14 -> C
+❌ 15 -> B,D,F
+✅ 16 -> F
+✅ 17 -> D,F
+✅ 18 -> C
+✅ 19 -> D
+✅ 20 -> G
+✅ 21 -> C
+✅ 22 -> B
+✅ 23 -> A,E
+✅ 24 -> G
+✅ 25 -> A
+❌ 26 -> A,C,F
 
-❌  ☑️
-
-#Q01: IllegalArgumentException bir RuntimeException' dır.
-#Q05: CompactNumberFormat varsayılan style SHORT'tur.
-#Q06: LocalDate time elementine sahip değildir.
-#Q07: try-with-resources ifadesinin kendi veri türü olmalı ve noktalı virgülle (;) ayrılmalıdır.
-      try (FileReader r = null, p = new FileReader("")) // DOES NOT COMPILE
-      try (FileReader r = null; FileReader p = new FileReader(""))
-#Q11: Handle or declare kuralına tabii olan sınıflar: Exception ve Throwable.
-🎯 87.35/100
+🎯 82.3/100

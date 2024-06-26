@@ -963,3 +963,27 @@ System.out.println(props.getProperty("camel", "Default")); // Default
 System.out.println(props.get("camel")); // null
 System.out.println(props.get("camel", "Default")); // DOES NOT COMPILE
 ```
+
+---
+### `Review Question Notes`
+- IllegalArgumentException bir RuntimeException' dır.
+
+- CompactNumberFormat varsayılan style SHORT'tur.
+
+- LocalDate time elementine sahip değildir.
+
+- try-with-resources ifadesinin kendi veri türü olmalı ve noktalı virgülle (;) ayrılmalıdır.
+  ```java
+  try (FileReader r = null, p = new FileReader("")) // DOES NOT COMPILE
+  try (FileReader r = null; FileReader p = new FileReader(""))
+  ```
+- Handle or declare kuralına tabii olan sınıflar: Exception ve Throwable.
+
+- Locale oluştururken lowercase dil kodu zorunlu, uppercase ülke kodu ise isteğe bağlıdır.
+  Locale() constructor' da ilk önce dil kodu sağlanır.
+
+- try-with-resources' da kaynaklar tanımlandığı sıranın tersinde kapatılırlar. Kaynaklar kapatılırken
+  herhangi birinde hata olsa bile tüm kaynaklar kapatılmadan hata fırlatılmaz.
+
+- Eğer try body checked exception fırlatmıyorsa catch içerisinde check exception eklenemez.
+  Error sınıfını da RuntimeException olarak düşünülebilir.
