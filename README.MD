@@ -651,6 +651,7 @@
  - [Chapter 09: Collections and Generics]
  - [Chapter 10: Streams]
  - [Chapter 11: Exceptions and Localization]
+ - [Chapter 13: Concurrency]
 
 [Chapter 01: Building Blocks]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/buildingBlocks/README.MD>
 [Chapter 03: Making Decisions]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/makingDecision/README.MD>
@@ -662,3 +663,4 @@
 [Chapter 09: Collections and Generics]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/collectionsAndGenerics/README.MD>
 [Chapter 10: Streams]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/streams/README.MD>
 [Chapter 11: Exceptions and Localization]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/exceptionsAndLocalization/README.MD>
+[Chapter 13: Concurrency]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/concurrency/README.MD>
