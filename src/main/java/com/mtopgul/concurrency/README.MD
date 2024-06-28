@@ -6,9 +6,11 @@
 - Bir thread, işletim sistemi tarafından yürütülen en küçük yürütme birimidir.
 - Bir process, aynı paylaşılan ortamda yürütülen bir grup ilişkili thread'den oluşur.
 - Bir thread, aynı anda yanlızca bir görevi tamamlayabilir.
-- Bir thread için ayrılan zaman sona erer fakat thread'in yapmış olduğu işlem tamamlanmazsa _context switch_ oluşur.
-- Eğer bir thread diğer thread'lerden daha yüksek bir _thread priority_'e sahipse _interrupt_ olabilir veya başka bir 
-  thread'in yerini alabilir. Java'da thread priority integer değerler ile ifade edilir.
+- Bir thread için ayrılan süre tamamlandığında fakat thread'in yapmış olduğu işlem tamamlanmazsa _context switch_ oluşur.
+- _Context switch_, bir threadin mevcut durumunu saklama ve daha sonra yürütmeye devam edebilmek için geri yükleme işlemidir. 
+  Bu maliyetli bir işlemdir.
+- Eğer bir thread diğer thread'lerden daha yüksek bir _thread priority_'e sahipse mevcut çalışan threadi _interrupt_ 
+  edebilir veya başka bir thread'in yerini alabilir. Java'da thread priority integer değerler ile ifade edilir.
 
 **Creating a Thread**
 
@@ -24,7 +26,7 @@ public interface Runnable {
 }
 ```
 
-- Thread execution order garanti değildir. Thread'ler genellikle rastgele sırada çalışırlar.
+- Thread çalışma sırası garanti değildir. Thread'ler genellikle rastgele sırada çalışırlar.
 
 Aşağıda ki kodlar thread oluşturur ve çalıştırır. Sonuçları çalışana kadar belli değildir.
 ```java
@@ -56,11 +58,23 @@ class MyThread extends Thread {
 
 > Thread'i başlatmak için _start()_ methodu kullanılır. _run()_ methodunu çağırmak thread'i başlatmaz.
 
+> Bir Thread üzerinde _start()_ methodusadece bir kez çalıştırılabilir. İkinci kez çağrılmayı denedeğimizde 
+> _IllegalThreadStateException_ hatasını alırız.
+> ```java
+> Thread thread = new Thread();
+> thread.start();
+> thread.start(); // IllegalThreadStateException
+> ```
+
 **Daemon Thread**
 
-JVM main thread bitse bile _user-defined_ threadlerin bitmesi bekler. Uygulamayı sonlandırmaz. Fakat _daemon_ threadler 
-için aynı durum söz konusu değildir. Eğer main threadin işi biterse Java daemon threadlerin tamamlanmasını beklemeden
-uygulamayı sonlandırır. Örneğin _GarbageCollector_ bir daemon threaddir.
+Daemon threadler arka planda çalışan düşük öncelikli threadlerdir.
+
+JVM, main thread tamamlansa bile _user-defined_ threadlerin tamamlanmasını bekler. Uygulamayı sonlandırmaz. 
+Fakat _daemon_ threadler için aynı durum geçerli değildir. Eğer main thread tamamlanırsa JVM daemon threadlerin 
+tamamlanmasını beklemeden uygulamayı sonlandırır. 
+
+Örneğin _GarbageCollector_ bir daemon threaddir.
 
 ```java
 /*
@@ -105,11 +119,19 @@ public static void main(String[] args) {
 }
 ```
 
+> setDaemon() methodu start() methodundan önce çalıştırılmalıdır. Aksi halde uygulama _IllegalThreadStateException_ fırlatır.
+> ```java
+> Thread thread = new Thread();
+> thread.start();
+> thread.setDaemon(true); // IllegalThreadStateException
+> ```
+
 **Thread Life Cycle**
 
 ![img.png](../../../../resources/img/figure-13.2.png)
 
-1. Thread başlangıçta **NEW** durumda. 
-2. _start()_ methodu çağrıldığında **RUNNABLE** duruma geçer. Bu durum threadin çalıştığı anlamına gelmez. **RUNNABLE** 
-   thread çalışmaya hazır demektir.
-3. Thread çalışmayı tamamladığında veya hata ile sonlandığında **TERMINATED** duruma geçer.
+1. Threadlerin 6 durumu vardır. _getState()_ methodu ile threadin durmunu öğrenebiliriz. 
+2. Thread başlangıçta **NEW** durumda.
+3. _start()_ methodu çağrıldığında **RUNNABLE** duruma geçer. Bu durum threadin gerçekten çalıştığı anlamına gelmez. 
+   Thread çalışıyor veya çalışmıyor olabilir. **RUNNABLE** thread çalışmaya hazır demektir. **R
+4. Thread çalışmayı tamamladığında veya hata ile sonlandığında **TERMINATED** duruma geçer.
