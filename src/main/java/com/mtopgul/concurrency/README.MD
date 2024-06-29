@@ -211,3 +211,75 @@ public static void main(String[] args) {
     System.out.println("Reached: " + counter);
 }
 ```
+
+---
+### `Concurrency API`
+
+Java'da Concurrency API olarak adlandırılan _java.util.concurrent_ paketi bulunur. Bu paket içerisinde threadleri
+oluşturmak ve yönetmek için _ExecutorService_ arayüzü bulunur.
+
+Doğrudan threadleri kullanmak zordur. Bir tane thread için bile olsa _Concurrency API_ gibi hazır API'leri kullanmak daha iyidir.
+
+**Single-Thread Executor**
+
+Aşağıda ki örnekte sadece iki adet thread oluşturulur. Çıktısı kod çalışana kadar tahmin edilemez.
+
+```java
+/*
+ * Below code prints:
+     Begin
+     Printing zoo inventory
+     Printing record: 0
+     Printing record: 1
+     End
+     Printing record: 2
+     Printing zoo inventory
+ */
+public static void main(String[] args) {
+    Runnable printInventory = () -> System.out.println("Printing zoo inventory");
+    Runnable printRecords = () -> {
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Printing record: " + i);
+        }
+    };
+    ExecutorService service = Executors.newSingleThreadExecutor();
+    try {
+        System.out.println("Begin");
+        service.execute(printInventory);
+        service.execute(printRecords);
+        service.execute(printInventory);
+        System.out.println("End");
+    } finally {
+        service.shutdown();
+    }
+}
+```
+
+**Shutting Down a Thread Executor**
+
+Thread executor ile işini bitirdiğinde mutlaka _shutdown()_ methodu çalıştırılmalıdır. Thread executor _non-daemon_ thread 
+oluşturur ve _shutdown()_ çalıştırılmazsa uygulama sonlandırılmaz.
+
+Shutdown işlemi başlatıldığında thread executor <u>hemen sonlanmaz</u>. _isShutdown()_ **true**, _isTerminated()_ **false**  
+durumuna geçer. Bu aşamada;
+- Yeni bir task kabul etmez ve _RejectedExecutionException_ hatasını fırlatır.
+- Mevcut çalışan taskların çalışması devam eder.
+- Mevcut çalışan tasklar tamamlandığında _isShutdown()_ ve _isTerminated()_ **true** olur ve thread executor sonlanır.
+
+**Figure 13.3** ExecutorService life cycle
+
+![img.png](../../../../resources/img/figure-13.3.png)
+
+> _shutdown()_ methodu, thread executor'a önceden gönderilmiş taskları sonlandırmaz.
+
+> _shutdownNow()_ methodu, thread executor'u hemen sonlandırmayı dener. Fakat sonlandırmayı garanti etmez.
+
+**Submitting Tasks**
+
+ExecutorService'e birden çok şekilde task gönderebiliriz. İlki _execute()_ methodu. Bu methodun dönüş tipi **void**'tir
+yani değer dönmez.  Eğer değer dönmesini istediğimiz bir task göndermek istersek _submit()_ methodunu kullanabiliriz. 
+Bu method bize _Future<?>_ nesnesi döner.
+
+**Table 13.1** ExecutorService methods
+
+![img.png](../../../../resources/img/table-13.1.png)
