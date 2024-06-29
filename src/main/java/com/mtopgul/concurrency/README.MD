@@ -133,5 +133,81 @@ public static void main(String[] args) {
 1. Threadlerin 6 durumu vardır. _getState()_ methodu ile threadin durmunu öğrenebiliriz. 
 2. Thread başlangıçta **NEW** durumda.
 3. _start()_ methodu çağrıldığında **RUNNABLE** duruma geçer. Bu durum threadin gerçekten çalıştığı anlamına gelmez. 
-   Thread çalışıyor veya çalışmıyor olabilir. **RUNNABLE** thread çalışmaya hazır demektir. **R
+   Thread çalışıyor veya çalışmıyor olabilir. **RUNNABLE** thread çalışmaya hazır demektir.
 4. Thread çalışmayı tamamladığında veya hata ile sonlandığında **TERMINATED** duruma geçer.
+
+**Polling with Sleep**
+
+Bazen bir threadin çalışabilmesi için başka bir threadin görevini tamamlamış olması gerekir. Polling belli aralıklarla
+verileri kontrol etme işlemidir.
+
+While loop ile işlemin sonucunu kontrol etmek CPU kaynaklarını gereksi yere tükettiği için _bad practice_'dir.
+
+```java
+public static int counter = 0;
+public static void main(String[] args) {
+    new Thread(() -> {
+        for (int i = 0; i < 100_000_000; i++) {
+            counter++;
+        }
+    }).start();
+    while (counter < 100_000_000) {
+        System.out.println(counter + " Not reached yet.");
+    }
+    System.out.println("Reached: " + counter);
+}
+```
+
+Bunun yerine _Thread.sleep()_ ile mevcut threadi durdurup diğer threadin işini tamamlamasını bekleyebiliriz.
+```java
+public static int counter = 0;
+public static void main(String[] args) throws InterruptedException {
+    new Thread(() -> {
+        for (int i = 0; i < 100_000_000; i++) {
+            counter++;
+        }
+    }).start();
+    while (counter < 100_000_000) {
+        System.out.println(counter + " Not reached yet.");
+        Thread.sleep(1000);
+    }
+    System.out.println("Reached: " + counter);
+}
+```
+
+**Interrupting a Thread**
+
+Önceki çözüm CPU'un **while** döngüsünde sonsuza kadar beklemesini engellese de programa gereksiz bir sleep ekledi. 
+Programın çalışması 2.1 saniye sürerse sleep yine de 1 saniye bekleyeceği için arada 0.9 saniyelik bir süre boşuna geçer.
+
+Bunu engellemek için sonucunu beklediğimiz thread işini bitirdiğinde main threadi _interrupt_ ederek gereksiz beklemesinin
+önüne geçer. 
+
+Thread üzerinde _interrupt()_ methodunu çağırmak _TIMED_WAITING_ veya _WAITING_ durumda olan threadin tekrar _RUNNABLE_ 
+duruma geçmesini sağlar. Yani _sleep()_ ile uyutulan thread için _interrupt()_ çalıştırılırsa sleep sona erer ve thread 
+tekrar çalışır ve _InterruptedException_ fırlatır.
+
+Uyumayan thread üzerinde _interrupt()_ methodunu çağırmanın hiç bir etkisi olmayacaktır. Sadece flag olarak **true** yapacaktır.
+
+```java
+public static long counter = 0;
+public static void main(String[] args) {
+    Thread mainThread = Thread.currentThread();
+    long to = 5_000_000_000L;
+    new Thread(() -> {
+        for (long i = 0; i < to; i++) {
+            counter++;
+        }
+        mainThread.interrupt();
+    }).start();
+    while (counter < to) {
+        System.out.println(counter + " Not reached yet.");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted!");
+        }
+    }
+    System.out.println("Reached: " + counter);
+}
+```
