@@ -301,7 +301,7 @@ Bu method bize _Future<?>_ nesnesi döner.
 Aşağıdaki kod en fazla 10 saniyeye kadar sonucu almayı bekler. Eğer 10 saniye içinde görev tamamlanmazsa _TimeoutException_
 fırlatır.
 
-_result.get()_ methodunun sonucu **null**'dır çünkü _Runnable.run()_ methodunun dönüş tipi **void**'dir.
+_result.get()_ methodunun sonucu her zaman **null**'dır çünkü _Runnable.run()_ methodunun dönüş tipi **void**'dir.
 
 ```java
 private static int counter = 0;
@@ -322,5 +322,126 @@ public static void main(String[] args) {
 }
 ```
 
-**Introducing Callable**
+&#20; **Introducing Callable**
 
+```java
+@FunctionalInterface
+public interface Callable<V> {
+    V call() throws Exception;
+}
+
+@FunctionalInterface
+public interface Runnable {
+    void run();
+}
+```
+
+_Runnable_ ve _Callable_ arayüzleri benzerdir. _Callable_ arayüzü _call()_ methoduna sahiptir. Bu method dönüş tipine 
+sahiptir ve _Exception_ fırlatır.
+
+Geriye değer döndüğü için _Callable, Runnable_ yerine tercih edilir. Executer
+
+ExecutorService üzerinde _submit()_ methodunun _Runnable_ ve _Callable_ parametre alan iki overloaded versiyonu bulunur.
+
+```java
+ExecutorService service = Executors.newSingleThreadExecutor();
+Future<Integer> result = service.submit(() -> 30 + 11);
+try {
+    System.out.println(result.get()); // 41
+} finally {
+    service.shutdown();
+}
+```
+
+&#20; **Waiting for All Tasks to Finish**
+
+Çoğu durumda thread executer'a verilen görevlerin bitmesini bekleriz. Daha öncede gördüğümüz gibi bunun ilk yolu _get()_
+methodu ile kontrol etmektir. 
+
+Eğer tüm taskların sonuçlarına ihtiyacımız yoksa bu verbose koda neden olur. Bunun daha basit bir çözümü vardır. _awaitTermination()_.
+
+Önce _shutdown()_ methodunu kullanırız, daha sonra _awaitTermination()_'da belirtilen süre kadar görevlerin tamamlanmasını bekleriz.
+
+```java
+ExecutorService service = Executors.newSingleThreadExecutor();
+try {
+    // Add tasks to thread executor
+} finally {
+    service.shutdown();
+}
+service.awaitTermination(1, TimeUnit.MINUTES);
+if (service.isTerminated()) {
+    System.out.println("Finished");
+} else {
+    System.out.println("At least one task is still running");
+}
+```
+
+**Scheduling Tasks**
+
+**Table 13.4** ScheduledExecutorService methods
+
+![img.png](../../../../resources/img/table-13.4.png)
+
+- _schedule()_: 
+  1. Runnable veya Callable alabilir. 
+  2. Görev _delay_ süresinden sonra başlar.
+  3. Sadece bir kez çalışır.
+
+- _scheduleAtFixedRate()_: 
+  1. Sadece Runnable çalıştırır.
+  2. İlk görev _initialDelay_ süresinden sonra başlar.
+  3. Daha sonra her görev, bir önceki görevin tamamlanmasını <u>beklemeden</u>, başlamasından itibaren belirlenen 
+     _period_ süresi sonunda tekrar çalışır.
+
+- _scheduleWithFixedDelay()_:
+    1. Sadece Runnable çalıştırır.
+    2. İlk görev _initialDelay_ süresinden sonra başlar.
+    3. Daha sonra her görev, bir önceki görevin tamamlanmasını <u>bekler</u>. Görevin tamamlanma zamanından itibaren 
+       _period_ süresi sonunda tekrar çalışır.
+
+
+- _schedule()_ with Runnable
+```java
+ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+try {
+    service.schedule(() -> System.out.println("Monkey"), 1, TimeUnit.SECONDS);
+} finally {
+    service.shutdown();
+}
+```
+
+- _schedule()_ with Callable
+```java
+ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+try {
+    ScheduledFuture<String> future = service.schedule(() -> "Monkey", 1, TimeUnit.SECONDS);
+    System.out.println(future.get());
+} finally {
+    service.shutdown();
+}
+```
+
+- _scheduleAtFixedRate()_
+```java
+ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+service.scheduleAtFixedRate(() -> System.out.println("Monkey"),
+        3,
+        1,
+        TimeUnit.SECONDS);
+```
+
+- _scheduleWithFixedDelay()_
+```java
+ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+service.scheduleWithFixedDelay(() -> System.out.println("Monkey"),
+        3,
+        1,
+TimeUnit.SECONDS);
+```
+
+**Increasing Concurrency with Pools**
+
+**Table 13.5** Executors factory methods
+
+![img.png](../../../../resources/img/table-13.5.png)
