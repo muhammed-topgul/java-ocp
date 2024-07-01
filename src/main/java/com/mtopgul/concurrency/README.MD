@@ -283,3 +283,44 @@ Bu method bize _Future<?>_ nesnesi döner.
 **Table 13.1** ExecutorService methods
 
 ![img.png](../../../../resources/img/table-13.1.png)
+
+**Waiting for Results**
+
+**Table 13.2** Future methods
+
+![img.png](../../../../resources/img/table-13.2.png)
+
+- _isDone()_: Görev tamamlanmışsa, hata fırlatılmışsa veya iptal edilmişse **true** döner.
+- _isCancelled()_: Eğer görev normal şekilde tamamlanmadan önce iptal edilirse **true** döner.
+- _cancel(boolean mayInterruptIfRunning)_: Görevi iptal etmeye çalışır. Başarılı olursa **true** döner. Başaramaz veya 
+  görev zaten tamamlanmışsa **false** döner.
+- _get()_: Görevin sonucunu getirir. Henüz mevcut değilse sonsuza kadar bekler.
+- _get(long timeout, TimeUnit unit)_: Belirli süre içerisinde görevin sonucunu bekler. Zaman aşımına ulaşıldığında sonuç
+  hazır değilse, _checked TimeoutException_ fırlatır.
+
+Aşağıdaki kod en fazla 10 saniyeye kadar sonucu almayı bekler. Eğer 10 saniye içinde görev tamamlanmazsa _TimeoutException_
+fırlatır.
+
+_result.get()_ methodunun sonucu **null**'dır çünkü _Runnable.run()_ methodunun dönüş tipi **void**'dir.
+
+```java
+private static int counter = 0;
+public static void main(String[] args) {
+    ExecutorService service = Executors.newSingleThreadExecutor();
+    Future<?> result = service.submit(() -> {
+        for (int i = 0; i < 100_000_000; i++) {
+            counter++;
+        }
+    });
+    try {
+        result.get(10, TimeUnit.SECONDS);
+    } catch (Exception e) {
+        System.out.println("Not reached in time");
+    } finally {
+        service.shutdown();
+    }
+}
+```
+
+**Introducing Callable**
+
