@@ -277,12 +277,73 @@ durumuna geçer. Bu aşamada;
 **Submitting Tasks**
 
 ExecutorService'e birden çok şekilde task gönderebiliriz. İlki _execute()_ methodu. Bu methodun dönüş tipi **void**'tir
-yani değer dönmez.  Eğer değer dönmesini istediğimiz bir task göndermek istersek _submit()_ methodunu kullanabiliriz. 
+yani değer dönmez.  
+
+Eğer değer dönmesini istediğimiz bir task göndermek istersek _submit()_ methodunu kullanabiliriz. 
 Bu method bize _Future<?>_ nesnesi döner.
 
 **Table 13.1** ExecutorService methods
 
 ![img.png](../../../../resources/img/table-13.1.png)
+
+
+```java
+/*
+ * Below code prints:
+     I am Runnable at execute()
+     I am Runnable at submit()
+     I am Callable at submit()
+ */
+ExecutorService service = Executors.newSingleThreadExecutor();
+try {
+    service.execute(() -> System.out.println("I am Runnable at execute()"));
+    service.submit(() -> System.out.println("I am Runnable at submit()"));
+    Future<String> msg = service.submit(() ->  "I am Callable at submit()");
+    System.out.println(msg.get());
+} finally {
+    service.shutdown();
+}
+```
+
+```java
+/*
+ * Below code prints:
+     100
+     200
+     300
+     400
+ */
+ExecutorService service = Executors.newFixedThreadPool(4);
+Callable<Integer> task1 = () -> 100;
+Callable<Integer> task2 = () -> 200;
+Callable<Integer> task3 = () -> 300;
+Callable<Integer> task4 = () -> 400;
+try {
+    List<Future<Integer>> results = service.invokeAll(List.of(task1, task2, task3, task4));
+    for (Future<Integer> result : results) {
+        System.out.println(result.get());
+    }
+} finally {
+    service.shutdown();
+}
+```
+
+```java
+/*
+ * Below code prints one of 100,200,300,400 randomly        
+ */
+ExecutorService service = Executors.newFixedThreadPool(4);
+Callable<Integer> task1 = () -> 100;
+Callable<Integer> task2 = () -> 200;
+Callable<Integer> task3 = () -> 300;
+Callable<Integer> task4 = () -> 400;
+try {
+    Integer result = service.invokeAny(List.of(task1, task2, task3, task4));
+    System.out.println(result);
+} finally {
+    service.shutdown();
+}
+```
 
 **Waiting for Results**
 
@@ -301,7 +362,7 @@ Bu method bize _Future<?>_ nesnesi döner.
 Aşağıdaki kod en fazla 10 saniyeye kadar sonucu almayı bekler. Eğer 10 saniye içinde görev tamamlanmazsa _TimeoutException_
 fırlatır.
 
-_result.get()_ methodunun sonucu her zaman **null**'dır çünkü _Runnable.run()_ methodunun dönüş tipi **void**'dir.
+Aşağıda ki _result.get()_ methodunun sonucu her zaman **null**'dır çünkü _Runnable.run()_ methodunun dönüş tipi **void**'dir.
 
 ```java
 private static int counter = 0;
@@ -442,6 +503,13 @@ TimeUnit.SECONDS);
 
 **Increasing Concurrency with Pools**
 
+Bir _thread pool_, önceden oluşturulmuş ve yeniden kullanılan thread parçacıklarından oluşturulmuş bir gruptur. 
+
 **Table 13.5** Executors factory methods
 
 ![img.png](../../../../resources/img/table-13.5.png)
+
+- _newCachedThreadPool()_: Gerektiğinde yeni threadler oluşturabilen ancak daha önce oluşturulmuş threadler kullanabilir  
+  olduklarında yeniden kullanan _thread pool_'dur. Daha çok kısa süreli görevler. Thread sayısını kendisi ayarlar.
+- _newFixedThreadPool()_: Belirli sayıda thread oluşturan _thread pool_'dur.
+- _newScheduledThreadPool()_: Periyodik şekilde çalışsacak _thread pool_ oluşturur.
