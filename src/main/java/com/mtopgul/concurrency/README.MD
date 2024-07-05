@@ -513,3 +513,40 @@ Bir _thread pool_, önceden oluşturulmuş ve yeniden kullanılan thread parçac
   olduklarında yeniden kullanan _thread pool_'dur. Daha çok kısa süreli görevler. Thread sayısını kendisi ayarlar.
 - _newFixedThreadPool()_: Belirli sayıda thread oluşturan _thread pool_'dur.
 - _newScheduledThreadPool()_: Periyodik şekilde çalışsacak _thread pool_ oluşturur.
+
+---
+### `Thread-Safe Code`
+
+```java
+public class SheepManager {
+    private int sheepCount = 0;
+
+    private void incrementAndGet() {
+        System.out.print((++sheepCount) + " ");
+    }
+
+    public static void main(String[] args) {
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        try {
+            SheepManager manager = new SheepManager();
+            for (int i = 0; i < 10; i++) {
+                service.submit(manager::incrementAndGet);
+            }
+        } finally {
+            service.shutdown();
+        }
+    }
+}
+```
+
+Yukardaki kodun verebileceği olası sonuçlar:
+1 2 3 4 5 6 7 8 9 10<br/>
+1 9 8 7 3 6 6 2 4 5<br/>
+1 8 7 3 2 6 5 4 2 9<br/>
+
+Yukarda ki kodda sorun, iki farklı threadin aynı değeri okuyup önce birinin çalışıp değeri artırması ve yazması 
+ve diğer threadin eski değer üzerinden tekrar o değeri artırıp üstüne yazması. Bu duruma _race condition_ denir.
+
+**Figure 13.4** Lack of thread synchronization
+
+![img.png](img.png)
