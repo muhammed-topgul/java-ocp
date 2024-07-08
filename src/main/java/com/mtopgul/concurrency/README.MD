@@ -549,4 +549,132 @@ ve diğer threadin eski değer üzerinden tekrar o değeri artırıp üstüne ya
 
 **Figure 13.4** Lack of thread synchronization
 
-![img.png](img.png)
+![img.png](../../../../resources/img/figure-13.4.png)
+
+**Volatile**
+
+- **volatile** anathar kelimesi, bellekteki verilere erişimin tutarlı olduğunu garanti etmek için kullanılır. 
+- Birden fazla thread aynı veriye erişim sağladığında, verilerin tutarlı olmasını sağlar.
+
+- **volatile** değişkenler CPU cache yerine ana memorye yazılır. _non-volatile_ için bu kesin değildir.
+
+- Ama yine **volatile** anahtar kelimesi thread-safe değildir.
+
+```java
+private volatile int sheepCount = 0;
+private void incrementAndReport() {
+    System.out.print((++sheepCount) + " "); // 5 7 1 1 8 9 6 3 2 4 
+}
+```
+
+Yukarıda ki kod thread-safe değildir. Çünkü _++sheepCount_ işlemi atomic değildir. _++sheepCount_ işlemi 
+_sheepCount = sheepCount + 1_ işlemine eşittir. Yani değeri okur, değiştirir ve yazar. Yani 3 adımdan oluşur. **volatile**
+ise bu 3 adımın tutarlı olmasını sağlar.
+
+**Atomic Classes**
+
+Atomic action, bölünemez, süreç ortasında durmaz. Tamamen gerçekleşir ya da hiç çalışmaz. _Interleaved_ değildir.
+
+**Table 13.6** Atomic classes
+![img_1.png](../../../../resources/img/table-13.6.png)
+
+**Table 13.7** Common atomic methods
+![img.png](../../../../resources/img/table-13.7.png)
+
+```java
+/*
+ * Below code prints:
+      2 3 1 4 5 6 7 8 9 10
+      1 4 3 2 5 6 7 8 9 10
+      1 4 3 5 6 2 7 8 10 9
+ */
+private final AtomicInteger sheepCount = new AtomicInteger(0);
+private void incrementAndReport() {
+    System.out.print((sheepCount.incrementAndGet()) + " ");
+}
+```
+
+- Önceki örneklerden farklı olarak 1-10 arasında ki tüm sayılar bastırılır.
+- Hiçbir değer kaybı yaşanmaz. Aynı sayıyı iki kere yazmaz.
+- Ama sırası hala garanti değildir. Her çalışmada farklı bir sonuç verir.
+
+**Synchronized Blocks**
+
+- Atomic sınıflar tek bir değişkeni korumak için yeterli olsada. Bir dizi komut yürütmemiz veya method çağırmamız gerektiğinde
+yeterli olmayacaktır.
+- Bunun için bir _monitor_ diğer bir adıyla _lock_ kullanılabilir. Monitor _mutual exclusion_ destekler.
+- _Mutual exclusion_, belirli bir zamanda belirli bir kod parçasını tek bir threadin çalıştırdığı bir özelliktir.
+- Java, da her objenin tek bir kilidi vardır. Bu kilide, _intrinsic lock_ veya _monitor lock_ denir.
+- Kilidi bir thread ele geçirdiğinde başka bir thread bu kilidi ele geçiremez. Kilide sahip olan thread işini bitirdiğinde 
+kildi bırakır. Bu sayede diğer threadler de kilide erişip çalışmaya devam edebilir.
+- **synchronized** anahtar kelimesi sadece _methodlar_ veya _bloklarda_ kullanılabilir. Değişkenler veya sınıflarda kullanılamaz.
+
+Aşağıda ki kod, threadlerin oluşturulmasını synchronized ediyor, çalışmasını değil. Bu yüzden beklediğimiz gibi çalışmaz.
+```java
+public class SheepManager {
+    private int sheepCount = 0;
+
+    private void incrementAndReport() {
+        System.out.print((++sheepCount) + " ");
+    }
+
+    public static void main(String[] args) throws Exception {
+        SheepManager manager = new SheepManager();
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 10; i++) {
+            synchronized (manager) { // Bu kod threadlerin oluşturulmasını synchronized ediyor, çalışmasını değil.
+                service.submit(manager::incrementAndReport); // 8 1 4 2 3 9 5 10 6 7 
+            }
+        }
+        service.shutdown();
+    }
+}
+```
+
+Doğru kod parçası aşağıda ki gibidir. Threadlerin çalıştırdığı method **synchronized** bloğa sahip.
+```java
+public class SheepManager {
+    private int sheepCount = 0;
+
+    private void incrementAndReport() {
+        synchronized (this) {
+            System.out.print((++sheepCount) + " ");
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        SheepManager manager = new SheepManager();
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 10; i++) {
+            service.submit(manager::incrementAndReport); // 1 2 3 4 5 6 7 8 9 10
+        }
+        service.shutdown();
+    }
+}
+```
+
+**Synchronized Methods**
+
+Aşağıda ki methodlar block ve method synchronized olarak birebir eşittir.
+
+```java
+// Instance methods
+void sing0() {
+    synchronized (this) {
+        System.out.println("La la la!");
+    }
+}
+synchronized void sing1() {
+    System.out.println("La la la!");
+}
+
+// Static methods
+static void dance0() {
+    synchronized (SheepManager.class) {
+        System.out.println("La la la!");
+    }
+}
+synchronized static void dance1() {
+    System.out.println("La la la!");
+}
+```
