@@ -678,3 +678,188 @@ synchronized static void dance1() {
     System.out.println("La la la!");
 }
 ```
+
+**Lock Framework**
+
+- **synchronized** bloklar limitli özelliklere sahiptirler. Örneğin bir kilidin mevcut olup olmadığını kontrol etmek ve eğer
+mevcut değilse başka bir görevi gerçekleştirmek istersek ne olur?
+
+- Bununla birlikte kilit hiç bir zaman kullanılamıyorsa ve üzerinde **synchronized** yaparsak sonsuza kadar bekleyebiliriz.
+
+- Concurrency API içerisinde **synchronized** anahtar kelimesine benzeyen ama çok daha fazla özellik içeren _Lock_ 
+arayüzü vardır. Herhangi bir nesne üzerinde senkronizasyon yapmak yerine, _Lock_ arayüzünü uygulayan bir nesneyi kilitleyebiliriz.
+
+```java
+// Implementation #1 with a synchronized block
+Object object = new Object();
+synchronized(object) {
+    // Protected code    
+}
+
+
+// Implementation #2 with a lock
+Lock lock = new ReentrantLock();
+try {
+    lock.lock();
+    // Protected code    
+} finally {
+    lock.unlock();
+}
+```
+
+- Eğer bir thread _lock()_ methodunu çağırıp kilidi elde ederse diğer tüm threadler bu threadin _unlock()_ methodunu 
+çağırmasını bekleyecektir.
+- ReentrantLock sınıfında **boolean** _fairness_ parametresi alan bir _constructor_ bulunur. Eğer parametre **true** ise
+kilit, threadlerin talep ettiği sıraya göre verilecektir. Varsayılanda bu **false**'dur.
+- _lock()_ methodunu çağırmadan _unlock()_ methodunu çağırırsak _IllegalMonitorStateException_ fırlatır.
+```java
+Lock lock = new ReentrantLock();
+lock.unlock(); // IllegalMonitorStateException 
+```
+
+&#20; **Attempting to Acquire a Lock**
+
+Bir thread sonsuza kadar kilidi elde etmek için bekleyebilir. Bunun için _tryLock()_ methodu kullanılabilir.
+
+**Table 13.8** Lock methods
+
+![img.png](../../../../resources/img/table-13.8.png)
+
+```java
+private static void printHello(Lock lock) {
+    try {
+        lock.lock();
+        System.out.println("Hello");
+    } finally {
+        lock.unlock();
+    }
+}
+
+public static void main(String[] args) {
+    Lock lock = new ReentrantLock();
+    new Thread(() -> printHello(lock)).start();
+    if (lock.tryLock()) {
+        try {
+            System.out.println("Lock obtained.");
+        } finally {
+            lock.unlock();
+        }
+    } else {
+        System.out.println("Unable to acquire lock.");
+    }
+}
+```
+
+Yukarıdaki kod kesin olarak _Hello_ yazdırır. Çünkü o blok _lock()_ ile çağrılmış. Ama ikinci blokta _Lock obtained_ veya
+_Unable to acquire lock_ yazabilir. Çünkü o blok _tryLock()_ ile çağrılmış.
+
+&#20; **Acquiring the Same Lock Twice**
+
+Lock üzerinde çağrılan _lock()_ sayısı kadar _unlock()_ çağrılmalıdır. Diğer durumda ilk giren thread kilidi hiç bir zaman
+bırakmayacağı için diğer threadler kilidi alamazlar.
+
+```java
+/*
+ * Below code prints:
+      Lock obtained, entering the protected code.
+      Lock cannot obtained!
+      Lock cannot obtained!
+      Lock cannot obtained!
+ */
+private static final Lock lock = new ReentrantLock(true);
+
+private static void performTask() {
+    if (lock.tryLock()) {
+        try {
+            lock.lock();
+            System.out.println("Lock obtained, entering the protected code.");
+        } finally {
+            lock.unlock();
+            // lock.unlock();
+        }
+    } else {
+        System.out.println("Lock cannot obtained!");
+    }
+}
+
+public static void main(String[] args) {
+    new Thread(Test::performTask).start();
+    new Thread(Test::performTask).start();
+    new Thread(Test::performTask).start();
+    new Thread(Test::performTask).start();
+}
+```
+
+**CyclicBarrier**
+
+- Birden fazla threadin belirli görevleri grup olarak yapması için kullanılır.
+- Örneğin hayvanat bahçesinde aslan kafeslerini temizlemek 3 adımdan oluşur:
+  1. Kafesten aslanları çıkar.
+  2. Kafesleri temizle.
+  3. Aslanları tekrar kafese koy.
+- Bir thread temizliği bitirdikten sonra diğer tüm threadlerin temizliği bitirmesini bekleyecek. (Tüm adımlar için geçerlidir.)
+- Tüm bu işler tek bir thread ile yapılabilir ama bu yavaş olur. Bu yüzden multi-thread kullanabiliriz.
+
+```java
+/*
+ * Below code prints:
+      pool-1-thread-3 is removing lions
+      pool-1-thread-2 is removing lions
+      pool-1-thread-4 is removing lions
+      pool-1-thread-1 is removing lions
+      *** Step Passed ***
+      pool-1-thread-4 is cleaning the pen
+      pool-1-thread-3 is cleaning the pen
+      pool-1-thread-2 is cleaning the pen
+      pool-1-thread-1 is cleaning the pen
+      *** Step Passed ***
+      pool-1-thread-1 is adding lions
+      pool-1-thread-3 is adding lions
+      pool-1-thread-4 is adding lions
+      pool-1-thread-2 is adding lions
+ */
+public class LionPenManager {
+    private void removeLions() {
+        System.out.println(Thread.currentThread().getName() + " is removing lions");
+    }
+
+    private void cleanPen() {
+        System.out.println(Thread.currentThread().getName() + " is cleaning the pen");
+    }
+
+    private void addLions() {
+        System.out.println(Thread.currentThread().getName() + " is adding lions");
+    }
+
+    private void performTask(CyclicBarrier cb) {
+        try {
+            removeLions();
+            cb.await(); // Waits all tasks to finish
+
+            cleanPen();
+            cb.await(); // Waits all tasks to finish
+            // cb.await(1, TimeUnit.SECONDS);
+
+            addLions();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args) {
+        LionPenManager manager = new LionPenManager();
+        ExecutorService service = Executors.newFixedThreadPool(4);
+
+        // CyclicBarrier cb = new CyclicBarrier(4);
+        CyclicBarrier cb = new CyclicBarrier(4, () -> System.out.println("*** Step Passed ***"));
+
+        try {
+            for (int i = 0; i < 4; i++) {
+                service.submit(() -> manager.performTask(cb));
+            }
+        } finally {
+            service.shutdown();
+        }
+    }
+}
+```
