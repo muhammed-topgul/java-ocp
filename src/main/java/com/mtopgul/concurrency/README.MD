@@ -863,3 +863,132 @@ public class LionPenManager {
     }
 }
 ```
+
+---
+### `Concurrent Collections`
+
+**Memory Consistency Error**
+
+Non-concurrent veri yapılarında aynı anda okuma-yazma yaptığımızda _ConcurrentModificationException_ fırlatır.
+
+```java
+var foodData = new HashMap<String, Integer>();
+foodData.put("penguin", 1);
+foodData.put("flamingo", 2);
+for (String key : foodData.keySet()) {
+    foodData.remove(key); // ConcurrentModificationException on second iteration
+}
+```
+
+```java
+var foodData = new ConcurrentHashMap<String, Integer>();
+foodData.put("penguin", 1);
+foodData.put("flamingo", 2);
+for (String key : foodData.keySet()) {
+    foodData.remove(key);
+}
+```
+
+**Working with Concurrent Classes**
+
+**synchronized** block veya method dışında bir collection'ı değiştiren birden fazla thread varsa 
+_concurrent collections_'ları kullanmamız gerekir. _Concurrent collection_ olmadığı durumda collection'a erişen birden
+fazla thread olursa exception veya bozuk data ortaya çıkabilir.
+
+Eğer collection ve içerdiği objeler _immutable_ özelliğe sahipse _concurrent collection_'a gerek kalmaz. Immutable objeler
+değişmezler, doğal olarak corrupt veri olmaz.
+
+**Table 13.9** Concurrent collection classes
+
+![img.png](../../../../resources/img/table-13.9.png)
+
+Yukarda ki listede bir çok veri yapısı _non-concurrent_ tiplerinin muadilidir. 
+
+CopyOnWrite sınıfları biraz farklıdır. Bu sınıflarda güncelle yapıldığında mevcut verinin kopyası alınarak o veriler
+üzerinde değişiklikler yapılarak mevcut referansa atanır. Yani her güncellemede yeni bir veri yapısı oluşturulur.
+
+```java
+List<Integer> list = new ArrayList<>(List.of(4, 3, 42));
+for (var n : list) {
+    System.out.print(n + " ");
+    list.add(n + 1); // ConcurrentModificationException on second iteration
+}
+System.out.println();
+System.out.println(list);
+```
+
+```java
+List<Integer> list = new CopyOnWriteArrayList<>(List.of(4, 3, 42));
+for (var n : list) {
+    System.out.print(n + " "); // 4 3 42
+    list.add(n + 1);
+}
+System.out.println();
+System.out.println(list);      // [4, 3, 42, 5, 4, 43]
+```
+
+**Table 13.10** Synchronized Collections methods
+
+![img.png](../../../../resources/img/table-13.10.png)
+
+- Eğer elimizde bir collection varsa ve bunu **synchronized** etmek istiyorsak tabloda ki methodları kullanabiliriz.
+Concurrent collection'lar Synchronized collection'lardan daha performanslı çalışır.
+- Synchronized collection'lar normal collection'lar gibi read-write işlemi sırasında _ConcurrentModificationException_ fırlatırlar.
+- Synchronized collection üzerinde yapılan değişiklik bağlantını _non-synchronized_ collection'a da yansır.
+
+---
+### `Identifying Threading Problems`
+
+Üç adet _Liveness_ sorunu vardır.
+1. **Deadlock**: İki veya daha fazla threadin bir birlerini sonsuza kadar beklemesi sonucu ortaya çıkar.
+   ```java
+   class Food {}
+   class Water {}
+   
+   record Fox(String name) {
+       public void eatAndDrink(Food food, Water water) {
+           synchronized (food) {
+               System.out.println(name + " got food!");
+               move();
+               synchronized (water) {
+                   System.out.println(name + " got water!");
+               }
+           }
+       }
+       
+       public void drinkAndEat(Food food, Water water) {
+           synchronized (water) {
+               System.out.println(name + " got water!");
+               move();
+               synchronized (food) {
+                   System.out.println(name + " got food!");
+               }
+           }
+       }
+       
+       public void move() {
+           try {
+               Thread.sleep(100);
+           } catch (InterruptedException e) {
+               throw new RuntimeException(e);
+           }
+       }
+       
+       public static void main(String[] args) {
+           var foxy = new Fox("Foxy");
+           var tails = new Fox("Tails");
+           var food = new Food();
+           var water = new Water();
+           var service = Executors.newScheduledThreadPool(10);
+           try {
+               service.submit(() -> foxy.eatAndDrink(food, water));
+               service.submit(() -> tails.drinkAndEat(food, water));
+           } finally {
+               service.shutdown();
+           }
+       }
+   }
+   ```
+2. **Starvation**: Bir threadin kilide erişiminin sürekli reddedilmesi durumunda ortaya çıkar. Thread aktiftir ama işini yapamaz.
+3. **Livelock**: Threadlerin deadlock'a girdiklerini anlayarak kilitleri bırakmasıdır. Fakat her iki threadde sürekli kilit
+   değiştirmesine karşın her zaman ellerinde bir kilit olduğu için işlerini tamamlayamıyorlar. Özelleşmiş bir starvation durumudur.
