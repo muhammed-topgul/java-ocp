@@ -992,3 +992,79 @@ Concurrent collection'lar Synchronized collection'lardan daha performanslı çal
 2. **Starvation**: Bir threadin kilide erişiminin sürekli reddedilmesi durumunda ortaya çıkar. Thread aktiftir ama işini yapamaz.
 3. **Livelock**: Threadlerin deadlock'a girdiklerini anlayarak kilitleri bırakmasıdır. Fakat her iki threadde sürekli kilit
    değiştirmesine karşın her zaman ellerinde bir kilit olduğu için işlerini tamamlayamıyorlar. Özelleşmiş bir starvation durumudur.
+
+---
+### `Parallel Streams`
+
+Şimdiye kadar gördüğümüz streamlerin hepsi _serial stream_'di. _Serial stream_: sonuçların sıralı olduğu ve aynı anda tekbir
+kaydın işlendiği akıştır.
+
+_Parallel stream_: Birden fazla threadi kullanarak sonuçların aynı anda (_concurrent_) işlendiği akışlardır. Parallel 
+stream performans artırdığı gibi beklenen sonuçlarıda değiştirir. Yani çıktı uygulama tamamlanana kadar bilinemez.
+
+**Creating Parallel Stream**
+
+Parallel stream, stream üzerinden _parallel()_ veya collection üzerinden _parallelStream()_ methodu ile 
+oluşturulabilir.
+```java
+List<Integer> collection = List.of(1, 2);
+
+Stream<Integer> p1 = collection.stream().parallel();
+Stream<Integer> p2 = collection.parallelStream();
+```
+
+Parallel stream'de sonuçlar tahmin edilemez.
+```java
+System.out.print("Serial Stream: ");
+IntStream serial = IntStream.rangeClosed(1, 10);
+serial.forEach(n -> System.out.print(n + ","));
+System.out.print("\nParallel Stream: ");
+
+IntStream parallel = IntStream.rangeClosed(1, 10).parallel();
+parallel.forEach(n -> System.out.print(n + ","));
+
+/* #OUTPUT
+   Serial Stream: 1,2,3,4,5,6,7,8,9,10,
+   Parallel Stream: 7,6,9,10,8,3,4,2,1,5,     
+ */
+```
+
+```java
+System.out.println("Serial Stream: ");
+IntStream serial = IntStream.rangeClosed(1, 10);
+serial.forEach(n -> {
+    System.out.println("Thread: " + Thread.currentThread().getName() + ", value: " + n);
+});
+
+System.out.println("\nParallel Stream: ");
+IntStream parallel = IntStream.rangeClosed(1, 10).parallel();
+parallel.forEach(n -> {
+    System.out.println("Thread: " + Thread.currentThread().getName() + ", value: " + n);
+});
+
+/* #OUTPUT
+   Serial Stream: 
+   Thread: main, value: 1
+   Thread: main, value: 2
+   Thread: main, value: 3
+   Thread: main, value: 4
+   Thread: main, value: 5
+   Thread: main, value: 6
+   Thread: main, value: 7
+   Thread: main, value: 8
+   Thread: main, value: 9
+   Thread: main, value: 10
+   
+   Parallel Stream: 
+   Thread: main, value: 7
+   Thread: main, value: 6
+   Thread: main, value: 9
+   Thread: main, value: 10
+   Thread: ForkJoinPool.commonPool-worker-2, value: 8
+   Thread: ForkJoinPool.commonPool-worker-1, value: 3
+   Thread: main, value: 2
+   Thread: ForkJoinPool.commonPool-worker-1, value: 4
+   Thread: ForkJoinPool.commonPool-worker-3, value: 5
+   Thread: ForkJoinPool.commonPool-worker-2, value: 1     
+ */
+```
