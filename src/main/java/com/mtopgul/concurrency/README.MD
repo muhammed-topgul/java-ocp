@@ -1068,3 +1068,113 @@ parallel.forEach(n -> {
    Thread: ForkJoinPool.commonPool-worker-2, value: 1     
  */
 ```
+
+**Parallel Decomposition**
+
+Bir görevi alıp, aynı anda gerçekleştirebilecek daha küçük parçalara ayırma ve ardınan sonuçları yeniden birleştime sürecidir.
+
+Aşağıdaki kod parçası serial olarak çalışır ve tamamlanması için yaklaşık 10 saniye sürer. Sonuçlar sıralı ve tahmin edilebilir.
+```java
+public static void main(String[] args) {
+    long start = System.currentTimeMillis();
+    List.of(1, 2, 3, 4, 5)
+            .stream()
+            .map(Test::doWork)
+            .forEach(s -> System.out.print(s + " "));
+    System.out.println();
+    var timeTaken = (System.currentTimeMillis() - start);
+    System.out.println("\nTime: " + timeTaken + " milli seconds");
+}
+
+private static int doWork(int input) {
+    try {
+        Thread.sleep(2000);
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+    return input;
+}
+
+/* #OUTPUT
+   1 2 3 4 5 
+   Time: 10049 milli seconds     
+ */
+```
+
+Aşağıdaki kod parçası parallel olarak çalışır ve tamamlanması yaklaşık 2 saniye sürer. Sonuçlar rastgele ve tahmin edilemez.
+```java
+public static void main(String[] args) {
+    long start = System.currentTimeMillis();
+    List.of(1, 2, 3, 4, 5)
+            .parallelStream()
+            .map(Test::doWork)
+            .forEach(s -> System.out.print(s + " "));
+   
+    var timeTaken = (System.currentTimeMillis() - start);
+    System.out.println("\nTime: " + timeTaken + " milli seconds");
+}
+
+/* #OUTPUT
+   3 1 4 5 2 
+   Time: 2012 milli seconds    
+ */
+```
+
+Eğer streamdeki değerlerin sıralı şekilde çıktı vermesini istiyorsak **.forEachOrdered()** methodunu kullanabiliriz. Bu
+method birazda olsa performans kaybına neden olur fakat yinede parallel streamin performans avantajlarından yararlanırız.
+
+```java
+public static void main(String[] args) {
+    long start = System.currentTimeMillis();
+    List.of(1, 2, 3, 4, 5)
+            .parallelStream()
+            .map(Test::doWork)
+            .forEachOrdered(s -> System.out.print(s + " "));
+  
+    var timeTaken = (System.currentTimeMillis() - start);
+    System.out.println("\nTime: " + timeTaken + " milli seconds");
+}
+
+/* #OUTPUT
+   1 2 3 4 5 
+   Time: 2013 milli seconds    
+ */
+```
+
+**Parallel Reductions**
+
+Aşağıda ki kodun çıktısı tahmin edilemez. Tamamen rastgeledir.
+```java
+System.out.print(List.of(1,2,3,4,5,6)
+ .parallelStream()
+ .findAny()
+ .get());
+```
+
+_findFirst()_, _limit()_ ve _skip()_ gibi sıranın önemli olduğu işlemlerde senkronizasyon yapılır. Yani serial stream ile
+aynı sonuçları döner. Buda performans kaybına neden olabilir.
+
+> Java'da tüm streamler varsayılan olarak sıralıdır. Sıralı bir streamden sırasız bir stream oluşturabilmek mümkündür. 
+>```java
+> List.of(1,2,3,4,5,6).stream().unordered();
+>```
+> _unordered()_ methodunu çağırmak streami yeniden sıralamaz. Sadece JVM'e mevcut stream için sıranın önemsiz olduğunu belirtir.
+> 
+> Serial bir streami unordered yapmamızın bir etkisi olmayacaktır fakat parallel streamlerde kullanıldığında büyük bir 
+> performans iyileştirmesi sağlayabilir.
+
+
+**Combining Results with Reduce**
+
+_reduce()_ methodu her zaman (parallel veya serial olması farketmez) _wolf_ sonucunu bastırır. Tek fark eğer serial 
+olursa _combiner_ parametresi hiç çalıştırılmaz. 
+```java
+String text = List.of('w', 'o', 'l', 'f')
+        .parallelStream()
+        .reduce(
+                "",
+                (s1, c) -> s1 + c,
+                (s2, s3) -> s2 + s3 // combiner (serial streamlerde çalıştırılmaz)
+        );
+System.out.println(text); // wolf
+```
