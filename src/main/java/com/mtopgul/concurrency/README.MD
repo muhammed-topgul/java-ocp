@@ -400,7 +400,7 @@ public interface Runnable {
 _Runnable_ ve _Callable_ arayüzleri benzerdir. _Callable_ arayüzü _call()_ methoduna sahiptir. Bu method dönüş tipine 
 sahiptir ve _Exception_ fırlatır.
 
-Geriye değer döndüğü için _Callable, Runnable_ yerine tercih edilir. Executer
+Geriye değer döndüğü için _Callable, Runnable_ yerine tercih edilir.
 
 ExecutorService üzerinde _submit()_ methodunun _Runnable_ ve _Callable_ parametre alan iki overloaded versiyonu bulunur.
 
@@ -1178,3 +1178,21 @@ String text = List.of('w', 'o', 'l', 'f')
         );
 System.out.println(text); // wolf
 ```
+
+---
+### `Review Questions Notes`
+
+- _tryLock()_ methodu **boolean** değer döner. Kilidi elde etmek için sonsuza kadar beklemez. Hemen cevabıdöner. 
+  Yani kilidi her zaman elde edemeyebilir. Bu yüzden **if** ile kontrol edilmelidir. Eğer kilit elde edilirse _unlock()_
+  methodu çağrılmalıdır. Aksi halde _IllegalMonitorStateException_ fırlatır.
+  ```java
+   if (lock.tryLock()) {
+        try {
+            System.out.println("Lock obtained.");
+        } finally {
+            lock.unlock();
+        }
+    }
+  ```
+  
+- _Callable.call()_ methodu, geri dönüş tipine sahiptir ve _Exception_ fırlatır. _Runnable.run()_ **void**'dir ve _Exception_ fırlatmaz.
