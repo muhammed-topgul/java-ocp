@@ -1196,3 +1196,6 @@ System.out.println(text); // wolf
   ```
   
 - _Callable.call()_ methodu, geri dönüş tipine sahiptir ve _Exception_ fırlatır. _Runnable.run()_ **void**'dir ve _Exception_ fırlatmaz.
+- _CopyOnWriteArrayList_ for loop üzerinde orjinal listesini korur. Fakat _ConcurrentSkipListSet_ her yeni eleman 
+  eklendiğinde for loop üzerşnde bulunan listeyide günceller.
+- _awaitTermination()_ methodu thread'i uyutur.
