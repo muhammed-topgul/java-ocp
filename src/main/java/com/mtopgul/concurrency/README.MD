@@ -1199,3 +1199,5 @@ System.out.println(text); // wolf
 - _CopyOnWriteArrayList_ for loop üzerinde orjinal listesini korur. Fakat _ConcurrentSkipListSet_ her yeni eleman 
   eklendiğinde for loop üzerşnde bulunan listeyide günceller.
 - _awaitTermination()_ methodu thread'i uyutur.
+- _execute()_ methodu sadece _Runnable_ parametre alır. _submit()_ methodu ise hem _Runnable_ hem _Callable_ parametre alır.
+- _future.get(1, TimeUnit.SECONDS)_ methodu belirtilen zaman içinde sonuç almazsa hata fırlatır.
