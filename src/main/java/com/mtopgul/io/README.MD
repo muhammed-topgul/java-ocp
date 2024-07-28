@@ -39,3 +39,67 @@ _**fish/shark**/swim.txt_
 
 Sembolik link kullanıcılar görünmezdir. Bu işlemi işletim sistemi halleder. Java'da _I/O_ sembolik linki desteklemez 
 fakat _NIO.2_ destekler.
+
+**Creating File or Path**
+
+File sistemde yer alan bir dosya yada klasörü temsil edecek bir oluşturmamız gereklidir. Bunun için _java.io.File_ sınıfını
+veya _java.nio.file.Path_ sınıfını kullanabiliriz. _File_ veya _Path_ sınıfı dosya içeriğini okuyamaz veya dosyaya veri 
+yazamaz.
+
+_java.io.File_ bir sınıftır. _java.nio.file.Path_ ise bir **interface**'dir.
+
+- **Creating a File**
+```java
+File file1 = new File("C:\\tiger\\data\\stripes.txt");
+File file2 = new File("C:\\tiger", "data\\stripes.txt");
+File parent = new File("C:\\tiger");
+File file3 = new File(parent, "data\\stripes.txt");
+
+System.out.println(file1.exists()); // true
+System.out.println(file2.exists()); // true
+System.out.println(file3.exists()); // true
+```
+
+- **Creating a Path**
+```java
+// Path.of()
+Path path1 = Path.of("C:\\tiger\\data\\stripes.txt");
+Path path2 = Path.of("C:", "tiger", "data", "stripes.txt");
+// Paths.of()
+Path path3 = Paths.get("C:\\tiger\\data\\stripes.txt");
+Path path4 = Path.of("C:", "tiger", "data", "stripes.txt");
+
+System.out.println(**Files.exists(path1)); // true
+System.out.println(Files.exists(path2)); // true
+System.out.println(Files.exists(path3)); // true
+System.out.println(Files.exists(path4)); // true
+```
+
+**Path from the _FileSystems_ Class**
+```java
+Path path1 = FileSystems.getDefault().getPath("C:\\tiger\\data\\stripes.txt");
+Path path2 = FileSystems.getDefault().getPath("C:", "tiger", "data", "stripes.txt");
+
+System.out.println(Files.exists(path1)); // true
+System.out.println(Files.exists(path2)); // true
+```
+
+- **Switching Between File and Path**
+
+```java
+File file = new File("rabbit");
+Path nowPath = file.toPath();
+File backToFile = nowPath.toFile();
+```
+
+---
+### `Operationg on File and Path`
+
+**Using Shared Functionality**
+
+**Table 14.3** Common _File_ and _Path_ operations
+![img.png](img.png)
+
+**Table 14.4** Common _File_ and _Files_ operations
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
