@@ -98,8 +98,9 @@ File backToFile = nowPath.toFile();
 **Using Shared Functionality**
 
 **Table 14.3** Common _File_ and _Path_ operations
-![img.png](img.png)
+![img.png](../../../../resources/img/table-14.3.png)
 
 **Table 14.4** Common _File_ and _Files_ operations
-![img_1.png](img_1.png)
-![img_2.png](img_2.png)
+![img_1.png](../../../../resources/img/table-14.4.png)
+![img_2.png](../../../../resources/img/table-14.4.1.png)
+
