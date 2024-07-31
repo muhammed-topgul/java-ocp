@@ -124,24 +124,28 @@ public static void io(String pathname) {
 }
 ```
 
-- _io(**"C:\\data\\zoo.txt"**)_ çalıştırılısa çıktı:
-  <pre>
-  Absolute Path: C:\data\zoo.txt
-  Is Directory: false
-  Parent Path: C:\data
-  Size: 18
-  Last Modified: 1722401720205
-  </pre>
+- _io(**"C:\\data\\zoo.txt"**)_:
 
-- _io(**"C:\\data"**)_ çalıştırılısa çıktı:
-  <pre>
-  Absolute Path: C:\data
-  Is Directory: true
-  Parent Path: C:\
-      employees.txt
-      zoo-backup.txt
-      zoo.txt
-  </pre>
+_Output:_
+<pre>
+Absolute Path: C:\data\zoo.txt
+Is Directory: false
+Parent Path: C:\data
+Size: 18
+Last Modified: 1722401720205
+</pre>
+
+- _io(**"C:\\data"**)_:
+
+_Output:_
+<pre>
+Absolute Path: C:\data
+Is Directory: true
+Parent Path: C:\
+    employees.txt
+    zoo-backup.txt
+    zoo.txt
+</pre>
 
 - **Files Method**
 ```java
@@ -163,24 +167,28 @@ public static void io(String pathname) throws IOException {
 }
 ```
 
-- _io(**"C:\\data\\zoo.txt"**)_ çalıştırılısa çıktı:
-  <pre>
-  Absolute Path: C:\data\zoo.txt
-  Is Directory: false
-  Parent Path: C:\data
-  Size: 18
-  Last Modified: 2024-07-31T04:55:20.2054116Z
-  </pre>
+- _io(**"C:\\data\\zoo.txt"**)_:
 
-- _io(**"C:\\data"**)_ çalıştırılısa çıktı:
-  <pre>
-  Absolute Path: C:\data
-  Is Directory: true
-  Parent Path: C:\
-      data
-      data
-      data
-  </pre>
+_Output:_
+<pre>
+Absolute Path: C:\data\zoo.txt
+Is Directory: false
+Parent Path: C:\data
+Size: 18
+Last Modified: 2024-07-31T04:55:20.2054116Z
+</pre>
+
+- _io(**"C:\\data"**)_:
+
+_Output:_
+<pre>
+Absolute Path: C:\data
+Is Directory: true
+Parent Path: C:\
+data
+data
+data
+</pre>
 
 **Providing NIO.2 Optional Parameter**
 
@@ -211,6 +219,7 @@ for (int i = 0; i < path.getNameCount(); i++) {
 }
 ```
 
+_Output:_
 <pre>
 The Path Name: \land\hippo\harry.happy
     Element(0): land
@@ -224,3 +233,102 @@ Path path = Paths.get("/");
 System.out.println(path.getNameCount()); // 0
 System.out.println(path.getName(0));     // IllegalArgumentException
 ```
+
+- **Creating Part of the Path**
+
+_Path_ arayüzünde _subpath()_ isiminde, pathin parçalarını seçmek için bir method bulunur. İki parametre alır: _inclusive_
+beginIndex ve _exclusive_ endIndex. Bu method _String.substring()_ methoduna benzer.
+
+```java
+Path path = Paths.get("/mammal/omnivore/raccon.image");
+System.out.println("Path: " + path);
+
+for (int i = 0; i < path.getNameCount(); i++) {
+    System.out.println("    Element(" + i + "): " + path.getName(i));
+}
+
+System.out.println();
+System.out.println("subpath(0,3): " + path.subpath(0, 3));
+System.out.println("subpath(1,2): " + path.subpath(1, 2));
+System.out.println("subpath(1,3): " + path.subpath(1, 3));
+
+path.subpath(0, 4); // IllegalArgumentException
+path.subpath(1, 1); // IllegalArgumentException
+```
+
+_Output:_
+<pre>
+Path: \mammal\omnivore\raccon.image
+    Element(0): mammal
+    Element(1): omnivore
+    Element(2): raccon.image
+
+subpath(0,3): mammal\omnivore\raccon.image
+subpath(1,2): omnivore
+subpath(1,3): omnivore\raccon.image
+Exception in thread "main" java.lang.IllegalArgumentException
+</pre>
+
+- **Accessing Path Elements**
+
+```java
+Path path = Paths.get("/mammal/omnivore/raccon.image");
+
+System.out.println("Absolute Path: " + path.toAbsolutePath());
+System.out.println("File Name: " + path.getFileName());
+System.out.println("    Root: " + path.getRoot());
+
+Path currentPath = path;
+while ((currentPath = currentPath.getParent()) != null) {
+    System.out.println("    Current Path: " + currentPath);
+}
+```
+
+_Output:_
+<pre>
+Absolute Path: C:\mammal\omnivore\raccon.image
+File Name: raccon.image
+    Root: \
+    Current Path: \mammal\omnivore
+    Current Path: \mammal
+    Current Path: \
+</pre>
+
+- **Resolving Paths**
+
+_Path_'leri concat etmek için _resolve()_ methodu kullanılır. _String.concat()_'a benzer. İki tane overloaded versiyonu vardırç
+Birisi String alır diğeri Path. Eğer parametre olarak verilen değer _absolute path_ olursa doğrudan o değer geriye döner.
+
+```java
+Path path1 = Path.of("/cats/../panther");
+Path path2 = Path.of("food");
+System.out.println(path1.resolve(path2)); 
+
+Path path3 = Path.of("/turkey/food");
+System.out.println(path3.resolve("/tiger/cage"));
+```
+_Output:_
+<pre>
+\cats\..\panther\food
+\tiger\cage
+</pre>
+
+- **Relativizing a Path**
+
+Bir dosyadan diğer dosyaya nasıl gidebileceğimizi belirler.
+
+```java
+var path1 = Path.of("fish.txt");
+var path2 = Path.of("friendly/birds.txt");
+
+System.out.println(path1.relativize(path2));
+System.out.println(path1.relativize(path1));
+System.out.println(path2.relativize(path1));
+```
+
+_Output:_
+<pre>
+..\friendly\birds.txt
+
+..\..\fish.txt
+</pre>
