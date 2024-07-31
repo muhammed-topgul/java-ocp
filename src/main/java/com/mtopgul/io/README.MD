@@ -104,3 +104,123 @@ File backToFile = nowPath.toFile();
 ![img_1.png](../../../../resources/img/table-14.4.png)
 ![img_2.png](../../../../resources/img/table-14.4.1.png)
 
+- **File Methods**
+```java
+public static void io(String pathname) {
+    var file = new File(pathname);
+    if (file.exists()) {
+        System.out.println("Absolute Path: " + file.isAbsolute());
+        System.out.println("Is Directory: " + file.isDirectory());
+        System.out.println("Parent Path: " + file.getParent());
+        if (file.isFile()) {
+            System.out.println("Size: " + file.length());
+            System.out.println("Last Modified: " + file.lastModified());
+        } else {
+            for (File subFile : file.listFiles()) {
+                System.out.println("    " + subFile.getName());
+            }
+        }
+    }
+}
+```
+
+- _io(**"C:\\data\\zoo.txt"**)_ çalıştırılısa çıktı:
+  <pre>
+  Absolute Path: C:\data\zoo.txt
+  Is Directory: false
+  Parent Path: C:\data
+  Size: 18
+  Last Modified: 1722401720205
+  </pre>
+
+- _io(**"C:\\data"**)_ çalıştırılısa çıktı:
+  <pre>
+  Absolute Path: C:\data
+  Is Directory: true
+  Parent Path: C:\
+      employees.txt
+      zoo-backup.txt
+      zoo.txt
+  </pre>
+
+- **Files Method**
+```java
+public static void io(String pathname) throws IOException {
+    var path = Path.of(pathname);
+    if (Files.exists(path)) {
+        System.out.println("Absolute Path: " + path.toAbsolutePath());
+        System.out.println("Is Directory: " + Files.isDirectory(path));
+        System.out.println("Parent Path: " + path.getParent());
+        if (Files.isRegularFile(path)) {
+            System.out.println("Size: " + Files.size(path));
+            System.out.println("Last Modified: " + Files.getLastModifiedTime(path));
+        } else {
+            try (Stream<Path> stream = Files.list(path)) {
+                stream.forEach(p -> System.out.println("    " + p.getName(0)));
+            }
+        }
+    }
+}
+```
+
+- _io(**"C:\\data\\zoo.txt"**)_ çalıştırılısa çıktı:
+  <pre>
+  Absolute Path: C:\data\zoo.txt
+  Is Directory: false
+  Parent Path: C:\data
+  Size: 18
+  Last Modified: 2024-07-31T04:55:20.2054116Z
+  </pre>
+
+- _io(**"C:\\data"**)_ çalıştırılısa çıktı:
+  <pre>
+  Absolute Path: C:\data
+  Is Directory: true
+  Parent Path: C:\
+      data
+      data
+      data
+  </pre>
+
+**Providing NIO.2 Optional Parameter**
+
+**Table 14.5** Common NIO.2 method arguments
+
+![img.png](../../../../resources/img/table-14.5.png)
+![img_3.png](../../../../resources/img/table-14.5.2.png)
+
+**Interacting with NIO.2 Paths**
+
+_Path_ objeleri _immutable_'dır.
+
+```java
+Path path = Path.of("whale");
+path.resolve("krill");
+System.out.println(path); // whale
+```
+
+- **Viewing the Path**
+
+_Path_ arayüzünde path ile ilgili bilgi almak için 3 adet method bulunur (_toString()_, _getNameCount()_ and _getName(int index)_).
+
+```java
+Path path = Paths.get("/land/hippo/harry.happy");
+System.out.println("The Path Name: " + path);
+for (int i = 0; i < path.getNameCount(); i++) {
+    System.out.println("    Element(" + i + "): " + path.getName(i));
+}
+```
+
+<pre>
+The Path Name: \land\hippo\harry.happy
+    Element(0): land
+    Element(1): hippo
+    Element(2): harry.happy
+</pre>
+
+Son iki method _root directory_'i içermez.
+```java
+Path path = Paths.get("/");
+System.out.println(path.getNameCount()); // 0
+System.out.println(path.getName(0));     // IllegalArgumentException
+```
