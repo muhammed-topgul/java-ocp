@@ -199,6 +199,10 @@ data
 
 **Interacting with NIO.2 Paths**
 
+**Table 14.6** Path APIs
+
+![img.png](../../../../resources/img/table-14.6.png)
+
 _Path_ objeleri _immutable_'dır.
 
 ```java
@@ -315,9 +319,9 @@ _Output:_
 
 - **Relativizing a Path**
 
-- Bir dosyadan diğer dosyaya nasıl gidebileceğimizi belirler. 
-- Bu işlemin gerçekleşebilmesi için iki parametreninde aynı anda _absolute_ veya _relative_ olması gerekiyor. 
-- Farklı disklerde olursa (_C:\\_ ve _D:\\_) o zaman yine hata fırlatır.
+1. Bir dosyadan diğer dosyaya nasıl gidebileceğimizi belirler. 
+2. Bu işlemin gerçekleşebilmesi için iki parametreninde aynı anda _absolute_ veya _relative_ olması gerekiyor. 
+3. Farklı disklerde olursa (_C:\\_ ve _D:\\_) o zaman yine hata fırlatır.
 
 ```java
 var path1 = Path.of("fish.txt");
@@ -348,3 +352,68 @@ _Output:_
 ..\sanctuary\raven\poe.txt
 ..\..\..\habitat
 </pre>
+
+- **Normalizing a Path**
+
+_Path_ içerisinde ki gereksiz dizinleri temizler.
+
+```java
+var p1 = Path.of("./armadillo/../shells.txt");
+System.out.println(p1.normalize()); // shells.txt
+
+var p2 = Path.of("/cats/../panther/food");
+System.out.println(p2.normalize()); // \panther\food
+
+var p3 = Path.of("/../../fish.txt");
+System.out.println(p3.normalize()); // \fish.txt
+```
+
+_Output:_
+<pre>
+shells.txt
+\panther\food
+\fish.txt
+</pre>
+
+İki dizin aynı olasa bile ilk dizinde gereksiz karakterler olduğu için _equals()_ **false** döner. Fakat _normalize()_ 
+işleminden sonra ise cevap **true** olur.
+```java
+var p1 = Paths.get("/pony/../weather.txt");
+var p2 = Paths.get("/weather.txt");
+var p3 = Paths.get("/weather.txt");
+
+System.out.println(p1.equals(p2)); // false
+System.out.println(p1.normalize().equals(p2.normalize())); // true
+System.out.println(p2.equals(p3)); // true
+```
+
+_Output:_
+<pre>
+false
+true
+true
+</pre>
+
+- **Retrieving the Real File System Path**
+
+Buraya kadar kullanılan methodlarda dosya veya dizinin gerçekte olup olmaması önemli değildi. _Path_ nesneleri üzerinde 
+teorik işlemler yaptık. **_toRealPath()_** methodu, eğer dosya gerçekte yoksa hata fırlatır.
+
+- **Creating, Moving, and Deleting Files and Directories**
+
+```java
+public static Path createDirectory(Path dir, FileAttribute<?>... attrs) throws IOException
+    
+public static Path createDirectories(Path dir, FileAttribute<?>... attrs) throws IOException
+```
+
+_createDirectory()_: Tek bir dizin oluşturacaktır. Eğer dizin mevcut ise veya dizine giden üst dizinler mevcut değil ise 
+hata fırlatacaktır.
+
+_createDirectories()_: İlgili dizin ile mevcut olmayan üst dizinleri de oluşturacaktır. Tüm dizinler zaten mevcut ise 
+_createDirectories()_ hiç bir şey yapmaz.
+
+```java
+Files.createDirectory(Path.of("C:\\bison\\field"));
+Files.createDirectories(Path.of("C:\\bison\\field\\pasture\\green"));
+```
