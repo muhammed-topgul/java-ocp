@@ -315,8 +315,9 @@ _Output:_
 
 - **Relativizing a Path**
 
-Bir dosyadan diğer dosyaya nasıl gidebileceğimizi belirler. Bu işlemin gerçekleşebilmesi için iki parametreninde aynı anda
-_absolute_ veya _relative_ olması gerekiyor.
+- Bir dosyadan diğer dosyaya nasıl gidebileceğimizi belirler. 
+- Bu işlemin gerçekleşebilmesi için iki parametreninde aynı anda _absolute_ veya _relative_ olması gerekiyor. 
+- Farklı disklerde olursa (_C:\\_ ve _D:\\_) o zaman yine hata fırlatır.
 
 ```java
 var path1 = Path.of("fish.txt");
