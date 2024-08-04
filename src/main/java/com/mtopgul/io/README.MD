@@ -40,7 +40,7 @@ _**fish/shark**/swim.txt_
 Sembolik link kullanıcılar görünmezdir. Bu işlemi işletim sistemi halleder. Java'da _I/O_ sembolik linki desteklemez 
 fakat _NIO.2_ destekler.
 
-**Creating File or Path**
+### Creating File or Path
 
 File sistemde yer alan bir dosya yada klasörü temsil edecek bir oluşturmamız gereklidir. Bunun için _java.io.File_ sınıfını
 veya _java.nio.file.Path_ sınıfını kullanabiliriz. _File_ veya _Path_ sınıfı dosya içeriğini okuyamaz veya dosyaya veri 
@@ -48,7 +48,7 @@ yazamaz.
 
 _java.io.File_ bir sınıftır. _java.nio.file.Path_ ise bir **interface**'dir.
 
-- **Creating a File**
+**Creating a File**
 ```java
 File file1 = new File("C:\\tiger\\data\\stripes.txt");
 File file2 = new File("C:\\tiger", "data\\stripes.txt");
@@ -60,7 +60,7 @@ System.out.println(file2.exists()); // true
 System.out.println(file3.exists()); // true
 ```
 
-- **Creating a Path**
+**Creating a Path**
 ```java
 // Path.of()
 Path path1 = Path.of("C:\\tiger\\data\\stripes.txt");
@@ -84,7 +84,7 @@ System.out.println(Files.exists(path1)); // true
 System.out.println(Files.exists(path2)); // true
 ```
 
-- **Switching Between File and Path**
+**Switching Between File and Path**
 
 ```java
 File file = new File("rabbit");
@@ -95,7 +95,7 @@ File backToFile = nowPath.toFile();
 ---
 ### `Operationg on File and Path`
 
-**Using Shared Functionality**
+### Using Shared Functionality
 
 **Table 14.3** Common _File_ and _Path_ operations
 ![img.png](../../../../resources/img/table-14.3.png)
@@ -104,7 +104,7 @@ File backToFile = nowPath.toFile();
 ![img_1.png](../../../../resources/img/table-14.4.png)
 ![img_2.png](../../../../resources/img/table-14.4.1.png)
 
-- **File Methods**
+**File Methods**
 ```java
 public static void io(String pathname) {
     var file = new File(pathname);
@@ -147,7 +147,7 @@ Parent Path: C:\
     zoo.txt
 </pre>
 
-- **Files Method**
+**Files Method**
 ```java
 public static void io(String pathname) throws IOException {
     var path = Path.of(pathname);
@@ -190,14 +190,14 @@ data
 data
 </pre>
 
-**Providing NIO.2 Optional Parameter**
+### Providing NIO.2 Optional Parameter
 
 **Table 14.5** Common NIO.2 method arguments
 
 ![img.png](../../../../resources/img/table-14.5.png)
 ![img_3.png](../../../../resources/img/table-14.5.2.png)
 
-**Interacting with NIO.2 Paths**
+### Interacting with NIO.2 Paths
 
 **Table 14.6** Path APIs
 
@@ -211,7 +211,7 @@ path.resolve("krill");
 System.out.println(path); // whale
 ```
 
-- **Viewing the Path**
+**Viewing the Path**
 
 _Path_ arayüzünde path ile ilgili bilgi almak için 3 adet method bulunur (_toString()_, _getNameCount()_ and _getName(int index)_).
 
@@ -238,7 +238,7 @@ System.out.println(path.getNameCount()); // 0
 System.out.println(path.getName(0));     // IllegalArgumentException
 ```
 
-- **Creating Part of the Path**
+**Creating Part of the Path**
 
 _Path_ arayüzünde _subpath()_ isiminde, pathin parçalarını seçmek için bir method bulunur. İki parametre alır: _inclusive_
 beginIndex ve _exclusive_ endIndex. Bu method _String.substring()_ methoduna benzer.
@@ -273,7 +273,7 @@ subpath(1,3): omnivore\raccon.image
 Exception in thread "main" java.lang.IllegalArgumentException
 </pre>
 
-- **Accessing Path Elements**
+**Accessing Path Elements**
 
 ```java
 Path path = Paths.get("/mammal/omnivore/raccon.image");
@@ -298,7 +298,7 @@ File Name: raccon.image
     Current Path: \
 </pre>
 
-- **Resolving Paths**
+**Resolving Paths**
 
 _Path_'leri concat etmek için _resolve()_ methodu kullanılır. _String.concat()_'a benzer. İki tane overloaded versiyonu vardırç
 Birisi String alır diğeri Path. Eğer parametre olarak verilen değer _absolute path_ olursa doğrudan o değer geriye döner.
@@ -353,7 +353,7 @@ _Output:_
 ..\..\..\habitat
 </pre>
 
-- **Normalizing a Path**
+**Normalizing a Path**
 
 _Path_ içerisinde ki gereksiz dizinleri temizler.
 
@@ -394,13 +394,14 @@ true
 true
 </pre>
 
-- **Retrieving the Real File System Path**
+**Retrieving the Real File System Path**
 
 Buraya kadar kullanılan methodlarda dosya veya dizinin gerçekte olup olmaması önemli değildi. _Path_ nesneleri üzerinde 
 teorik işlemler yaptık. **_toRealPath()_** methodu, eğer dosya gerçekte yoksa hata fırlatır.
 
-- **Creating, Moving, and Deleting Files and Directories**
+### Creating, Moving, and Deleting Files and Directories
 
+**Making Directories**
 ```java
 public static Path createDirectory(Path dir, FileAttribute<?>... attrs) throws IOException
     
@@ -417,3 +418,112 @@ _createDirectories()_ hiç bir şey yapmaz.
 Files.createDirectory(Path.of("C:\\bison\\field"));
 Files.createDirectories(Path.of("C:\\bison\\field\\pasture\\green"));
 ```
+
+**Making Files**
+
+```java
+Files.createFile(Path.of("my-file-1"));
+Files.createFile(Paths.get("my-file-2"));
+Files.createDirectory(Path.of("my-folder"));
+Files.createFile(Path.of("my-folder", "my-file-3"));
+```
+
+**Copying Files**
+
+```java
+public static Path copy(Path source, Path target, CopyOption... options) throws IOException
+```
+
+Aşagıda ki kod önce dizinleri oluşturur (_files/panda_ ve _files/panda-new_). Sonra _bamboo.txt_ dosyasını. En 
+sonunda da _files/panda/bamboo.txt_ dosyasını _files/panda-new_ altına kopyalar.
+```java
+// Create folders (panda and panda-new)
+Path path = Path.of("files/panda");
+Files.createDirectories(path);
+Files.createDirectories(Path.of("files/panda-new"));
+
+// Create file
+Path bamboo = path.resolve("bamboo.txt");
+// Files.createFile(Path.of("files/panda", "bamboo.txt"));
+Files.createFile(bamboo);
+
+// Move files
+Files.copy(bamboo, Path.of("files/panda-new/bamboo.txt"));
+```
+
+Dizinler kopyalandığında _shallow copy_ yapılır. Yani dizinin altında bulunan alt dizi ve dosyalar kopyalanmaz. Aşağıda ki
+kodda _turtle_ dizininin altında _turtle1.txt_ ve _turtle2.txt_ dosyaları mevcut. Kod çalıştığında sadece _turtleCopy_  
+dizinini oluşturur altında ki dosya ve dizinleri kopyalamaz. Bunun için recursive kopyalama işlemine ihtiyaç vardır.
+
+Kod iki kez arka arkaya çalışırsa _files\turtleCopy_ dizini için _FileAlreadyExistsException_ hatası fırlatır.
+
+```java
+Files.copy(Path.of("files/turtle"), Path.of("files/turtleCopy"));
+```
+
+**Copying and Replacing Files**
+
+Varsayılan olarak _copy()_ methodunda ki hedef dosya zaten varsa _FileAlreadyExistsException_ hatası fırlatır. Bu davranışı 
+**StandardCopyOption.REPLACE_EXISTING** ile değiştirebiliriz. Aşağıda ki kod _movie.txt_ dosyası var olsa bile dosyanın
+üzerine yazar.
+
+```java
+Files.copy(Path.of("book.txt"), Path.of("movie.txt"), StandardCopyOption.REPLACE_EXISTING);
+```
+
+Yukarıda ki kod _movie.txt_ dosyası var olsa bile dosyanın _book.txt_ dosyasının içeriğini _movie.txt_ dosyasının içine 
+kopyalar.
+
+**Copying Files with I/O Streams**
+
+```java
+public static long copy(InputStream in, Path target, CopyOption... options) throws IOException
+
+public static long copy(Path source, OutputStream out) throws IOException
+```
+
+Aşağıda ki kod _Files.copy()_ ile tamamen aynı işlemi yapar. Kaynak dosyayı hedef dosyaya kopyalar. Eğer hedef dosya zaten
+mevcut ise o zaman hata fırlatır. Bunu engellemek için aynı şekilde **StandardCopyOption.REPLACE_EXISTING** varargs olarak
+methoda geçebiliriz.
+
+```java
+try (var is = new FileInputStream("book.txt")) {
+    Files.copy(is, Path.of("movie.txt"), StandardCopyOption.REPLACE_EXISTING);
+}
+```
+
+Aşağıda ki kod çalıştığında _book.txt_ dosyasını içini _System.out_'a yani konsola kopyalar ve konsola yazdırır.
+```java
+Files.copy(Path.of("book.txt"), System.out);
+```
+_Output:_
+<pre>
+Anna Karenina
+</pre>
+
+**Copying Files into a Directory**
+
+_Files.copy_ methodu hem dosyalar hemde dizinler için kullanılabilir.
+
+```java
+Path file = Path.of("food.txt");
+Path directory = Path.of("enclosure");
+Files.copy(file, directory);
+```
+
+Yukarıda ki kod çalıştığında _enclosure/food.txt_ dosyasını oluşturmaz. Çalıştığında oluşabilecek üç durum vardır:
+1. _food.txt_ yoksa _NoSuchFileException_ fırlatır.
+2. _enclosure_ dizini/dosyası varsa _FileAlreadyExistsException_ fırlatır.
+3. _enclosure_ dosyasını sonunda uzantı olmadan oluşturur ve _food.txt_ dosyasının içeriğini doğrudan bu dosyaya kopyalar.
+
+_food.txt_ dosyasını başka bir dizine kopyalamak için aşağıda ki yöntem kullanılır. Fakat bunun için _enclosure_ dizinin 
+var olması gerekir.
+```java
+Path file = Path.of("food.txt");
+Path directory = Path.of("enclosure/food.txt");
+Files.copy(file, directory);
+```
+
+**Copying Files into a Directory**
+
+Dosyaları ve dizinleri taşımak veya yeniden adlandırmak için _Files.move()_ methodu kullanılabilir.
