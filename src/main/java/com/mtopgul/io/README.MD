@@ -524,6 +524,94 @@ Path directory = Path.of("enclosure/food.txt");
 Files.copy(file, directory);
 ```
 
-**Copying Files into a Directory**
-
 Dosyaları ve dizinleri taşımak veya yeniden adlandırmak için _Files.move()_ methodu kullanılabilir.
+
+Aşağıda ki kod dizini ve dosyayı yeniden isimlendirir.
+```java
+Files.move(Path.of("C:\\user"), Path.of("C:\\user-new"));
+Files.move(Path.of("zoo.txt"), Path.of("zoo-new.txt"));
+```
+
+Aşağıda ki kod satırı dosyayı taşır. Burada dikkat edilmesi gereken durum, _user/addresses.txt_ dosyası veya _zoo_ dizini
+olmazsa kod hata fırlatır. Parent dizinleri oluşturmaz.
+
+```java
+Files.move(Path.of("user/addresses.txt"), Path.of("zoo/addresses2.txt"));
+```
+
+Aşağıda ki kod _DirectoryNotEmptyException_ fırlatır. Çünkü hedef dizin olam _zoo/reports_ dizini boş değil. Bu yüzden 
+yeniden adlandıramaz.
+```java
+Files.move(Path.of("zoo/report.txt"), Path.of("zoo/reports"), StandardCopyOption.REPLACE_EXISTING);
+```
+
+**Performing an Atomic Move**
+
+_Atomic move_ tek bir bölünmez işlem olarak yapılır. Eğer dosya sistemi bu işlemi desteklemiyorsa 
+_AtomicMoveNotSupportedException_ hatası fırlatır. Ek olarak, eğer _StandardCopyOption.ATOMIC_MOVE_ parametresi 
+_Files.copy()_ methoduna parametre olarak geçilirse yine hata fırlatır. 
+
+```java
+Files.move(Path.of("mouse.txt"), Path.of("gerbil.txt"), StandardCopyOption.ATOMIC_MOVE);
+```
+
+**Deleting a File with delete() and deleteIfExists()**
+
+```java
+public static void delete(Path path) throws IOException
+public static boolean deleteIfExists(Path path) throws IOException
+```
+
+Dizin ve dosyayı silmek için iki adet method bulunur. _deleteIfExists()_ methodu geriye **boolean** bir değer döner.
+
+Dizini silebilmek için dizinin mutlaka boş olması gerekir. Aksi takdirde _DirectoryNotEmptyException_ hatası fırlatılır.
+
+Eğer verilan _Path_ sembolik bir link ise sembolik link silinir. Sembolik linkin işaret ettiği dosya silinmez.
+
+_delete()_ methodu dosya yoksa _NoSuchFileException_ fırlatır. _deleteIfExists()_ dosya yoksa hiçbir şey yapmaz.
+
+```java
+Files.delete(Path.of("zoo/report.txt"));
+Files.deleteIfExists(Path.of("zoo/report.txt"));
+```
+
+### Comparing Files with isSameFile() and mismatch()
+
+_Files.isSameFile()_ iki dizinin/dosyanın eşitliğini kontrol etmek için _equals()_ methodundan daha gelişmiş bir methodur.
+
+_isSameFile()_ methodu iki tane path parametresi alır. Eğer path'ler gerçekte mevcut değil ise hata fırlatır. Bunun tek 
+bir istisnası vardır. Eğer _equals()_ methodu **true** ise o zaman _isSameFile()_ methodu kontrole devam etmez. Doğrudan 
+**true** cevabını döner.
+
+Aşağıda ki kodda _missing-file.txt_ dosyası gerçekte mevcut değil fakat _equals()_ **true** değer döndüğü için _isSameFile()_
+methodu hata fırlatmaz.
+```java
+Path p1 = Path.of("missing-file.txt");
+Path p2 = Path.of("missing-file.txt");
+
+System.out.println(p1.equals(p2)); // true
+System.out.println(Files.isSameFile(p1, p2)); // true
+```
+
+```java
+Path p1 = Path.of("zoo/report.txt");
+Path p2 = Path.of("zoo/../zoo/report.txt");
+
+System.out.println(p1.equals(p2)); // false
+System.out.println(Files.isSameFile(p1, p2)); // true
+```
+_Output:_
+<pre>
+false
+true
+</pre>
+
+_Files.mismatch()_ methodu dosya içeriğini kontrol eder ve geriye **long** döner. Eğer iki dosyanın _içeriği_ tamamen 
+aynıysa _-1_ aksi takdirde farklılığın bulunduğu ilk index numarasını yazar.
+
+```java
+Path p1 = Path.of("animals/lion.txt");
+Path p2 = Path.of("animals/wolf.txt");
+
+System.out.println(Files.mismatch(p1, p2)); // false
+```
