@@ -615,3 +615,24 @@ Path p2 = Path.of("animals/wolf.txt");
 
 System.out.println(Files.mismatch(p1, p2)); // false
 ```
+
+---
+### `Introducing I/O Streams`
+
+### Learning I/O Stream Nomenclature
+
+**Byte Streams vs. Character Streams**
+
+_java.io_ API io streamleri okumak ve yazmak için iki grup io stream sınıfı tanımlar. _Byte Streams_ ve _Character Streams_.
+
+- Byte I/O Streamler verileri _binary_ data olarak okur ve yazar. Sınıf isimleri _InputStream_ veya _OutputStream_ ile biter.
+- Character I/O Streamler verileri text olarak okur ve yazar. Sınıf isimleri _Reader_ veya _Writer_ ile biter.
+
+**Table 14.7** The java.io abstract stream base classes
+
+![img.png](../../../../resources/img/table-14.7.png)
+
+**Table 14.8** The java.io concrete I/O stream classes
+
+![img.png](../../../../resources/img/table-14.8.png)
+![img_1.png](../../../../resources/img/table-14.8.1.png)
