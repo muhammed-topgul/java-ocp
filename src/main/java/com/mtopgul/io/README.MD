@@ -636,3 +636,92 @@ _java.io_ API io streamleri okumak ve yazmak için iki grup io stream sınıfı 
 
 ![img.png](../../../../resources/img/table-14.8.png)
 ![img_1.png](../../../../resources/img/table-14.8.1.png)
+
+
+---
+### `Reading and Writing Files`
+
+### Using I/O Streams
+
+I/O stream sınıflarında _read()_ ve _write()_ methodları bulunur. _InputStream_ ve _Reader_ sınıflarında _read()_ methodu,
+_OutputStream_ ve _Writer_ sınıflarında ise _write()_ methodu bulunur.
+
+Aşağıda ki kodda methodlar dosyaya okuma yazma işlemi yaparlar. Her iki örnekte de **-1** streamin sonunu belirtir.
+
+```java
+public static void main(String[] args) throws IOException {
+    copy(new FileInputStream("source.txt"), new FileOutputStream("target.txt"));
+    copy(new FileReader("source.txt"), new FileWriter("target.txt"));
+}
+
+private static void copy(InputStream in, OutputStream out) throws IOException {
+    int b;
+    while ((b = in.read()) != -1) {
+        System.out.print((char) b + " ");
+        out.write(b);
+    }
+    out.close();
+}
+
+private static void copy(Reader in, Writer out) throws IOException {
+    int b;
+    while ((b = in.read()) != -1) {
+        System.out.print((char) b + " ");
+        out.write(b);
+    }
+    out.close();
+}
+```
+
+_Output:_
+<pre>
+M y   s o u r c e . M y   s o u r c e . 
+</pre>
+
+Her seferinde tek tek okuyup yazmank verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar var.
+
+```java
+private static void copy(InputStream in, OutputStream out) throws IOException {
+    int batchSize = 1024;
+    var buffer = new byte[batchSize];
+    int lengthRead;
+    while ((lengthRead = in.read(buffer, 0, batchSize)) > 0) {
+        System.out.print(lengthRead);
+        out.write(buffer, 0, lengthRead);
+        out.flush();
+    }
+    out.close();
+}
+
+// Satır satır okuyup yazar.
+private static void copy(File src, File dest) throws IOException {
+    try (var reader = new BufferedReader(new FileReader(src));
+         var writer = new BufferedWriter(new FileWriter(dest))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            writer.write(line);
+            writer.newLine();
+        }
+    }
+}
+```
+
+`var writer = new BufferedWriter(new FileWriter(dest));` şeklinde bir writer oluşturursak her seferinde dosya içeriğini 
+silip yeniden oluşturur. Her zaman sonuna eklemesini sağlamak için _append_ parametresini **true** olarak vermemiz gerekir.
+`var writer = new BufferedWriter(new FileWriter(dest, true));`
+
+Aşağıda ki kodda _BufferedWriter_ yerine _PrintWriter_ kullanınca _writer.newLine()_ methodunu çağırmamız gerekmiyor.  
+_writer.println()_ methodu bunu otomatik yapıyor. 
+
+```java
+private static void copy(File src, File dest) throws IOException {
+    try (var reader = new BufferedReader(new FileReader(src));
+         var writer = new PrintWriter(new FileWriter(dest, true))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+            writer.println(line);
+        }
+    }
+}
+```
