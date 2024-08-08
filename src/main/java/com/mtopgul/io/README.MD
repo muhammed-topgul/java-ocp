@@ -725,3 +725,114 @@ private static void copy(File src, File dest) throws IOException {
     }
 }
 ```
+
+> _PrintWriter_ ve _PrintStream_ sınıflarına karşılık gelen reader sınıfı yoktur.
+
+**Enhancing with _Files_**
+
+NIO.2 dosya okuma/yazma için daha kolay methodlar sunuyor. 
+
+```java
+public static void main(String[] args) throws IOException {
+    Path in = Path.of("source.txt");
+    readWriteAsString(in, Path.of("target1.txt"));
+    readWriteAsBytes(in, Path.of("target2.txt"));
+    readWriteAsLines(in, Path.of("target3.txt"));
+}
+
+private static void readWriteAsString(Path in, Path out) throws IOException {
+    String string = Files.readString(in);
+    Files.writeString(out, string, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+}
+
+private static void readWriteAsBytes(Path in, Path out) throws IOException {
+    byte[] bytes = Files.readAllBytes(in);
+    Files.write(out, bytes);
+}
+
+private static void readWriteAsLines(Path in, Path out) throws IOException {
+    List<String> lines = Files.readAllLines(in);
+    Files.write(out, lines);
+}
+```
+
+_readString()_, _readAllBytes()_ ve _readAllLines()_ methodları tüm dosyayı tek bir seferde okur ve hafızaya alır. Eğer 
+dosya içeriği çok uzun olursa o zaman _OutOfMemoryError_ hatası fırlatır. Java'nın bu sorun için bir çözümü var.
+
+Aşağıda ki kod lazily olarak çalışır. Yani belirli bir zamanda dosyanın küçük bir kısmı hafızada tutulur.
+
+```java
+private static void readLazily(Path in) throws IOException {
+    try (Stream<String> stream = Files.lines(in)) {
+        stream.forEach(System.out::println);
+    }
+}
+```
+
+_Output:_
+<pre>
+INFO:Server starting
+DEBUG:Processes available = 10
+WARN:No database could be detected
+DEBUG:Processes available reset to 0
+WARN:Performing manual recovery
+INFO:Server successfully started
+</pre>
+
+Daha iyi sonuclar için diğer stream methodlarından yararlanabiliriz.
+
+```java
+private static void readLazily(Path in) throws IOException {
+    try (Stream<String> stream = Files.lines(in)) {
+        stream.filter(s -> s.startsWith("WARN:"))
+                .map(s -> s.substring(5))
+                .forEach(System.out::println);
+    }
+}
+```
+
+_Output:_
+<pre>
+No database could be detected
+Performing manual recovery
+</pre>
+
+> **Files.readAllLines() vs. Files.lines()**
+> 
+> Sınav için _readAllLines()_ ve _lines()_ methodlarının farkını bilmemiz gerekiyor.
+> 
+> ```java
+> Files.readAllLines(Paths.get("birds.txt")).forEach(System.out::println);
+> Files.lines(Paths.get("birds.txt")).forEach(System.out::println);
+> ```
+> - _readAllLines()_, dosya içeriğini tek seferde okur, hafızaya kaydeder ve dosyaya yazar. 
+> 
+> - _lines()_, her satırı lazily olarak işler ve yazar. Tüm dosyayı hafızada tutması gerekmez.
+> 
+> - _readAllLines()_, methodu geriye _List<String>_ döner. _lines()_ methodu geriye _Stream<String>_ döner.
+
+**Combining with newBufferedReader() and newBufferedWriter()**
+
+```java
+private static void readWrite(File in, File out) throws IOException {
+    try (BufferedReader reader = new BufferedReader(new FileReader(in));
+         BufferedWriter writer = new BufferedWriter(new FileWriter(out))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            writer.write(line);
+            writer.newLine();
+        }
+    }
+}
+
+private static void newBuffered(Path in, Path out) throws IOException {
+    try (BufferedReader reader = Files.newBufferedReader(in);
+         BufferedWriter writer = Files.newBufferedWriter(out)) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            writer.write(line);
+            writer.newLine();
+        }
+    }
+}
+```
