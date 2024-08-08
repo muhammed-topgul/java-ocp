@@ -836,3 +836,62 @@ private static void newBuffered(Path in, Path out) throws IOException {
     }
 }
 ```
+
+---
+### `Serializing Data`
+
+Nesneleri I/O streame ve I/O streami nesnelere çevirmek için _serialization_ mekanizmasını kullanabiliriz. 
+_Serialization_, in memory olan bir nesneyi byte streame dönüştürme işlemidir. _Deserialization_ ise byte streamden nesne 
+oluşturma işlemidir.
+
+**Figure 14.6** Serialization process
+
+![img.png](../../../../resources/img/figure-14.6.png)
+
+### Applying the Serializable Interface
+
+Bir nesneyi I/O API kullanarak serileştirmek için _java.io.Serializable_ arayüzünü uygulaması gerekir.
+
+```java
+class Gorilla implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private int age;
+    private Boolean friendly;
+    private transient String favoriteFood;
+}
+```
+
+**transient** anahtar kelimesine ait alanlar serileştirilmez. Şifre gibi gizli bilgiler **transient** olarak işaretlenebilir.
+Bir değişken **transient** olarak işaretlendiğinde deserialization işlemi sonrasında değişkenin varsayılan değeri verilir. 
+
+_Serializable_ arayüzününü uygulayan sınıfların _serialVersionUID_ değişkenini tamınlaması iyi bir yaklaşımdır. Sınıf her
+değiştiğinde (Yeni bir alan ekleme/silme vb.) _serialVersionUID_ bir artırılır. Deserialization işlemi sırasında versiyon 
+uyumsuzlukları JVM'de _InvalidClassException_ hatasına neden olur.
+
+> **static** değişkenler serileştirilmez. Bu yüzden **transient** olarak işaretlenmesinin bir anlamı olmayacaktır. 
+> 
+> Sadece ismi _serialVersionUID_ olan **static** değişken serileştirilir.
+
+### Ensuring That a Class Is Serializable
+
+Eğer serileştirilmek istenen nesne _Serializable_ arayüzünü uygulamıyorsa, serileştirme sırasında _NotSerializableException_ fırlatır.
+
+Bir sınıfı serializable yapabilmek için: 
+1. Sınıf _Serializable_ arayüzünü uygulamalı.
+2. Sınıfın tüm instance değişkenleri _serializable_, **transient** veya serileştirme işlemi sırasında **null** değere sahip olmalıdır.
+
+```java
+public class Cat implements Serializable {
+ private Tail tail = new Tail();
+}
+
+public class Tail implements Serializable {
+ private Fur fur = new Fur();
+}
+
+public class Fur {}
+```
+
+_Fur_ sınıfı _Serializable_ olarak işaretlenmediği için _Cat_ sınıfı serileştirilemez. Serileştirme sırasına _fur_ değişkeni 
+**null** değere sahip olursa hata fırlatmaz. Aksi takdirde fırlatır.
