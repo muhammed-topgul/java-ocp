@@ -882,15 +882,15 @@ Bir sınıfı serializable yapabilmek için:
 2. Sınıfın tüm instance değişkenleri _serializable_, **transient** veya serileştirme işlemi sırasında **null** değere sahip olmalıdır.
 
 ```java
-public class Cat implements Serializable {
- private Tail tail = new Tail();
+public class Fur {}
+
+public class Cat implements Serializable { 
+    private Tail tail = new Tail();
 }
 
 public class Tail implements Serializable {
- private Fur fur = new Fur();
+    private Fur fur = new Fur();
 }
-
-public class Fur {}
 ```
 
 _Fur_ sınıfı _Serializable_ olarak işaretlenmediği için _Cat_ sınıfı serileştirilemez. Serileştirme sırasına _fur_ değişkeni 
@@ -915,23 +915,28 @@ class Cat implements Serializable {
     private String name;
     private int age;
     private String color = "white";
+    
     public Cat() {
         System.out.println("No-args constructor");
     }
+    
     public Cat(String name, int age, String color) {
         System.out.println("All-args constructor");
         this.name = name;
         this.age = age;
         this.color = color;
     }
+    
     public String getName() {
         System.out.println("getName");
         return name;
     }
+    
     public void setName(String name) {
         System.out.println("setName");
         this.name = name;
     }
+    
     @Override
     public String  toString() {
         return "Cat{" +
@@ -970,3 +975,127 @@ ardı edilir.
 Bir nesneyi deserialize yaptığımızda ilgili sınıfta bulunan constructorler ve _instance initializer block_'lar çalışmayacaktır.
 Deserialize işlemi yaptığımızda Java sınıf hiyerarşisinde bulunan ilk _non-serialized_ sınıfın _no-args_ constructorunu 
 çağırır.
+
+```java
+class Animal {
+    private int id;
+    private String type;
+
+    public Animal() {
+        System.out.println("Animal no-args constructor");
+    }
+
+    public Animal(int id, String type) {
+        System.out.println("Animal all-args constructor");
+        this.id = id;
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                '}';
+    }
+}
+
+class Cat extends Animal implements Serializable {
+    private String name;
+    private int age;
+    private String color = "white";
+
+    public Cat() {
+        System.out.println("Cat no-args constructor");
+    }
+
+    public Cat(String name, int age, String color, int id, String type) {
+        super(id, type);
+        System.out.println("Cat all-args constructor");
+        this.name = name;
+        this.age = age;
+        this.color = color;
+    }
+
+    public String getName() {
+        System.out.println("getName");
+        return name;
+    }
+
+    public void setName(String name) {
+        System.out.println("setName");
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Cat{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", color='" + color + '\'' +
+                ", " + super.toString() +
+                '}';
+    }
+}
+```
+_Output:_
+<pre>
+Animal all-args constructor
+Cat all-args constructor
+
+// Starting deserialize.
+Animal no-args constructor
+Cat{name='Tekir', age=2, color='white', Animal{id=0, type='null'}}
+</pre>
+
+_Animal_ sınıfının no-args constructoru çalıştırılır. _id_ ve _type_ alanları varsayılan değerlerini alıyor.
+
+---
+### `Interacting with Users`
+
+### Reading Input as an I/O Stream
+
+```java
+var reader = new BufferedReader(new InputStreamReader(System.in));
+System.out.print("Your name: ");
+String userInput = reader.readLine();
+System.out.println("You entered: " + userInput);
+```
+
+_Output:_
+<pre>
+Your name: Muhammed
+You entered: Muhammed
+</pre>
+
+### Closing System Streams
+
+_System.out_, _System.err_ ve _System.in_ yapılarını kullanırız fakat bunları asla oluşturmayız veya kapatmayız.
+
+Bu yapılar **static** ve tüm uygulama içerisinde geçerlidir. _JVM_ bunları bizim yerimize kendisi oluşturur. Bu streamler 
+_try-with-resources_ veya _close()_ methodu ile kapatılabilir. Fakat bunu asla yapmamalıyız. Çünkü bu streamler bir kez 
+kapatılırsa tüm uygulama genelinde kapatılmış olur. Bu durumda uygulamanın geriye kalan kısmında örneğin _System.out.println()_
+methodunu kullanamayız.
+
+```java
+try (var out = System.out) {
+    out.println("Inside try");
+}
+System.out.println("After try"); // Will not print
+```
+
+```java
+System.out.close();
+System.out.println("After try"); // Will not print
+```
+
+_PrintStream_ sınıfının aksine çoğu _InputStream_ uygulamaları kapanmış I/O streamler üzerinde işlem yaparsa hata fırlatır.
+
+```java
+var reader = new BufferedReader(new InputStreamReader(new FileInputStream("cat.txt")));
+reader.close();
+reader.readLine(); // throws IOException: Stream closed
+```
+
+---
+### `Working with Advanced APIs`
