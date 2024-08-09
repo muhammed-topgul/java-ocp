@@ -895,3 +895,78 @@ public class Fur {}
 
 _Fur_ sınıfı _Serializable_ olarak işaretlenmediği için _Cat_ sınıfı serileştirilemez. Serileştirme sırasına _fur_ değişkeni 
 **null** değere sahip olursa hata fırlatmaz. Aksi takdirde fırlatır.
+
+### Storing Data with ObjectOutputStream and ObjectInputStream
+
+_ObjectInputStream_ sınıfı nesneyi deserialize etmek için, _ObjectOutputStream_ ise nesneyi serialize etmek için kullanılır.
+İki sınıfta high-level streamdir. İki sınıfında bir çok methodu var fakat sınav için sadece _readObject()_ ve _writeObject()_
+methodlarına ihtiyaç var.
+
+```java
+// ObjectInputStream
+public Object readObject() throws IOException, ClassNotFoundException
+
+// ObjectOutputStream
+public void writeObject(Object obj) throws IOException
+```
+
+```java
+class Cat implements Serializable {
+    private String name;
+    private int age;
+    private String color = "white";
+    public Cat() {
+        System.out.println("No-args constructor");
+    }
+    public Cat(String name, int age, String color) {
+        System.out.println("All-args constructor");
+        this.name = name;
+        this.age = age;
+        this.color = color;
+    }
+    public String getName() {
+        System.out.println("getName");
+        return name;
+    }
+    public void setName(String name) {
+        System.out.println("setName");
+        this.name = name;
+    }
+    @Override
+    public String  toString() {
+        return "Cat{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", color='" + color + '\'' +
+                '}';
+    }
+}
+
+public static void main(String[] args) throws IOException, ClassNotFoundException {
+    var objectOutputStream = new ObjectOutputStream(new FileOutputStream("cat.serial"));
+    Cat cat = new Cat("tekir", 2, "black");
+    objectOutputStream.writeObject(cat);
+    objectOutputStream.close();
+    
+    var objectInputStream = new ObjectInputStream(new FileInputStream("cat.serial"));
+    Cat deserilaizedCat = (Cat) objectInputStream.readObject();
+    objectInputStream.close();
+    
+    System.out.println(deserilaizedCat);
+}
+```
+
+_Output:_
+<pre>
+All-args constructor
+Cat{name='tekir', age=2, color='black'}
+</pre>
+
+Deserialize işlemi sırasında hiç bir constructor veya set methodu çalışmaz. Ayrıca değişkenlerinde başlangıç değerleri göz 
+ardı edilir.
+
+### Understanding the Deserialization Creation Process
+
+Bir nesneyi deserialize yaptığımızda ilgili sınıfta bulunan constructorler ve _instance initializer block_'lar çalışmayacaktır.
+Deserialize işlemi yaptığımızda Java sınıf hiyerarşisinde bulunan ilk _non-serialized_ sınıfın _no-args_ constructorunu 
+çağırır.
