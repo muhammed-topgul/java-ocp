@@ -1099,3 +1099,99 @@ reader.readLine(); // throws IOException: Stream closed
 
 ---
 ### `Working with Advanced APIs`
+
+### Manipulating Input Streams
+
+**TABLE 14.11** Common I/O stream methods
+
+![img.png](../../../../resources/img/table-14.11.png)
+
+
+**Skipping Data**
+
+Kod çalıştığında _TRS_ sonucunu bastırır. _skip()_ methodu kaç karakter atlamışsa onu döner. _skip(1000)_ çağrıldığında 
+1000 karakterden az varsa örneğin 20 dönebilir.
+
+```java
+try (var is = new BufferedInputStream(new FileInputStream("tiger.txt"))) {
+    System.out.print((char) is.read()); // T
+    is.skip(2); // Skips I and G
+    is.read();  // Reads E but doesn't output it
+    System.out.print((char) is.read()); // R
+    System.out.print((char) is.read()); // S
+}
+```
+_Output:_
+<pre>
+TRS
+</pre>
+
+### Discovering File Attributes
+
+**Checking for Symbolic Links**
+
+```java
+Path newLink = Paths.get("symbolic.txt");
+Path target = Path.of("target.txt");
+
+Files.createFile(target);
+Files.createSymbolicLink(newLink, target);
+
+System.out.println(Files.isDirectory(Path.of("extras")));
+System.out.println(Files.isSymbolicLink(Path.of("symbolic.txt")));
+System.out.println(Files.isRegularFile(Path.of("zoo.txt")));
+
+Files.deleteIfExists(newLink);
+Files.deleteIfExists(target);
+```
+
+_Output:_
+<pre>
+true
+true
+true
+</pre>
+
+**Checking File Accessibility**
+
+_Files.isHidden()_, IOException fırlatır. Diğerleri hata fırlatmaz.
+
+```java
+System.out.print(Files.isHidden(Paths.get("/walrus.txt")));
+System.out.print(Files.isReadable(Paths.get("/seal/baby.png")));
+System.out.print(Files.isWritable(Paths.get("dolphin.txt")));
+System.out.print(Files.isExecutable(Paths.get("whale.png")));
+```
+
+**Improving Attribute Access**
+
+Dosya özelliklerini okumak için her seferinde dosyayı gidip okumak verimsiz bir yaklaşımdır. Java'da bunun için daha iyi 
+bir çözüm var. 
+
+**TABLE 14.12** The attributes and view types
+
+![img_1.png](../../../../resources/img/table-14.12.png)
+
+- _BasicFileAttributes_: Tüm işletim sistemleri tarafından desteklenen temel dosya özellikleridir.
+- _DosFileAttributes_: DOS/Windows tarafıdan desteklenen dosya özellikleridir.
+- _PosixFileAttributes_: Unix/Linux/Mac tarafından desteklenen dosya özellikleridir.
+
+```java
+Path path = Path.of("zoo.txt");
+
+BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
+System.out.println("Is a directory: " + attributes.isDirectory());
+System.out.println("Is a regular file: " + attributes.isRegularFile());
+System.out.println("Is a symbolic link: " + attributes.isSymbolicLink());
+System.out.println("Size (in bytes): " + attributes.size());
+System.out.println("Last modified: " + attributes.lastModifiedTime());
+System.out.println("Last modified: " + attributes.creationTime());
+
+DosFileAttributes dosAttributes = Files.readAttributes(path, DosFileAttributes.class);
+System.out.println("\nIs hidden: " + dosAttributes.isHidden());
+System.out.println("Is read only: " + dosAttributes.isReadOnly());
+System.out.println("Is archive: " + dosAttributes.isArchive());
+System.out.println("Is system: " + dosAttributes.isSystem());
+```
+
+### Traversing a Directory Tree
