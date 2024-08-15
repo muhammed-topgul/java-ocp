@@ -1195,3 +1195,79 @@ System.out.println("Is system: " + dosAttributes.isSystem());
 ```
 
 ### Traversing a Directory Tree
+
+Aşağıdaki kod, bir dosya içerisinde ki tüm alt dosya ve dizinleri dolaşır. _Files.walk(src, 5)_ kullanınımı ile kaç alt 
+dizine ineceğini belirtiriz.
+
+Varsayılan olarak circular path'leri engellemek için sembolik linkleri takip etmez. Sembolik linkleri aktif hale getirmek 
+için _Files.walk(src, **FileVisitOption.FOLLOW_LINKS**)_.
+```java
+public static void main(String[] args) throws IOException {
+    System.out.println(new Test().getPathSize(Path.of("src")));
+}
+
+private long getSize(Path path) {
+    try {
+        return Files.size(path);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
+
+private long getPathSize(Path src) throws IOException {
+    try(var s = Files.walk(src)) {
+        return s.parallel()
+                .filter( p -> !Files.isDirectory(p))
+                .peek(p -> System.out.println(p))
+                .mapToLong(this::getSize)
+                .sum();
+    }
+}
+```
+
+_Output:_
+<pre>
+src\main\java\com\mtopgul\beyondClasses\sealing\subclassModifier\nonsealedSubclass\MyWolf.java
+src\main\java\com\mtopgul\io\readingAndWritingFiles\usingIoStream\BufferedReaderWriterExample02.java
+src\main\java\com\mtopgul\concurrency\concurrencyApi\callable\CallableExample02.java
+src\main\resources\images\2.2-unary-operators.png
+...
+</pre>
+
+### Searching a Directory
+
+_Files.find()_ methodu, _Files.walk()_ methoduna benzer ve doğrudan belirli dosyaları aramak için kullanılır.
+
+Aşağıda ki kod, bir dizin ağacını arar ve en az 1.000 bayt boyutundaki tüm .java dosyalarını 10 derinlik sınırını 
+kullanarak yazdırır. Bu işlem _Files.walk()_ ile de yapılabilir fakat daha fazla işlem gerekecektir.
+
+```java
+Path path = Path.of("src");
+long minSize = 1000;
+
+try (var s = Files.find(
+        path,
+        10,
+        (p, f) -> f.isRegularFile()
+                && p.toString().endsWith(".java")
+                && f.size() > minSize)) {
+    s.forEach(System.out::println);
+}
+```
+
+_Output:_
+<pre>
+src\main\java\com\mtopgul\beyondClasses\enums\Season.java
+src\main\java\com\mtopgul\beyondClasses\enums\Season2.java
+src\main\java\com\mtopgul\beyondClasses\implementingInterfaces\IsColdBlooded.java
+src\main\java\com\mtopgul\beyondClasses\polymorphism\casting\Casting.java
+...
+</pre>
+
+**Table 14.14** Key APIs
+
+![img.png](../../../../resources/img/table-14.14.png)
+
+**Figure 14.8** Diagram of I/O stream classes
+
+![img_1.png](../../../../resources/img/figure-14.8.png)
