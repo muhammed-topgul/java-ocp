@@ -1271,3 +1271,7 @@ src\main\java\com\mtopgul\beyondClasses\polymorphism\casting\Casting.java
 **Figure 14.8** Diagram of I/O stream classes
 
 ![img_1.png](../../../../resources/img/figure-14.8.png)
+
+### Review Questions
+
+- _new File("/home").delete();_ işlemi boolean döner. Hata fırlatmaz.
