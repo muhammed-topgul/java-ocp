@@ -3,6 +3,7 @@ package com.mtopgul.jdbc.interfacesOfJdbc;
 import com.mtopgul.Util;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import java.sql.Statement;
  */
 public class SetupDatabase {
     public static void main(String[] args) throws Exception {
-        try (Connection conn = Util.getHsqlConnection(); Statement stmt = conn.createStatement()) {
+        try (Connection conn =  DriverManager.getConnection("jdbc:hsqldb:file:zoo"); Statement stmt = conn.createStatement()) {
             dropExisting(conn);
             createTables(conn);
             createStoredProcedures(conn);

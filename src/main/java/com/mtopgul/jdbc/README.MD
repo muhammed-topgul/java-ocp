@@ -61,3 +61,35 @@ _Output:_
 <pre>
 org.postgresql.jdbc.PgConnection@52feb982
 </pre>
+
+---
+### `Working with a PreparedStatement`
+
+**Figure 15.4** Types of statements
+
+![img.png](../../../../resources/img/figure-15.4.png)
+
+SQL'i doğrudan _Statement_ ile çalıştırmak mümkün olsa da, bunu yapmamalısınız. _PreparedStatement_ aşağıda ki nedenlerden 
+dolayı çok daha üstündür:
+
+- **Performance**: Çoğu progra benzer sorguları birden fazla kez çalıştırabilir. _PreparedStatement_'i kullandığımızda, 
+  veritabanı yazılımı genellikle sorguyu iyi çalıştırmak için bir plan tasarlar ve bunu hatırlar.
+- **Security**: _PreparedStatement_'i doğru kullandığımızda bizi _SQL injection_'lara karşı korur. 
+- **Readability**: String concat etmek okunabilirliği azaltır.
+- **Future use**: Parametre almasa bile _PreparedStatement_ kullanmak daha iyidir.
+
+_Statement_ sınavda yer almıyor.
+
+### Obtaining a PreparedStatement
+
+```java
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo");
+     PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibits")) {
+    System.out.println(ps);
+}
+```
+
+_Output:_
+<pre>
+org.hsqldb.jdbc.JDBCPreparedStatement@3bf7ca37[sql=[SELECT * FROM exhibits]]
+</pre>
