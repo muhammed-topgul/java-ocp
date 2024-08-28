@@ -93,3 +93,117 @@ _Output:_
 <pre>
 org.hsqldb.jdbc.JDBCPreparedStatement@3bf7ca37[sql=[SELECT * FROM exhibits]]
 </pre>
+
+### Executing a PreparedStatement
+
+**Modifying Data with _executeUpdate()_**
+
+Insert, update ve delete işlemleri için kullanılır. Geriye **int** değer döner. Bu değer çalıştırılan sql komutu sonucunda
+kaç adet satırın etkilendiği bilgisini döner.
+
+```java
+var insertSql = "INSERT INTO exhibits VALUES (10, 'Deer', 3)";
+var updateSql = "UPDATE exhibits SET name = '' WHERE name = 'None'";
+var deleteSql = "DELETE FROM exhibits WHERE id = 10";
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (var ps = connection.prepareStatement(insertSql)) {
+        int affectedRows = ps.executeUpdate();
+        System.out.printf("%d rows affected after insert.\n", affectedRows);
+    }
+    
+    try (var ps = connection.prepareStatement(updateSql)) {
+        int affectedRows = ps.executeUpdate();
+        System.out.printf("%d rows affected after update.\n", affectedRows);
+    }
+    
+    try (var ps = connection.prepareStatement(deleteSql)) {
+        int affectedRows = ps.executeUpdate();
+        System.out.printf("%d rows affected after delete.\n", affectedRows);
+    }
+}
+```
+
+_Output:_
+<pre>
+1 rows affected after insert.
+0 rows affected after update.
+1 rows affected after delete.
+</pre>
+
+**Reading Data with _executeQuery()_**
+
+```java
+var selectSql = "SELECT * FROM exhibits";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (var ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt(1);
+            String name = rs.getString(2);
+            System.out.println(id + " " + name);
+        }
+    }
+}
+```
+
+_Output:_
+<pre>
+1 African Elephant
+2 Zebra
+</pre>
+
+**Processing Data with _execute()_**
+
+_executeUpdate()_ ve _executeQuery()_ methodlarının yapmış olduğu işlemleri yapabiliyor. Geriye **boolean** değer döner.
+Eğer sonuç **true** ise _ResultSet_ elde edebilir, eğer **false** ise o zaman etkilenen satır sayısını alabiliriz.
+
+```java
+public static void main(String[] args) throws SQLException {
+    var insertSql = "INSERT INTO exhibits VALUES (3, 'Deer', 3)";
+    var selectSql = "SELECT * FROM exhibits";
+    try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+        try (var ps = connection.prepareStatement(insertSql)) {
+            execute(ps);
+        }
+        try (var ps = connection.prepareStatement(selectSql)) {
+            execute(ps);
+        }
+    }
+}
+
+private static void execute(PreparedStatement ps) throws SQLException {
+    boolean isResultSet = ps.execute();
+    if (isResultSet) {
+        try (ResultSet rs = ps.getResultSet()) {
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                System.out.println(id + " " + name);
+            }
+        }
+    } else {
+        int affectedRows = ps.getUpdateCount();
+        System.out.printf("%d rows affected.\n", affectedRows);
+    }
+}
+```
+
+_Output:_
+<pre>
+1 rows affected.
+1 African Elephant
+2 Zebra
+3 Deer
+</pre>
+
+**Table 15.3** SQL runnable by the execute method
+
+![img.png](../../../../resources/img/table-15.3.png)
+
+**Table 15.4** Return types of execute methods
+
+![img_1.png](../../../../resources/img/table-15.4.png)
+
+
+### Working with Parameters
