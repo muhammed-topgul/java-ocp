@@ -207,3 +207,239 @@ _Output:_
 
 
 ### Working with Parameters
+
+Değerleri paremetrik olarak geçmek için _?_ kullanabiliriz. Bu yöntem _bind variable_ olarak adlandırılır.
+
+```java
+var insertSql = "INSERT INTO names VALUES (?, ?, ?)";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+        ps.setInt(1, 58);
+        ps.setInt(2, 1);
+        ps.setString(3, "Muhammed");
+        int affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+    }
+}
+```
+
+_Output:_
+<pre>
+1 rows affected.
+</pre>
+
+Soru işareti sayısı kadar değer _bind_ edilmeli. Eksik veya fazla sayıda bind işlemi yapılırsa uygulama hata fırlatır. 
+
+```java
+var insertSql = "INSERT INTO names VALUES (?, ?, ?)";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+        ps.setInt(1, 58);
+        ps.setInt(2, 1);
+        // Missing the set for parameter number 3
+        int affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+    }
+}
+```
+
+_Output:_
+<pre style="color: red">
+java.sql.SQLException: Parameter not set
+</pre>
+
+**Table 15.5** PreparedStatement methods
+
+![img.png](../../../../resources/img/table-15.5.png)
+
+Object tip ile tüm bind işlemini yapabiliriz.
+
+```java
+var insertSql = "INSERT INTO names VALUES (?, ?, ?)";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+        ps.setObject(1, 58);
+        ps.setObject(2, 1);
+        ps.setObject(3, "Muhammed");
+        int affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+    }
+}
+```
+
+_Output:_
+<pre>
+1 rows affected.
+</pre>
+
+### Updating Multiple Records
+
+Tek bir _PreparedStatement_ ile birden fazla kaydı güncelleyebiliriz.
+
+```java
+var insertSql = "INSERT INTO names VALUES (?, ?, ?)";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+        ps.setInt(1, 100);
+        ps.setInt(2, 1);
+        ps.setString(3, "Muhammed");
+        int affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+        
+        ps.setInt(1, 101);
+        ps.setString(3, "John");
+        affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+    }
+}
+```
+
+_Output:_
+<pre>
+1 rows affected.
+1 rows affected.
+</pre>
+
+Burada dikkat edilmesi gereken durum, ikinci kayıt için 3 yerine 2 adet parametre verdik. Bu durumda _PreparedStatement_ 
+en son bind edilen değeri kullanır. Yani 2. paremetrenin değeri hala 1'dir.
+
+---
+### `Getting Data from a ResultSet`
+
+### Reading a ResultSet
+
+```java
+var idToNameMap = new HashMap<>();
+var selectSql = "SELECT id, name FROM exhibits";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            idToNameMap.put(id, name);
+        }
+    }
+    System.out.println(idToNameMap);
+}
+```
+
+_Output:_
+<pre>
+{1=African Elephant, 2=Zebra}
+</pre>
+
+Bazen veritabanından tek bir kayıt alabiliriz. Bunun için _while loop_ kullanmaya gerek yoktur.
+
+```java
+var selectSql = "SELECT count(*) as counter FROM exhibits";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            System.out.println("Count: " + rs.getInt(1));
+            System.out.println("Count: " + rs.getInt("counter"));
+        }
+    }
+}
+```
+
+_Output:_
+<pre>
+Count: 2
+Count: 2
+</pre>
+
+Olmayan bir kolan ismini veya index'i okumaya çalışırsak uygulama hata fırlatır.
+
+```java
+var selectSql = "SELECT count(*) as counter FROM exhibits";
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            System.out.println("Count: " + rs.getInt(2));
+            System.out.println("Count: " + rs.getInt("counter_new"));
+        }
+    }
+}
+```
+
+_Output:_
+<pre style="color: red">
+java.sql.SQLException: Column not found: 2
+
+java.sql.SQLException: Column not found: counter_new
+</pre>
+
+_resultSet.next()_ değeri kontrol edilmeden _resultSet_ okunursa o zaman uygulama hata fırlatır.
+
+```java
+var selectSql = "SELECT * FROM exhibits WHERE name='Not in table'";
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        System.out.println(rs.getInt(1));
+    }
+}
+```
+
+_Output:_
+<pre style="color: red">
+java.sql.SQLException: invalid cursor state
+</pre>
+
+_resultSet.next()_ çelıştırılmadan _resultSet_ okunursa uygulama hata fırlatır.
+
+```java
+var selectSql = "SELECT * FROM exhibits WHERE name='Zebra'";
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        // rs.next();
+        System.out.println(rs.getInt(1));
+    }
+}
+```
+
+_Output:_
+<pre style="color: red">
+java.sql.SQLException: invalid cursor state
+</pre>
+
+### Getting Data for a Column
+
+**Table 15.6** ResultSet get methods
+
+![img_1.png](../../../../resources/img/table-15.6.png)
+
+```java
+var sql = "SELECT id, name FROM exhibits";
+
+try (var ps = connection.prepareStatement(sql);
+     var rs = ps.executeQuery()) {
+    while (rs.next()) {
+        Object idField = rs.getObject("id");
+        Object nameField = rs.getObject("name");
+        if (idField instanceof Integer id)
+            System.out.println(id);
+        if (nameField instanceof String name)
+            System.out.println(name);
+    }
+}
+```
+
+_Output:_
+<pre>
+1
+African Elephant
+2
+Zebra
+</pre>
