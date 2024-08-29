@@ -443,3 +443,337 @@ African Elephant
 2
 Zebra
 </pre>
+
+---
+### `Calling a CallableStatement`
+
+Bazı durumlarda SQL sorgularını veritabanında saklamak daha kullanışlıdır. Özellikle çok sayıda karmaşık sorgu oludğunda
+kullanışlıdır. Bu sorgulara _Stored Procedure_ adı verilir.
+
+_Stored Procedure_'ler önceden derlenen ve veritabanında saklanan SQL kodlarıdır. Network trafiğini azaltırlar. 
+
+**Table 15.7** Sample stored procedures
+
+![img.png](../../../../resources/img/table-15.7.png)
+
+### Calling a Procedure without Parameters
+
+```java
+String sql = "{call read_e_names()}";
+
+try (CallableStatement cs = connection.prepareCall(sql)) {
+    ResultSet rs = cs.executeQuery();
+    while (rs.next()) {
+        System.out.println(rs.getString(3));
+    }
+}
+```
+
+_Output:_
+<pre>
+Elsa
+Ester
+Eddie
+</pre>
+
+### Passing an IN Parameter
+
+```java
+String sql = "{call read_names_by_letter(?)}";
+
+try (CallableStatement cs = connection.prepareCall(sql)) {
+    cs.setString("prefix", "Z");
+    // cs.setString(1, "Z");
+    ResultSet rs = cs.executeQuery();
+    while (rs.next()) {
+        System.out.println(rs.getString(3));
+    }
+}
+```
+
+_Output:_
+<pre>
+Zelda
+Zoe
+</pre>
+
+### Returning an OUT Parameter
+
+```java
+String sql = "{?= call magic_number(?)}";
+try (CallableStatement cs = connection.prepareCall(sql)) {
+    cs.registerOutParameter(1, Types.INTEGER);
+    cs.execute();
+    //cs.executeQuery(); // java.sql.SQLException: statement does not generate a result set
+    
+    System.out.println(cs.getInt("num"));
+    System.out.println(cs.getInt(1));
+}
+```
+
+_Output:_
+<pre>
+42
+42
+</pre>
+
+### Working with an INOUT Parameter
+
+```java
+String sql = "{call double_number(?)}";
+try (CallableStatement cs = connection.prepareCall(sql)) {
+    cs.setInt(1, 8);
+    cs.registerOutParameter(1, Types.INTEGER);
+    cs.execute();
+ 
+    System.out.println(cs.getInt("num"));
+    System.out.println(cs.getInt(1));
+}
+```
+
+_Output:_
+<pre>
+16
+16
+</pre>
+
+### Comparing Callable Statement Parameters
+
+**Table 15.8** Stored procedure parameter types
+
+![img_1.png](../../../../resources/img/table-15.8.png)
+
+### Using Additional Options
+
+_PreparedStatement_ ve _CallableStatement_, _type_ ve _concurrency_ parametrelerini destekler. Sınav için sadece geçerli 
+olup olmadığını bilmek yeterli.
+
+Üç adet _ResultSet_ integer _type_ değeri vardır.
+1. **ResultSet.TYPE_FORWARD_ONLY**
+2. **ResultSet.TYPE_SCROLL_INSENSITIVE**
+3. **ResultSet.TYPE_SCROLL_SENSITIVE**
+
+İki adet _ResultSet_ integer _concurrency mode_ değeri vardır.
+1. **ResultSet.CONCUR_READ_ONLY**
+2. **ResultSet.CONCUR_UPDATABLE**
+
+Bu değerler integer değerlerdir, **enum** değildirler.
+```java
+conn.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+
+conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+```
+
+Sıralamada SQL birinci sırada, _type_ ikinci sırada ve _concurrency mode_ üçüncü sıradadır.
+
+---
+### `Controlling Data with Transactions`
+
+Şuana kadar yapılan tüm değişiklikler hemen veritabanına yansıtıldı. _Commit_ bir dosyayı kaydetmeye benzer. Sınavda aksi
+belirtilmediği sürece değişiklikler otomatik olarak uygulanır. _Commit_ ve _rollback_ işlemlerini manuel olarak kontrol 
+edebiliriz.
+
+Transaction bir grup işlemin ya hep ya hiç kuralına göre çalışmasıdır. Ya hepsi başarılı bir şekilde çalışır ya da hepsi 
+_rollback_ edilir.
+
+### Committing and Rolling Back
+
+_Auto commit_ mod varsayılan olarak açıktır. İlk 2 kayıt veritanına yansıyacaktır. Fakat üçüncü kayıt hatadan dolayı
+kaydedilmeyecektir.
+
+```java
+public static void main(String[] args) throws SQLException {
+    Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo");
+    String sql = "INSERT INTO exhibits VALUES (?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, 3);
+        ps.setString(2, "Dog-1");
+        ps.setDouble(3, 1.5);
+        ps.execute();
+        
+        ps.setInt(1, 4);
+        ps.setString(2, "Dog-2");
+        ps.setDouble(3, 2.5);
+        ps.execute();
+        
+        ps.setInt(1, 3); // Throws exception. ID 3 already exist!
+        ps.setString(2, "Dog-3");
+        ps.setDouble(3, 3.5);
+        ps.execute();
+    } finally {
+        read(connection);
+    }
+}
+
+private static void read(Connection connection) throws SQLException {
+    String sql = "SELECT * FROM exhibits";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            double numAcres = rs.getDouble("num_acres");
+            String name = rs.getString("name");
+            System.out.printf("Id: %d   Num Acres: %f   Name: %s\n", id, numAcres, name);
+        }
+    }
+}
+```
+
+_Output:_
+<pre>
+java.sql.SQLIntegrityConstraintViolationException: integrity constraint violation
+
+Id: 1   Num Acres: 7.500000   Name: African Elephant
+Id: 2   Num Acres: 1.200000   Name: Zebra
+Id: 3   Num Acres: 1.500000   Name: Dog-1
+Id: 4   Num Acres: 2.500000   Name: Dog-2
+</pre>
+
+Eğer işlem üzerinde _transaction_ yaparsak hata durumunda tüm işlemler geri alınacaktır.
+
+```java
+public static void main(String[] args) throws SQLException {
+    Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo");
+    String sql = "INSERT INTO exhibits VALUES (?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        connection.setAutoCommit(false);
+        
+        ps.setInt(1, 3);
+        ps.setString(2, "Dog-1");
+        ps.setDouble(3, 1.5);
+        ps.execute();
+        
+        ps.setInt(1, 4);
+        ps.setString(2, "Dog-2");
+        ps.setDouble(3, 2.5);
+        ps.execute();
+        ps.setInt(1, 3); // Throws exception. ID 3 already exist!
+        
+        ps.setString(2, "Dog-3");
+        ps.setDouble(3, 3.5);
+        ps.execute();
+        connection.commit();
+    } catch (Exception e) {
+        System.out.println("Rolling back...");
+        connection.rollback();
+    } finally {
+        read(connection);
+    }
+}
+
+private static void read(Connection connection) throws SQLException {
+    String sql = "SELECT * FROM exhibits";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            double numAcres = rs.getDouble("num_acres");
+            String name = rs.getString("name");
+            System.out.printf("Id: %d   Num Acres: %f   Name: %s\n", id, numAcres, name);
+        }
+    }
+}
+```
+
+_Output:_
+<pre>
+Rolling back...
+Id: 1   Num Acres: 7.500000   Name: African Elephant
+Id: 2   Num Acres: 1.200000   Name: Zebra
+</pre>
+
+### Bookmarking with Savepoints
+
+Varsayılan olarak _rollback_ işlemi tüm süreci geriye alıyor. _Rollback_ üzerinde daha fazla kontrole sahip olabilmek 
+için _Savepoint_ noktaları kullanabiliriz. 
+
+_Savepoint_'ler sadece _auto commit_ mod kapalı olduğunda kullanılabilir. Aksi durumda hata fırlatır.
+
+_Savepoint_'ler oluşturulduğu sıranın tersinde _rollback_ edilmelidir. Aski durumda hata fırlatır.
+
+Aşağıdaki örnekte _Dog-3_ kaydı geri alınır ve veritabanına kaydedilmez.
+
+```java
+public static void main(String[] args) throws SQLException {
+    Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo");
+    String sql = "INSERT INTO exhibits VALUES (?, ?, ?)";
+   
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        connection.setAutoCommit(false);
+        ps.setInt(1, 3);
+        ps.setString(2, "Dog-1");
+        ps.setDouble(3, 1.5);
+        ps.execute();
+        
+        Savepoint sp1 = connection.setSavepoint();
+        
+        ps.setInt(1, 4);
+        ps.setString(2, "Dog-2");
+        ps.setDouble(3, 2.5);
+        ps.execute();
+       
+        Savepoint sp2 = connection.setSavepoint("Second save point");
+        
+        ps.setInt(1, 5);
+        ps.setString(2, "Dog-3");
+        ps.setDouble(3, 3.5);
+        ps.execute();
+       
+        connection.rollback(sp2);
+        // connection.rollback(sp1);
+        connection.commit();
+    } finally {
+        read(connection);
+    }
+}
+
+private static void read(Connection connection) throws SQLException {
+    String sql = "SELECT * FROM exhibits";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            double numAcres = rs.getDouble("num_acres");
+            String name = rs.getString("name");
+            System.out.printf("Id: %d   Num Acres: %f   Name: %s\n", id, numAcres, name);
+        }
+    }
+}
+```
+
+_Output:_
+<pre>
+Id: 1   Num Acres: 7.500000   Name: African Elephant
+Id: 2   Num Acres: 1.200000   Name: Zebra
+Id: 3   Num Acres: 1.500000   Name: Dog-1
+Id: 4   Num Acres: 2.500000   Name: Dog-2
+</pre>
+
+**Table 15.9** Connection APIs for transactions
+
+![img_2.png](../../../../resources/img/table-15.9.png)
+
+---
+### `Closing Database Resources`
+
+İlk önce _ResultSet_, ikinci sırada _PreparedStatement_ veya _CallableStatement_ son olarak _Connection_ kapatılır.
+
+_Connection_ kapatıldığında _PreparedStatement_ (veya _CallableStatement_) ve _ResultSet_ kapatılır.
+
+_PreparedStatement_ (veya _CallableStatement_) kapatıldığında _ResultSet_ kapatılır.
+
+```java
+var sql = "SELECT not_a_column FROM names";
+var url = "jdbc:hsqldb:zoo";
+
+try (var conn = DriverManager.getConnection(url);
+     var ps = conn.prepareStatement(sql);
+     var rs = ps.executeQuery()) {
+    while (rs.next())
+        System.out.println(rs.getString(1));
+} catch (SQLException e) {
+    System.out.println(e.getMessage());
+    System.out.println(e.getSQLState());
+    System.out.println(e.getErrorCode());
+}
+```
