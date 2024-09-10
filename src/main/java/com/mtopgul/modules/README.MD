@@ -308,14 +308,14 @@ module zoo.animal.talks {
 - İlk _**opens**_ ifadesi, _zoo.animal.talks.schedule_ paketi için tüm modüllerde _reflection_'a izin verir.
 - İkinci _**opens**_ ifadesi, _zoo.animal.talks.media_ paketine sadece _zoo.staff_ modülünde _reflection_'a izin verir. 
 
->> **Tüm Modülü Reflection için Açmak**
+> **Tüm Modülü Reflection için Açmak**
 > 
 > <pre>
 > <b>open</b> module zoo.animal.talks {
 > }
 > </pre>
 > 
-> **open** direktifi ile **opens** aynı anda kullanılamaz. Çünkü **open** tüm paketleri açar.
+> **open** direktifi ile **opens** aynı anda kullanılamaz. Çünkü **open** zaten tüm paketleri açar.
 > <pre>
 > <b>open</b> module zoo.animal.talks {
 >    <b>opens</b> zoo.animal.talks.schedule; // DOES NOT COMPILE
