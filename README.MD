@@ -651,6 +651,7 @@
  - [Chapter 09: Collections and Generics]
  - [Chapter 10: Streams]
  - [Chapter 11: Exceptions and Localization]
+ - [Chapter 12: Modules]
  - [Chapter 13: Concurrency]
  - [Chapter 14: I/O]
  - [Chapter 15: JDBC]
@@ -665,6 +666,7 @@
 [Chapter 09: Collections and Generics]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/collectionsAndGenerics/README.MD>
 [Chapter 10: Streams]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/streams/README.MD>
 [Chapter 11: Exceptions and Localization]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/exceptionsAndLocalization/README.MD>
+[Chapter 12: Modules]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/modules/README.MD>
 [Chapter 13: Concurrency]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/concurrency/README.MD>
 [Chapter 14: I/O]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/io/README.MD>
 [Chapter 15: JDBC]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/jdbc/README.MD>
