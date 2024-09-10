@@ -240,3 +240,84 @@ module zoo.animal.talks {
 </pre>
 
 _zoo.animal.talks.content_ paketini sadece _zoo.staff_ modülüne açıyoruz.
+
+### Requiring a Module Transitively
+
+**Figure 12.12** Transitive dependency version of our modules
+
+![img.png](../../../../resources/img/figure-12.12.png)
+
+Dependency'leri transitive olarak güncelleyelim. 
+
+<pre>
+module zoo.animal.feeding {
+    exports zoo.animal.feeding;
+}
+</pre>
+
+<pre>
+module zoo.animal.care {
+    exports zoo.animal.care.medical;
+
+    <b>requires transitive</b> zoo.animal.feeding;
+}
+</pre>
+
+<pre>
+module zoo.animal.talks {
+    exports zoo.animal.talks.content to zoo.staff;
+    exports zoo.animal.talks.media;
+    exports zoo.animal.talks.schedule;
+
+    // <b>no longer needed</b> requires zoo.animal.feeding;
+    // <b>no longer needed</b> requires zoo.animal.care;
+    requires <b>transitive</b> zoo.animal.care;
+}
+</pre>
+
+<pre>
+module zoo.staff {
+    // <b>no longer needed</b> requires zoo.animal.feeding;
+    // <b>no longer needed</b> requires zoo.animal.care;
+    requires zoo.animal.talks;
+}
+</pre>
+
+**Duplicate requires Statements**
+
+Modül tanımında Java aynı modül ismi için **requires** anahtar kelimesini birden fazla kullanmaya izin vermez.
+
+<pre>
+module bad.module {
+    requires zoo.animal.talks;
+    requires transitive zoo.animal.talks;
+}
+</pre>
+
+### Opening a Package
+
+**opens** anahtar kelimesi paketi Java _reflection_ denilen bir tekniğe açmaya izin verir.
+
+<pre>
+module zoo.animal.talks {
+    <b>opens</b> zoo.animal.talks.schedule;
+    <b>opens</b> zoo.animal.talks.media <b>to</b> zoo.staff;
+}
+</pre>
+
+- İlk _**opens**_ ifadesi, _zoo.animal.talks.schedule_ paketi için tüm modüllerde _reflection_'a izin verir.
+- İkinci _**opens**_ ifadesi, _zoo.animal.talks.media_ paketine sadece _zoo.staff_ modülünde _reflection_'a izin verir. 
+
+>> **Tüm Modülü Reflection için Açmak**
+> 
+> <pre>
+> <b>open</b> module zoo.animal.talks {
+> }
+> </pre>
+> 
+> **open** direktifi ile **opens** aynı anda kullanılamaz. Çünkü **open** tüm paketleri açar.
+> <pre>
+> <b>open</b> module zoo.animal.talks {
+>    <b>opens</b> zoo.animal.talks.schedule; // DOES NOT COMPILE
+> }
+> </pre>
