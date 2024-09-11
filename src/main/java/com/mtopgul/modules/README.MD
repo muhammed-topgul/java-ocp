@@ -82,7 +82,7 @@ Kodu _jar_ üzerinden çalıştır:
 
 ### Updating the Feeding Module
 
-**exports** komutu ile belirlenen paketleri modül dışına açar. 
+**exports** komutu ile belirlenen paketleri modul dışına açar. 
 
 ```java
 module zoo.animal.feeding {
@@ -95,8 +95,8 @@ module zoo.animal.feeding {
 
 ### Creating a Care Module
 
-Bu modül içinde iki tane paket bulunur. Birinci _zoo.animal.care.medical_ paketi diğer modüllerde bulunan sınıflar tarafından
-kullanılabilir. _zoo.animal.care.details_ paketi ise sadece kendi modülü içinde ki sınıflar tarafından kullanılabilir.
+Bu modul içinde iki tane paket bulunur. Birinci _zoo.animal.care.medical_ paketi diğer modullerde bulunan sınıflar tarafından
+kullanılabilir. _zoo.animal.care.details_ paketi ise sadece kendi modulü içinde ki sınıflar tarafından kullanılabilir.
 
 **Figure 12.7** Contents of _zoo.animal.care_
 
@@ -226,7 +226,7 @@ public class Jobs { }
 
 ### Exporting a Package
 
-Zaten **exports** ile paketi diğer modüllere açmayı gördük. Aynı zamanda paketi sadece belirli bir modüle de açabiliriz.
+Zaten **exports** ile paketi diğer modullere açmayı gördük. Aynı zamanda paketi sadece belirli bir module de açabiliriz.
 
 <pre>
 module zoo.animal.talks {
@@ -239,7 +239,7 @@ module zoo.animal.talks {
 }
 </pre>
 
-_zoo.animal.talks.content_ paketini sadece _zoo.staff_ modülüne açıyoruz.
+_zoo.animal.talks.content_ paketini sadece _zoo.staff_ modulüne açıyoruz.
 
 ### Requiring a Module Transitively
 
@@ -285,7 +285,7 @@ module zoo.staff {
 
 **Duplicate requires Statements**
 
-Modül tanımında Java aynı modül ismi için **requires** anahtar kelimesini birden fazla kullanmaya izin vermez.
+Modül tanımında Java aynı modul ismi için **requires** anahtar kelimesini birden fazla kullanmaya izin vermez.
 
 <pre>
 module bad.module {
@@ -305,8 +305,8 @@ module zoo.animal.talks {
 }
 </pre>
 
-- İlk _**opens**_ ifadesi, _zoo.animal.talks.schedule_ paketi için tüm modüllerde _reflection_'a izin verir.
-- İkinci _**opens**_ ifadesi, _zoo.animal.talks.media_ paketine sadece _zoo.staff_ modülünde _reflection_'a izin verir. 
+- İlk _**opens**_ ifadesi, _zoo.animal.talks.schedule_ paketi için tüm modullerde _reflection_'a izin verir.
+- İkinci _**opens**_ ifadesi, _zoo.animal.talks.media_ paketine sadece _zoo.staff_ modulünde _reflection_'a izin verir. 
 
 > **Tüm Modülü Reflection için Açmak**
 > 
@@ -321,3 +321,124 @@ module zoo.animal.talks {
 >    <b>opens</b> zoo.animal.talks.schedule; // DOES NOT COMPILE
 > }
 > </pre>
+
+---
+### `Discovering Modules`
+
+### Built-in Modules
+
+_java.base_ modulü en önemli moduldür. Java otomatik olarak, _**requires**_'a gerek kalmadan module ekler. Açık bir şekilde
+ekleyebiliriz fakat bu gereksiz bir işlem olur.
+
+### Getting Details with java
+
+**Describing a Module**
+
+_zoo.animal.feeding_ modulü içerisinde hangi direktifler kullanılmış görmek için aşağıda ki komutlar kullanılır.
+
+`java -p mods -d zoo.animal.feeding`
+`java -p mods --describe-module zoo.animal.feeding`
+
+_Output:_
+<pre>
+zoo.animal.feeding file:///<i>absolutePath</i>/mods/zoo.animal.feeding.jar
+exports zoo.animal.feeding
+requires java.base mandated
+</pre>
+
+**Listing Available Modules**
+
+Komut: `java --list-modules`
+
+_Output:_
+<pre>
+java.base@17
+java.compiler@17
+java.datatransfer@17
+</pre>
+
+`java -p mods --list-modules` komutu ile kendi dizinimizin altında ki tüm modulleri de listeleyebiliriz.
+
+_Output:_
+<pre>
+java.base@17
+java.compiler@17
+java.datatransfer@17
+zoo.animal.care file:///<i>absolutePath</i>/mods/zoo.animal.care.jar
+zoo.animal.feeding file:///<i>absolutePath</i>/mods/zoo.animal.feeding.jar
+zoo.animal.talks file:///<i>absolutePath</i>/mods/zoo.animal.talks.jar
+zoo.staff file:///<i>absolutePath</i>/mods/zoo.staff.jar
+</pre>
+
+### Learning about Dependencies with jdeps
+
+```java
+package zoo.dinos;
+
+import java.time.*;
+import java.util.*;
+
+import sun.misc.Unsafe;
+
+public class Animatronic {
+    private List<String> names;
+    private LocalDate visitDate;
+
+    public Animatronic(List<String> names, LocalDate visitDate) {
+        this.names = names;
+        this.visitDate = visitDate;
+    }
+
+    public void unsafeMethod() {
+        Unsafe unsafe = Unsafe.getUnsafe();
+    }
+}
+```
+
+Derleme: `javac zoo/dinos/*.java`
+Jar oluşturma: `jar -cvf zoo.dino.jar .`
+
+`jdeps` komutu ile modul içerisinde hangi bağımlılıkların gerçekte kullanıldığını gösterir.
+
+Komut: `jdeps zoo.dino.jar`
+
+_Output:_
+<pre>
+zoo.dino.jar -> java.base
+zoo.dino.jar -> jdk.unsupported
+   zoo.dinos                                          -> java.lang                                          java.base
+   zoo.dinos                                          -> java.time                                          java.base
+   zoo.dinos                                          -> java.util                                          java.base
+   zoo.dinos                                          -> sun.misc                                           JDK internal API (jdk.unsupported)
+</pre>
+
+Sadece kullanılan modulleri görmek için:
+`jdeps -s zoo.dino.jar` veya `jdeps -summary zoo.dino.jar`
+
+_Output:_
+<pre>
+zoo.dino.jar -> java.base
+zoo.dino.jar -> jdk.unsupported
+</pre>
+
+### Using the --jdk-internals Flag
+
+Modul içerisinde bulunan _warning_'ler hakkında uyarılar verir.
+
+Komut: `jdeps --jdk-internals zoo.dino.jar`
+
+_Output:_
+<pre>
+zoo.dino.jar -> jdk.unsupported
+   zoo.dinos.Animatronic                              -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+
+Warning: JDK internal APIs are unsupported and private to JDK implementation that are
+subject to be removed or changed incompatibly and could break your application.
+Please modify your code to eliminate dependence on any JDK internal APIs.
+For the most recent update on JDK internal API replacements, please check:
+https://wiki.openjdk.java.net/display/JDK8/Java+Dependency+Analysis+Tool
+
+JDK Internal API                         Suggested Replacement
+----------------                         ---------------------
+sun.misc.Unsafe                          See http://openjdk.java.net/jeps/260
+</pre>
