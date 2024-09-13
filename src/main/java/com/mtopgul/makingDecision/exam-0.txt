@@ -7,35 +7,40 @@
 ✅ 06 (3) -> C,D,E
 ✅ 07 (2) -> B,D
 ✅ 08 (1) -> G
-✅ 09 (9) ->
-✅ 10 (1) ->
-✅ 11 (1) ->
-✅ 12 (1) ->
-✅ 13 (1) ->
-✅ 14 (3) ->
-✅ 15 (1) ->
-✅ 16 (3) ->
-✅ 17 (2) ->
-✅ 18 (2) ->
-✅ 19 (1) ->
-✅ 20 (2) ->
-✅ 21 (1) ->
-✅ 22 (1) ->
-✅ 23 (1) ->
-✅ 24 (1) ->
-✅ 25 (1) ->
-✅ 26 (1) ->
-✅ 27 (1) ->
-✅ 28 (1) ->
-✅ 29 (1) ->
+✅ 09 (3) -> B,C,E
+✅ 10 (1) -> E
+❌ 11 (1) -> E
+✅ 12 (1) -> C
+✅ 13 (1) -> G
+✅ 14 (3) -> B,D,F
+✅ 15 (1) -> F
+✅ 16 (3) -> A,B,D
+✅ 17 (2) -> B,E
+✅ 18 (2) -> C,E
+✅ 19 (1) -> E
+☑️ 20 (2) -> A            (1/2)
+❌ 21 (1) -> C
+✅ 22 (1) -> E
+✅ 23 (1) -> F
+✅ 24 (1) -> G
+✅ 25 (1) -> D
+✅ 26 (1) -> F
+✅ 27 (1) -> F
+✅ 28 (1) -> F
+✅ 29 (1) -> C
 
-🎯 97.30/100
+🎯 87.80/100
 
 Good to review:
 1. Switch ile kullanılabilecek veri tipleri.
 2. For-each'in kullanılabileceği veri tipleri.
 3. Switch expressions.
+4. Switch statements.
+5. Pattern matching.
+6. Flow scoping.
+7. Labeled loops
 
 
 Note:
 1. Switch expression tüm olası değerleri ele almalı.
+2. Switch case value olarak kullanılan değişkenin final olması gerekir.
