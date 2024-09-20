@@ -1,0 +1,41 @@
+# Chapter 05: Methods (Exam#01 21/09/2024)
+✅ 01 (2) -> A,E
+✅ 02 (2) -> B,C
+✅ 03 (2) -> A,D
+☑️ 04 (4) -> A,B,C,D    (3/4)
+✅ 05 (3) -> A,C,D
+✅ 06 (3) -> A,B,F
+✅ 07 (2) -> D,F
+✅ 08 (1) -> D
+✅ 09 (4) -> B,C,D,F
+✅ 10 (1) -> B
+✅ 11 (2) -> B,E
+✅ 12 (1) -> B
+✅ 13 (1) -> D
+❌ 14 (1) -> D
+✅ 15 (1) -> B
+✅ 16 (1) -> E
+✅ 17 (1) -> B
+✅ 18 (3) -> B,D,E
+✅ 19 (3) -> B,C,E
+✅ 20 (2) -> A,E
+✅ 21 (2) -> B,D
+
+🎯 95.24/100
+
+❌  ☑️
+
+Good to review:
+1. Promotion.
+2. Static protected alanın paket dışından kullanılması.
+3. Final ve effectively final.
+4. Varargs method overload.
+
+
+Note:
+1. Primitive değişken aynı anda promotion ve autoboxing yapamaz.
+2. public void moo(int m, int... n) {}
+
+   private void moo(int... x) {}
+
+   Yukarda ki methodlar overload' dır. Derlenir. Bu methodları çağırdığımız yerde derleme hatası olur.
