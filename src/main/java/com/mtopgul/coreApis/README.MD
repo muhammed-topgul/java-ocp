@@ -148,6 +148,10 @@ System.out.println(text.stripTrailing().length()); // 4
 > - Satır sonu karakteri var ise normalize eder.
 > - Satır sonu karakteri yok ise <u>eklemez</u>.
 
+_**Table 4.1** Rules for indent() and stripIndent()_
+
+![img_3.png](../../../../resources/img/table-4.1.png)
+
 ```java
 public String indent(int numberSpaces);
 public String stripIndent();
@@ -207,12 +211,7 @@ System.out.println("Hello %s, order %d is ready".formatted(name, orderId));
 ```
 _**Table 4.2** Common formatting symbols_
 
-| Sembol | Açıklama                                                       |
-|:------:|:---------------------------------------------------------------|
-| **%s** | Her tür için uygulanır ama genellikle _**String**_ değerlerine |
-| **%d** | **int** ve **long** gibi tamsayi değerlerine uygulanır         |
-| **%f** | **float** ve **double** gibi kayan nokta değerlerine uygulanır |
-| **%n** | Satır sonu ekler                                               |
+![img_4.png](../../../../resources/img/table-4.2.png)
 
 ```java
 var name = "James";
@@ -388,14 +387,7 @@ Dizileri karşılaştırma kuralları;
 
 _**Table 4.4** Arrays.compare() examples_
 
-| 1. Array               | 2. Array                | Sonuç     | Açıklama                                     |
-|:-----------------------|:------------------------|:----------|:---------------------------------------------|
-| **new int[] {1, 2}**   | **new int[] {1}**       | Pozitif   | Elemenlar aynı fakat ilk array daha uzun     |
-| **new int[] {1, 2}**   | **new int[] {1, 2}**    | Sıfır     | İki array de aynı                            |
-| **new String[] {"a"}** | **new String[] {"aa"}** | Negatif   | İlk eleman ikinci elemanın _substring_'i     |
-| **new String[] {"a"}** | **new String[] {"A"}**  | Pozitif   | Büyük harf küçük harften küçüktür            |
-| **new String[] {"a"}** | **new String[] {null}** | Pozitif   | **null** tüm tiplerden küçüktür              |
-| **new String[] {1}**   | **new String[] {"a"}**  | Derlenmez | İki farklı tipte ki array karşılaştırılamaz. |
+![img.png](../../../../resources/img/table-4.4.png)
 
 - **Arrays.mismatch()**
   - Eğer dizişer eşit ise **mismatch()** _-1_ döner. Aksi takdirde farklılığın olduğu ilk _index_'i döner.
@@ -406,13 +398,9 @@ System.out.println(Arrays.mismatch(new int[]{1, 2}, new int[]{1}));             
 System.out.println(Arrays.mismatch(new int[]{1, 2, 3, 4}, new int[]{1, 2, 4})); // 2
 ```
 
-Table 4.5** Equality vs. comparison vs. mismatch_
+**Table 4.5** _Equality vs. comparison vs. mismatch_
 
-| Method         | Diziler Aynı Olduğunda | Diziler Aynı Olduğunda        |
-|:---------------|:-----------------------|:------------------------------|
-| **equals()**   | **true**               | **false**                     |
-| **compare()**  | **0**                  | **Pozitif veya negatif sayı** |
-| **mismatch()** | **-1**                 | **Sıfır veya negatif sayı**   |
+![img_1.png](../../../../resources/img/table-4.5.png)
 
 ---
 #### `Math API`
@@ -707,7 +695,7 @@ var period = Period.ofMonths(1);
 
 System.out.println(date.plus(period));     // 2022-02-20
 System.out.println(dateTime.plus(period)); // 2022-02-20T06:15
-System.out.println(time.plus(period));     // Exceptio
+System.out.println(time.plus(period));     // Exception
 ```
 
 **Duration**
@@ -735,7 +723,7 @@ var everyMilli = Duration.of(1, ChronoUnit.MILLIS);
 var everyNano = Duration.of(1, ChronoUnit.NANOS);
 ```
 
->- _ChronoUnit_ iki _Tmporal_ zamanın birbirinden ne kadar uzakta olduğunu belirlemenin harika bir yoludur.
+>- _ChronoUnit_ iki _Temporal_ zamanın birbirinden ne kadar uzakta olduğunu belirlemenin harika bir yoludur.
 > ```java
 > var one = LocalTime.of(5, 15);
 > var two = LocalTime.of(6, 30);
@@ -767,7 +755,7 @@ var everyNano = Duration.of(1, ChronoUnit.NANOS);
 
 - **plus()** and **minus()** _Duration_
   - _Period_ ile aynı şekilde çalışır.
-  - _Duration_ _LocalTime_ ve _LocalTime_ içeren sınıflar ile çalışır.
+  - _Duration_ _LocalTime_ ve _LocalDateTime_ içeren sınıflar ile çalışır.
 
 ```java
 var date = LocalDate.of(2022, 1, 20);
@@ -794,13 +782,7 @@ System.out.println(date.plus(duration));     // Exception
 
 _**Table 4.7** Where to use Duration and Period_
 
-|                   | **Can use with** Period? | **Can use with** Duration? |
-|:------------------|:-------------------------|:---------------------------|
-| **LocalDate**     | Yes                      | No                         |
-| **LocalDateTime** | Yes                      | Yes                        |
-| **LocalTime**     | No                       | Yes                        |
-| **ZonedDateTime** | Yes                      | Yes                        |
-
+![img_2.png](../../../../resources/img/table-4.7.png)
 
 **Instants**
 - _Instant_ sınıfı _GMT_ saat diliminde belirli bir anı temsil eder.
