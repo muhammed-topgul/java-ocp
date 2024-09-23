@@ -333,11 +333,7 @@ public sealed class Snake /*permits Snake.Cobra*/ {
 ```
 _**Table 7.3** Usage of the permits clause in sealed classes_
 
-| Doğrudan alt sınıfların konumu         | permits ifadesi                          |
-|:---------------------------------------|:-----------------------------------------|
-| **sealed** sınıftan farklı bir dosyada | Zorunlu                                  |
-| **sealed** sınıf ile aynı dosyada      | Kullanılabilir, ama <u>zorunlu değil</u> |
-| **sealed** sınıfın nested sınıfı       | Kullanılabilir, ama <u>zorunlu değil</u> |
+![img.png](../../../../resources/img/table-7.3.png)
 
 ### `Sealing Interfaces`
 ```java
@@ -491,6 +487,7 @@ public record Crane(int numberEggs, String name) {
 
 - **Inner Class**
   - Member level.
+  - Enclosing sınıfın nesnesi olmadan enclosing sınıf dışında nesnesi yaratılamaz.
   - **public**, **protected**, _package_ veya **private** olarak tanımlanabilir.
   - **abstract** veya **final** olarak işaretlenebilir.
   - Başka bir **class** veya **interface**'i kalıtabilir.
@@ -572,7 +569,8 @@ public class A {
     }
 }
 ```
-> - Inner class için instance gerekir.
+> - Inner class için instance gerekir. Inner sınıfları static methodlar içerisinden doğrudan erişemeyiz. Çünkü bu sınıflar
+> nesneye bağlı sınıfa değil.
 > ```java
 > public class Fox {
 >     private class Den {
@@ -598,7 +596,7 @@ public class A {
 
 - **_static_ Nested Class**
   - Member level.
-  - _Enclosing_ sınıf olmadan nesnesi yaratılabilir.
+  - _Enclosing_ sınıfın nesnesi olmadan nesnesi yaratılabilir.
   - _Outer sınıf_'ın instance değişken ve methodlarına erişemez.
   - **public**, **protected**, _package_ veya **private** olarak tanımlanabilir.
   - **abstract** veya **final** olarak işaretlenebilir.
@@ -632,7 +630,7 @@ class Test {
 ```
 
 - **Local Class**
-  - Method, initializer block veya constructor içinde tanomlanabilir.
+  - Method, initializer block veya constructor içinde tanımlanabilir.
   - Tanımlandığı blok içerisinde geçerlidir. Blok tamamlandığında kullanım dışıdır.
   - _Access modifier_ alamaz.
   - **final** veya **abstract** olarak işaretlenebilir.
@@ -769,11 +767,11 @@ public class ZooGiftShop {
 
 _**Table 7.4** Modifiers in nested classes_
 
-| Permitted modifiers | Inner class | static nested class | Local class | Anonymous class |
-|:--------------------|:------------|:--------------------|:------------|:----------------|
-| Access modifiers    | All         | All                 | None        | None            |
-| **abstract**        | Yes         | Yes                 | Yes         | No              |
-| **final**           | Yes         | Yes                 | Yes         | No              |
+![img_1.png](../../../../resources/img/table-7.4.png)
+
+_**Table 7.5** Nested class access rules_
+
+![img_2.png](../../../../resources/img/table-7.5.png)
 
 ---
 ### `Polymorpism`
