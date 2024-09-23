@@ -7,6 +7,9 @@
 2. _Interface_ değişkenleri implicit olarak **public**, **static** ve **final**'dır.
 3. Gövdesi olmayan _Interface_ metholdarı implicit olarak **abstract**'tır.
 4. **private** olmayan _Interface_ methodları implicit olarak **public**'tir.
+5. _Interface_ değişkenleri varsayılan olarak **public static final**'dır.
+6. **final** anahtar kelimesi _Interface_ içerisinde sadece değişkenler ile kullanılabilir. Methodlar ile birlikte 
+   kullanılamaz.
 ```java
 public interface Soar {
     int MAX_HEIGHT = 10;
