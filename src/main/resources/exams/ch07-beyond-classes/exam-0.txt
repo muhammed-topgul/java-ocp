@@ -12,25 +12,25 @@
 ✅ 11 (1) -> B
 ✅ 12 (3) -> A,B,E
 ❌ 13 (1) -> E
-✅ 14 (3) ->
-✅ 15 (1) ->
-✅ 16 (1) ->
-✅ 17 (2) ->
-✅ 18 (1) ->
-✅ 19 (1) ->
-✅ 20 (3) ->
-✅ 21 (1) ->
-✅ 22 (3) ->
-✅ 23 (1) ->
-✅ 24 (2) ->
-✅ 25 (1) ->
-✅ 26 (2) ->
-✅ 27 (4) ->
-✅ 28 (3) ->
-✅ 29 (1) ->
-✅ 30 (2) ->
+✅ 14 (4) -> A,C,D,E
+✅ 15 (1) -> G
+✅ 16 (1) -> E
+✅ 17 (2) -> E,G
+❌ 18 (1) -> B
+✅ 19 (1) -> G
+✅ 20 (3) -> A,D,F
+✅ 21 (1) -> F
+✅ 22 (3) -> C,D,G
+✅ 23 (1) -> D
+✅ 24 (2) -> B,E
+✅ 25 (1) -> B
+☑️ 26 (2) -> A,F       (1/2)
+✅ 27 (4) -> B,C,D,G
+✅ 28 (3) -> A,B,D
+❌ 29 (1) -> E
+☑️ 30 (2) -> B,C       (1/2)
 
-🎯 94.87/100
+🎯 88.33/100
 
 Good to review:
 1. Sealed classes.
@@ -39,3 +39,6 @@ Good to review:
 
 Note:
 1. private olmayan tüm inteface methodları public'tir.
+2. final anahtar kelimesi methodların override edilmesini veya hidening yapılmasını engeller.
+3. enum constructorları implicit olarak private'dır.
+4. Altı sınıf aynı dosyadaysa veya inner sınıf ise permits opsiyoneldir.
