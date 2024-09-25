@@ -1,4 +1,4 @@
-# Chapter 07: Beyond Classes (Exam#01 24/09/2024)
+# Chapter 07: Beyond Classes (Exam#02 24/09/2024)
 ✅ 01 (2) -> B,D
 ✅ 02 (4) -> A,B,D,E
 ✅ 03 (1) -> C
