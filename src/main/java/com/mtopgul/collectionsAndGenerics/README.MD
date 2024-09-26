@@ -361,7 +361,9 @@ iki method da geriye _immutable_ map döndürür.
 
 _**Table 9.6** Map methods_
 
-![img.png](../../../../resources/img/table-9.6.png)
+![img_1.png](../../../../resources/img/table-9.6.png)
+![img.png](../../../../resources/img/table-9.6.1.png)
+
 ```java
 Map<String, String> map = new HashMap<>();
 map.put("koala", "bamboo");
