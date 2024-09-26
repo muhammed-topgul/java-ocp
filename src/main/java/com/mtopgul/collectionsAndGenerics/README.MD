@@ -132,7 +132,9 @@ System.out.println(list1.equals(set1));  // false
 
 ---
 ### `List Interface`
-**List with a Factory**
+
+_**Table 9.1** Factory methods to create a List_
+
 ![img.png](../../../../resources/img/table-9.1.png)
 
 _Arrays.asList(varargs)_; mevcut array'in kopyası veya varargs ile liste oluşturur. Array üzerinde veya oluşturulan dizi
@@ -184,8 +186,10 @@ var list3 = new ArrayList<>(10);     // ArrayList<Object>
 >for (String s: list) { } // DOES NOT COMPILE
 >```
 
-**List Methods**
+_**Table 9.2** List methods_
+
 ![img.png](../../../../resources/img/table-9.2.png)
+
 ```java
 List<String> list = new ArrayList<>();
 list.add("SD");                  // [SD]
@@ -266,7 +270,11 @@ set.forEach(i -> System.out.print(i + ",")); // 8,10,66,
 
 _Queue_ arayüzünde 6 adet method bulunur. Bold olarak yazılmış olanlar bir şeyler yanlış gittiğinde hata fırlatır. 
 _add()_, _remove()_ and _element()_. (ARE)
+
+_**Table 9.3** Queue methods_
+
 ![img.png](../../../../resources/img/table-9.3.png)
+
 ```java
 Queue<Integer> queue = new LinkedList<>();
 // add
@@ -286,7 +294,11 @@ System.out.println(queue.poll());    // 10
 
 Tüm _Queue_ methodlarını kalıtır ve ek yeni methodlara sahiptir. Bold olarak yazılmış olanlar bir şeyler yanlış 
 gittiğinde hata fırlatır. _getX()_, _addX()_ and _removeX()_. (GAR)
+
+_**Table 9.4** Deque methods_
+
 ![img.png](../../../../resources/img/table-9.4.png)
+
 ```java
 Deque<Integer> deque = new LinkedList<>();
 // add
@@ -308,8 +320,11 @@ System.out.println(deque.pollFirst());   // 1
 System.out.println(deque.pollLast());    // 2
 ```
 
-- **Using Deque as Stack**
+
+_**Table 9.5** Using Deque as stack_
+
 ![img.png](../../../../resources/img/table-9.5.png)
+
 ```java
 Deque<Integer> deque = new ArrayDeque<>();
 deque.push(1); // [1]
@@ -342,7 +357,7 @@ System.out.println(map);
 _Map_ arayüzünün iki tane faktori methodu vardır. Bunlar _Map.of(key, value)_ ve _Map.ofEntries(Map.entry(key, value))_
 iki method da geriye _immutable_ map döndürür.
 
-**Map Methods**
+_**Table 9.6** Map methods_
 
 ![img.png](../../../../resources/img/table-9.6.png)
 ```java
@@ -582,11 +597,16 @@ class Duck implements Comparable<Duck> {
 ```
 
 **Comparable vs Comparator**
+
+_**Table 9.6** Comparison of Comparable and Comparator_
+
 ![img.png](../../../../resources/img/table-9.10.png)
 
-**Comparing Multiple Fields**
+_**Table 9.11** Helper static methods for building a Comparator_
 
 ![img.png](../../../../resources/img/table-9.11.png)
+
+_**Table 9.12** Helper default methods for building a Comparator_
 
 ![img_1.png](../../../../resources/img/table-9.12.png)
 ```java
@@ -741,6 +761,8 @@ class Goat extends Mammal {
 ```
 
 **Bounding Generic Types**
+
+_**Table 9.13** Types of bounds_
 
 ![img.png](../../../../resources/img/table-9.13.png)
 
