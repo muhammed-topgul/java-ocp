@@ -484,7 +484,7 @@ Function<Double, Integer> df1 = d -> d.intValue();
 System.out.println(df1.apply(5.0)); // 5
 ```
 
-**Table 8.7** Primitive-specific functional interfaces_
+_**Table 8.7** Primitive-specific functional interfaces_
 
 ![img_6.png](../../../../resources/img/table-8.7.png)
 
@@ -507,10 +507,4 @@ Lambda için 3 şekilde parametre tanımlanabilir:
 
 _**Table 8.8** Rules for accessing a variable from a lambda body inside a method_
 
-| Variable type     | Rule                                        |
-|:------------------|:--------------------------------------------|
-| Instance variable | Allowed                                     |
-| Static variable   | Allowed                                     |
-| Lambda parameter  | Allowed                                     |
-| Local variable    | Allowed if **final** or _effectively final_ |
-| Method parameter  | Allowed if **final** or _effectively final_ |
+![img.png](../../../../resources/img/table-8.8.png)
