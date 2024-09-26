@@ -8,6 +8,8 @@ _Java Collections Framework_ içerisinde 4 ana arayüz vardır.
 3. **Queue**
 4. **Map**
 
+_**Figure 9.1** Java Collections Framework_
+
 ![img.png](../../../../resources/img/figure-9.1.png)
 
 **Adding Data**
