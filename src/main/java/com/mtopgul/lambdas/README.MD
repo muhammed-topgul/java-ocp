@@ -167,31 +167,15 @@ System.out.println(methodRef.copy("Zebra").equals("Snake")); // false
 
 _**Table 8.3** Method references_
 
-| Type                                    | Before colon           | After colon | Example         |
-|:----------------------------------------|:-----------------------|:------------|:----------------|
-| **static** methods                      | Class name             | Method name | Math::random    |
-| Instance methods on a particular object | Instance variable name | Method name | str::startsWith |
-| Instance methods on a parameter         | Class name             | Method name | String::isEmpty |
-| Constructor                             | Class name             | **new**     | String::new     |
-
+![img.png](../../../../resources/img/table-8.3.png)
 
 ---
 ### `Built-in Functional Interfaces`
 
 _**Table 8.4** Common functional interfaces_
 
-| Functional interface | Return type | Method name  | # of parameters |
-|:---------------------|:------------|:-------------|:----------------|
-| Supplier<T>          | T           | get()        | 0               |
-| Consumer<T>          | **void**    | accept(T)    | 1 (T)           |
-| BiConsumer<T, U>     | **void**    | accept(T, U) | 2 (T, U)        |
-| Predicate<T>         | **boolean** | test(T)      | 1 (T)           |
-| BiPredicate<T, U>    | **boolean** | test(T, U)   | 2 (T, U)        |
-| Function<T, R>       | R           | apply(T)     | 1 (T)           |
-| BiFunction<T, U, R>  | R           | apply(T, U)  | 2 (T, U)        |
-| UnaryOperator<T>     | T           | apply(T)     | 1 (T)           |
-| BinaryOperator<T>    | T           | apply(T, T)  | 2 (T, T)        |
-
+![img_1.png](../../../../resources/img/table-8.4.png)
+![img_2.png](../../../../resources/img/table-8.4.1.png)
 
 - **Supplier**
 
@@ -370,14 +354,7 @@ methodlara sahiptir.
 
 _**Table 8.5** Convenience methods_
 
-| Interface instance | Method return type | Method name | Method parameters |
-|:-------------------|:-------------------|:------------|:------------------|
-| Consumer           | Consumer           | andThen()   | Consumer          |
-| Function           | Function           | andThen()   | Function          |
-| Function           | Function           | compose()   | Function          |
-| Predicate          | Predicate          | and()       | Predicate         |
-| Predicate          | Predicate          | or()        | Predicate         |
-| Predicate          | Predicate          | negate()    | -                 |
+![img_3.png](../../../../resources/img/table-8.5.png)
 
 ```java
 Predicate<String> brownEggs = s -> s.contains("egg") && s.contains("brown");
@@ -441,32 +418,8 @@ System.out.println(b2.getAsBoolean()); // true or false
 
 _**Table 8.6** Common functional interfaces for primitives_
 
-| Functional interface | Return type | Single abstract method | # of parameters        |
-|:---------------------|:------------|:-----------------------|:-----------------------|
-| DoubleSupplier       | **double**  | getAsDouble()          | 0                      |
-| IntSupplier          | **int**     | getAsInt()             |                        |
-| LongSupplier         | **long**    | getAsLong()            |                        |
-|                      |             |                        |                        |
-| DoubleConsumer       | **void**    | accept()               | 1 (**double**)         |
-| IntConsumer          |             |                        | 1 (**int**)            |
-| LongConsumer         |             |                        | 1 (**long**)           |
-|                      |             |                        |                        |
-| DoublePredicate      | **boolean** | test()                 | 1 (**double**)         |
-| IntPredicate         |             |                        | 1 (**int**)            |
-| LongPredicate        |             |                        | 1 (**long**)           |
-|                      |             |                        |                        |
-| DoubleFunction<R>    | R           | apply()                | 1 (**double**)         |
-| IntFunction<R>       |             |                        | 1 (**int**)            |
-| LongFunction<R>      |             |                        | 1 (**long**)           |
-|                      |             |                        |                        |
-| DoubleUnaryOperator  | **double**  | applyAsDouble()        | 1 (**double**)         |
-| IntUnaryOperator     | **int**     | applyAsInt()           | 1 (**int**)            |
-| LongUnaryOperator    | **long**    | applyAsLong()          | 1 (**long**)           |
-|                      |             |                        |                        |
-| DoubleBinaryOperator | **double**  | applyAsDouble()        | 2 (**long**, **long**) |
-| IntBinaryOperator    | **int**     | applyAsInt()           | 2 (**int**, **int**)   |
-| LongBinaryOperator   | **long**    | applyAsLong()          | 2 (**long**, **long**) |
-
+![img_4.png](../../../../resources/img/table-8.6.png)
+![img_5.png](../../../../resources/img/table-8.6.1.png)
 
 - **Supplier**
 ```java
@@ -533,27 +486,7 @@ System.out.println(df1.apply(5.0)); // 5
 
 **Table 8.7** Primitive-specific functional interfaces_
 
-| Functional interface     | Return type | Single abstract method | # of parameters   |
-|:-------------------------|:------------|:-----------------------|:------------------|
-| ToDoubleFunction<T>      | **double**  | getAsDouble()          | 1 (T)             |
-| ToIntFunction<T>         | **int**     | getAsInt()             |                   |
-| ToLongFunction<T>        | **long**    | getAsLong()            |                   |
-|                          |             |                        |                   |
-| ToDoubleBiFunction<T, U> | **double**  | getAsLong()            | 2 (T, U)          |
-| ToIntBiFunction<T, U>    | **int**     | getAsInt()             |                   |
-| ToLongBiFunction<T, U>   | **long**    | getAsLong()            |                   |
-|                          |             |                        |                   |
-| DoubleToIntFunction      | **int**     | getAsInt()             | 1 (**double**)    |
-| DoubleToLongFunction     | **long**    | getAsLong()            |                   |
-| IntToDoubleFunction      | **double**  | getAsDouble()          | 1 (**int**)       |
-| IntToDoubleFunction      | **long**    | getAsLong()            |                   |
-| LongToDoubleFunction     | **double**  | getAsDouble()          | 1 (**long**)      |
-| LongToIntFunction        | **int**     | getAsInt()             |                   |
-|                          |             |                        |                   |
-| ObjDoubleConsumer<T>     | **void**    | accept()               | 2 (T, **double**) |
-| ObjIntConsumer<T>        |             |                        | 2 (T, **int**)    |
-| ObjLongConsumer<T>       |             |                        | 2 (T, **long**)   |
-
+![img_6.png](../../../../resources/img/table-8.7.png)
 
 ---
 ### `Variables in Lambdas`
