@@ -608,11 +608,12 @@ _**Table 9.6** Comparison of Comparable and Comparator_
 
 _**Table 9.11** Helper static methods for building a Comparator_
 
-![img.png](../../../../resources/img/table-9.11.png)
+![img_1.png](../../../../resources/img/table-9.11.png)
 
 _**Table 9.12** Helper default methods for building a Comparator_
 
-![img_1.png](../../../../resources/img/table-9.12.png)
+![img_2.png](../../../../resources/img/table-9.12.png)
+
 ```java
 class Team implements Comparable<Team> {
     private final String name;
