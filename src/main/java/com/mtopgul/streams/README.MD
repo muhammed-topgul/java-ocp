@@ -1,9 +1,9 @@
-### _Chapter 10: Streams_
+## _Chapter 10: Streams_
 
 ---
-### `Returning an Optioanl`
+## `Returning an Optioanl`
 
-#### Creating an Optional
+### Creating an Optional
 
 ```java
 public static void main(String[] args) throws Exception {
@@ -67,7 +67,7 @@ _**Table 10.1** Common Optional instance methods_
 
 ![img.png](../../../../resources/img/table-10.1.png)
 
-#### Dealing with an Empty Optional
+### Dealing with an Empty Optional
 
 ```java
 Optional<Double> opt = average();
@@ -79,8 +79,22 @@ Double orElseThrow = opt.orElseThrow(() -> new RuntimeException()); // RuntimeEx
 ```
 
 ---
-### `Using Streams`
+## `Using Streams`
 
+### Understanding the Pipeline Flow
+
+_Stream_'ler 3 parçadan oluşur. _Source_, _Intermediate operations_ ve _Terminal operations_.
+
+_Stream_'ler _lazy evaluate_ yapıdadırlar. _Terminal operation_ çalıştırılana kadar _intermediate operations_'lar 
+çalıştırılmazlar. 
+
+_**Figure 10.2** Stream pipeline_
+
+![img.png](../../../../resources/img/figure-10.2.png)
+
+_**Table 10.2** Intermediate vs. terminal operations_
+
+![img_1.png](../../../../resources/img/table-10.2.png)
 
 ---
 ### `Working with Primitive Streams`
