@@ -65,7 +65,7 @@ Optional<String> opt = Optional.ofNullable(value);
 
 _**Table 10.1** Common Optional instance methods_
 
-![img.png](img.png)
+![img.png](../../../../resources/img/table-10.1.png)
 
 ### Dealing with an Empty Optional
 
