@@ -49,6 +49,35 @@ _Output:_
 java.util.NoSuchElementException: No value present
 </pre>
 
+_Optional.of()_ methodu **null** değer ile çağrılırsa _NullPointerException_ fırlatır. Bunun önüne geçmek için iki çözüm 
+vardır. Birincisi _if condition_ ile değerin **null** olup olmadığını kontrol etmek. İkincisi ve daha doğru olanı
+_Optional.ofNullable()_ kullanmak.
+
+```java
+String value = null;
+
+// 1. Solution
+Optional<String> opt = (value == null) ? Optional.empty() : Optional.of(value);
+
+// 2. Solution
+Optional<String> opt = Optional.ofNullable(value);
+```
+
+_**Table 10.1** Common Optional instance methods_
+
+![img.png](img.png)
+
+### Dealing with an Empty Optional
+
+```java
+Optional<Double> opt = average();
+
+Double orElse = opt.orElse(0.0);
+Double orElseGet = opt.orElseGet(() -> Math.random());
+Double orElseThrow = opt.orElseThrow();                             // NoSuchElementException
+Double orElseThrow = opt.orElseThrow(() -> new RuntimeException()); // RuntimeException
+```
+
 ---
 ### `Using Streams`
 
