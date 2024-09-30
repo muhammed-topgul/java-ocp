@@ -3,7 +3,7 @@
 ---
 ### `Returning an Optioanl`
 
-### Creating an Optional
+#### Creating an Optional
 
 ```java
 public static void main(String[] args) throws Exception {
@@ -67,7 +67,7 @@ _**Table 10.1** Common Optional instance methods_
 
 ![img.png](../../../../resources/img/table-10.1.png)
 
-### Dealing with an Empty Optional
+#### Dealing with an Empty Optional
 
 ```java
 Optional<Double> opt = average();
