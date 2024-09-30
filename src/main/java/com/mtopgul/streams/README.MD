@@ -1,7 +1,7 @@
 ## _Chapter 10: Streams_
 
 ---
-## `Returning an Optioanl`
+## `Returning an Optional`
 
 ### Creating an Optional
 
@@ -95,6 +95,12 @@ _**Figure 10.2** Stream pipeline_
 _**Table 10.2** Intermediate vs. terminal operations_
 
 ![img_1.png](../../../../resources/img/table-10.2.png)
+
+### Creating Stream Sources
+
+#### Creating Finite Streams
+
+#### Creating Infinite Streams
 
 ---
 ### `Working with Primitive Streams`
