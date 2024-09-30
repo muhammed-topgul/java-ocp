@@ -3,6 +3,7 @@ package com.mtopgul;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -14,7 +15,7 @@ import java.util.stream.Stream;
 public class ScoreCalculator {
     private final static Scanner scanner = new Scanner(System.in);
     private static int questionsCount = 0;
-    private static int correctAnswerCount = 0;
+    private static int correctAnswersCount = 0;
     private static double partialTotal = 0;
 
     public static void main(String[] args) {
@@ -30,12 +31,16 @@ public class ScoreCalculator {
         Predicate<String> questions = correct.or(wrong).or(partially);
 
         InputStream fileResource = ClassLoader.getSystemResourceAsStream("exams/" + examName);
+        if (Objects.isNull(fileResource)) {
+            System.err.println(examName + " file not found!");
+            return;
+        }
         Stream<String> stream = new BufferedReader(new InputStreamReader(fileResource)).lines();
         stream.filter(questions)
                 .forEach(s -> {
                     questionsCount++;
                     if (correct.test(s)) {
-                        correctAnswerCount++;
+                        correctAnswersCount++;
                     } else if (partially.test(s)) {
                         int length = s.length();
                         int beginIndex = s.indexOf("(");
@@ -45,7 +50,7 @@ public class ScoreCalculator {
                     }
                 });
         double perQuestionRate = 100.0 / questionsCount;
-        double total = (perQuestionRate * correctAnswerCount) + (partialTotal * perQuestionRate);
+        double total = (perQuestionRate * correctAnswersCount) + (partialTotal * perQuestionRate);
         System.out.printf("Total: %.2f",  total);
     }
 }
