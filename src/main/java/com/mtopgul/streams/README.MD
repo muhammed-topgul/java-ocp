@@ -98,9 +98,40 @@ _**Table 10.2** Intermediate vs. terminal operations_
 
 ### Creating Stream Sources
 
+Java'da streamler _java.util.stream.Stream_ arayüzü tarafından temsil edilir.
+
 #### Creating Finite Streams
 
+```java
+Stream<String> empty = Stream.empty();                    // count = 0
+Stream<Integer> singleElement = Stream.of(1);          // count = 1
+Stream<Integer> fromArray = Stream.of(1, 2, 3); // count = 3
+
+var list = List.of("a", "b", "c");
+Stream<String> fromList = list.stream();
+```
+
 #### Creating Infinite Streams
+
+Sonsuz stream oluşturmak için _Stream_ üzerinde iki **static** method bulunur. _Stream.generate()_ ve _Stream.iterate()_.
+
+```java
+Stream<Double> randoms = Stream.generate(Math::random);
+Stream<Integer> oddNumbers = Stream.iterate(1, n -> n + 2);
+Stream<Integer> oddNumbersUnder100 = Stream.iterate(
+        1,            // Seed
+        n -> n < 100, // Predicate
+        n -> n + 2    // UnaryOperator
+);
+
+System.out.println(randoms); // java.util.stream.ReferencePipeline$Head@34c45dca
+```
+
+_**Table 10.3** Creating a source_
+
+![img.png](../../../../resources/img/table-10.3.png)
+
+### Using Common Terminal Operations
 
 ---
 ### `Working with Primitive Streams`
