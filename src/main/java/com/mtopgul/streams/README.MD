@@ -103,8 +103,8 @@ Java'da streamler _java.util.stream.Stream_ arayüzü tarafından temsil edilir.
 #### Creating Finite Streams
 
 ```java
-Stream<String> empty = Stream.empty();                    // count = 0
-Stream<Integer> singleElement = Stream.of(1);          // count = 1
+Stream<String> empty = Stream.empty();          // count = 0
+Stream<Integer> singleElement = Stream.of(1);   // count = 1
 Stream<Integer> fromArray = Stream.of(1, 2, 3); // count = 3
 
 var list = List.of("a", "b", "c");
@@ -132,6 +132,27 @@ _**Table 10.3** Creating a source_
 ![img.png](../../../../resources/img/table-10.3.png)
 
 ### Using Common Terminal Operations
+
+_Reduction_ stream'in tek bir sonuca indirgendiği işleme türüdür.
+
+_**Table 10.4** Terminal stream operations_
+
+![img.png](table-10.4.png)
+
+#### Counting
+
+Sonsuz bir stream'i sonlandırmaz. Bir _reduction_ işlemidir çünkü stream'de ki tüm elemanlara bakar ve geriye tek bir 
+değer döner.
+
+```java
+// Method signature
+public long count();
+```
+
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "bonobo");
+System.out.println(stream.count()); // 3
+```
 
 ---
 ### `Working with Primitive Streams`
