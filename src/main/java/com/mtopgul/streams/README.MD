@@ -151,8 +151,128 @@ public long count();
 
 ```java
 Stream<String> stream = Stream.of("monkey", "gorilla", "bonobo");
-System.out.println(stream.count()); // 3
+System.out.println(stream.count()); // ape
 ```
+
+#### Min and Max
+
+Bir _comparator_ ile stream de ki minimum ve maximum elemanları bulur. Sonsuz streamlerde kod askıda kalır.
+
+```java
+Stream<String> stream = Stream.of("monkey", "ape", "bonobo");
+
+Optional<String> min = stream.min((s1, s2) -> s1.length() - s2.length());
+min.ifPresent(System.out::println); // 
+```
+
+### Finding a Value
+
+_findAny()_ ve _findFirst()_ methodları stream boş değilse bir sonuç dönerler. Stream boş ise _Optional_ dönerler. 
+_findAny()_ methodu büyük olasılıkla streamde ki ilk elemanı dönecektir ama bu kesin değildir. _findFirst()_ dizide ki
+ilk elemanı döner.
+
+```java
+Stream<String> stream = Stream.of("monkey", "ape", "bonobo");
+Stream<String> infinite = Stream.generate(() -> "chimp");
+
+stream.findAny().ifPresent(System.out::println);   // monkey
+infinite.findAny().ifPresent(System.out::println); // chimp
+```
+
+### Matching
+
+_allMatch()_, _anyMatch()_ and _noneMatch()_ methodları ilgili veriyi stream üzerinde ararlar. Aranan veriye göre _infinite_
+streami bitirebilir veya bitiremez. _Find_ methodları gibi _reduction_ değildir. Çünkü tüm streami dolaşmak zorunde degildirler.
+
+
+```java
+var list = List.of("monkey", "2", "bonobo");
+Stream<String> infinite = Stream.generate(() -> "chimp");
+Predicate<String> pred = x -> Character.isLetter(x.charAt(0));
+
+boolean anyMatch1 = list.stream().anyMatch(pred);
+boolean anyMatch2 = infinite.anyMatch(pred);
+boolean allMatch = list.stream().allMatch(pred);
+boolean noneMatch = list.stream().noneMatch(pred);
+
+System.out.println(anyMatch1); // true
+System.out.println(anyMatch2); // true
+System.out.println(allMatch);  // false
+System.out.println(noneMatch); // false
+```
+
+Eğer _infinite_ stream _allMatch()_ ile çalıştırlırsa uygulama askıda kalır.
+
+_Output:_
+<pre>
+true
+true
+false
+false
+</pre>
+
+### Iterating
+
+Streamler üzerinde _for-each_ döngüsü yapılamaz çünkü _Stream_ sınıfı _Iterable_ arayüzünü uygulamaz.
+
+### Reducing
+
+_reduce()_ methodu streami tek bir nesnede birleştirir. Bir _reduction_ işlemidir çünkü tüm elemanları işler. Üç adet 
+method imzası vardır.
+
+```java
+public T reduce(T identity, BinaryOperator<T> accumulator)
+
+public Optional<T> reduce(BinaryOperator<T> accumulator)
+
+public <U> U reduce(U identity,
+                    BiFunction<U,? super T,U> accumulator,
+                    BinaryOperator<U> combiner)
+```
+
+```java
+var array = new String[] { "w", "o", "l", "f" };
+
+var result = "";
+for (String s : array) {
+    result += s;
+}
+System.out.println(result); // wolf
+
+Optional<String> optString = Arrays.stream(array)
+        .reduce((a, b) -> a + b);
+System.out.println(optString.get()); // wolf
+
+result = Arrays.stream(array)
+        .reduce("", String::concat);
+System.out.println(result); // wolf
+```
+
+_Output:_
+<pre>
+wolf
+wolf
+wolf
+</pre>
+
+_Identity_ değeri zorunlu değildir. _identity_ değeri vermezsek sonuç _Optional_ döner fakat değer verirsek sonuç _identity_
+tipinde olur.
+
+Üçüncü method, stream üzerinde farklı tiplerle uğraştığımızda kullanılır. Java'nın ara _reduction_'lar oluşturmasına ve 
+en sonda bunları birleştirmesine olanak sağlar.
+
+```java
+Stream<String> stream = Stream.of("java", "se", "17", "ocp");
+
+Integer length = stream.reduce(
+                                0,                        // Identity
+                                (i, s) -> i + s.length(), // Accumulator 
+                                (i1, i2) -> i1 + i2);     // Combiner
+System.out.println(length); // 11
+```
+
+Ayrıca üç parametreli _reduce()_ methodu paralel streamlerle çalışırken faydalıdır. Streamin _Thread_'ler tarafından 
+parçalanıp tekrar birleşitirilmesi olanak tanır.
 
 ---
 ### `Working with Primitive Streams`
