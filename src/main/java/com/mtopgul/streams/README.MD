@@ -165,7 +165,7 @@ Optional<String> min = stream.min((s1, s2) -> s1.length() - s2.length());
 min.ifPresent(System.out::println); // 
 ```
 
-### Finding a Value
+#### Finding a Value
 
 _findAny()_ ve _findFirst()_ methodları stream boş değilse bir sonuç dönerler. Stream boş ise _Optional_ dönerler. 
 _findAny()_ methodu büyük olasılıkla streamde ki ilk elemanı dönecektir ama bu kesin değildir. _findFirst()_ dizide ki
@@ -179,7 +179,7 @@ stream.findAny().ifPresent(System.out::println);   // monkey
 infinite.findAny().ifPresent(System.out::println); // chimp
 ```
 
-### Matching
+#### Matching
 
 _allMatch()_, _anyMatch()_ and _noneMatch()_ methodları ilgili veriyi stream üzerinde ararlar. Aranan veriye göre _infinite_
 streami bitirebilir veya bitiremez. _Find_ methodları gibi _reduction_ değildir. Çünkü tüm streami dolaşmak zorunde degildirler.
@@ -211,11 +211,11 @@ false
 false
 </pre>
 
-### Iterating
+#### Iterating
 
 Streamler üzerinde _for-each_ döngüsü yapılamaz çünkü _Stream_ sınıfı _Iterable_ arayüzünü uygulamaz.
 
-### Reducing
+#### Reducing
 
 _reduce()_ methodu streami tek bir nesnede birleştirir. Bir _reduction_ işlemidir çünkü tüm elemanları işler. Üç adet 
 method imzası vardır.
@@ -273,6 +273,196 @@ System.out.println(length); // 11
 
 Ayrıca üç parametreli _reduce()_ methodu paralel streamlerle çalışırken faydalıdır. Streamin _Thread_'ler tarafından 
 parçalanıp tekrar birleşitirilmesi olanak tanır.
+
+#### Collecting
+
+_collect()_ methodu _mutable reduction_ olarak isimlendşrilen özel bir _reduction_ türüdür. Normal _reduction_'dan daha 
+verimlidir çünkü aynı _mutable_ nesne üzerinde güncelleme işlemi yapılır. Yaygın kullanılan _mutable_ nesneler 
+_StringBuilder_ ve _ArrayList_'dir. Çok kullanışlı bir yöntemdir çünkü verileri streamden çıkarıp başka bir forma 
+sokmamızı sağlar.
+
+Method imzaları aşağıda ki gibidir.
+
+```java
+public <R> R collect(Supplier<R> supplier,
+                     BiConsumer<R, ? super T> accumulator,
+                     BiConsumer<R, R> combiner)
+    
+public <R,A> R collect(Collector<? super T, A,R> collector)
+```
+
+```java
+Stream<String> stream = Stream.of("w", "o", "l", "f");
+
+StringBuilder word = stream.collect(
+        () -> new StringBuilder(),
+        (StringBuilder sb, String str) -> sb.append(str),
+        (StringBuilder sb1, StringBuilder sb2) -> sb1.append(sb2)
+);
+System.out.println(word); // wolf
+```
+
+İlk parametre _supplier_, verileri toplayacağımız ve sonuç olarak döneceğimiz tip. İkinci parametre _accumulator_, 
+_BiConsumer_ tipindedir. İki parametre alır ve geriye bir şey dönmez. String'i StringBuilder'a ekler. 
+
+Son parametere _combiner_'dır. İki veri koleksiyonu alır ve birleştirir. Paralel streamlerde kullanışlıdır. Normal streamde
+çalışmaz.
+
+```java
+TreeSet<String> treeSet = stream.collect(
+        () -> new TreeSet<>(),
+        (TreeSet<String> set, String str) -> set.add(str),
+        (TreeSet<String> set1, TreeSet<String> set2) -> set1.addAll(set2)
+);
+
+System.out.println(treeSet); // [f, l, o, w]
+```
+
+Java' da built-in gelen _Collectors_ sınıfı vardır. Sık kullanılan collector'leri tanımlar.
+
+```java
+TreeSet<String> treeSet = stream.collect(Collectors.toCollection(TreeSet::new));
+System.out.println(treeSet); // [f, l, o, w]
+
+Set<String> set = stream.collect(Collectors.toSet());
+System.out.println(set); // [f, w, l, o]
+```
+
+### Using Common Intermediate Operations
+
+_Intermediate operations_'lar geriye _stream_ döner.
+
+#### Filtering
+
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "bonobo");
+stream.filter(x -> x.startsWith("m"))
+        .forEach(System.out::print); // monkey
+```
+
+#### Removing Duplicates
+
+_distinct()_ methodu stream üzerinde ki _duplicate_ değerleri siler. Kopyaların silinmesi için ardışık olması gerekmez. 
+Java nesnelerin eşit olup olmadığını anlamak için _equals()_ methodunu çağırır.
+
+```java
+Stream<String> stream = Stream.of("duck", "duck", "duck", "goose");
+stream.distinct()
+        .forEach(System.out::print); // duckgoose
+```
+
+#### Restricting by Position
+
+_limit()_ ve _skip()_ methodları streami küçültür. _limit()_ methodu _infinite_ streami _finite_ yapar.
+
+```java
+Stream<Integer> stream = Stream.iterate(1, n -> n + 1);
+stream.skip(5)
+        .limit(2)
+        .forEach(System.out::print); // 67
+```
+
+İlk 5 elemanı geçer ve streamden 2 adet eleman işler.
+
+#### Mapping
+
+Streamde ki her bir elemanı bire bir dönüştürür.
+
+```java
+Stream<String> stream = Stream.of("monkey", "gorilla", "bonobo");
+stream.map(animal -> animal.length()) // Stream<Integer>
+        .forEach(System.out::print);  // 676
+```
+
+#### Using flatMap
+
+_flatMap()_ streamdki her elemanı alır ve içerdiği tüm elemanları tek bir akışta birleştirir. Bir streamden boş elemanları
+silmek veya listelerde oluşan bir streami birleştirmek istediğimizde faydalıdır.
+
+```java
+List<String> zero = List.of();
+var one = List.of("Bonobo");
+var two = List.of("Mama Gorilla", "Baby Gorilla");
+
+Stream<List<String>> animals = Stream.of(zero, one, two);
+
+animals.flatMap(list -> list.stream())
+        .forEach(System.out::println);
+```
+
+_Output:_
+<pre>
+Bonobo
+Mama Gorilla
+Baby Gorilla
+</pre>
+
+İki streami birleştirmek.
+```java
+var one = Stream.of("Bonobo");
+var two = Stream.of("Mama Gorilla", "Baby Gorilla");
+Stream<Stream<String>> animals = Stream.of(one, two);
+animals.flatMap(s -> s)
+        .forEach(System.out::println);
+```
+
+_Output:_
+<pre>
+Bonobo
+Mama Gorilla
+Baby Gorilla
+</pre>
+
+> **Concatenating Streams**
+> 
+> _flatMap()_ çoğu durumda kullanışlı olsa da, iki streami birleştirmenin daha iyi bir yolu vardır.
+> 
+> ```java
+>  var one = Stream.of("Bonobo");
+>  var two = Stream.of("Mama Gorilla", "Baby Gorilla");
+>  Stream<String> concat = Stream.concat(one, two);
+> ```
+
+#### Sorting 
+
+_sorted()_ methodu streami sıralar. Dizileri sıralamak gibi, Java da bir _Comparator_ belirtmediğimiz sürece doğal 
+sıralamayı kullanır. Method imzaları aşağıda ki gibidir:
+
+```java
+public Stream<T> sorted()
+    
+public Stream<T> sorted(Comparator<? super T> comparator)
+```
+
+```java
+Stream<String> stream = Stream.of("brown-", "bear-");
+stream.sorted()
+        .forEach(System.out::print); // bear-brown-
+```
+
+```java
+Stream<String> stream = Stream.of("brown-", "bear-");
+stream.sorted((a, b) -> a.length() - b.length())
+        .forEach(System.out::print); // bear-brown-
+```
+
+```java
+Stream<String> stream = Stream.of("brown-", "bear-");
+stream.sorted(Comparator.reverseOrder())
+        .forEach(System.out::print); // brown-bear-
+```
+
+#### Taking a Peek
+
+Hata ayıklamak iöin faydalıdır. Çünkü akışı değiştirmeden işlem yapmamıza olanak tanır. 
+
+```java
+var stream = Stream.of("black bear", "brown bear", "grizzly");
+long count = stream.filter(s -> s.startsWith("g"))
+        .peek(System.out::println) // grizzly
+        .count();
+System.out.println(count); // 1
+```
 
 ---
 ### `Working with Primitive Streams`
