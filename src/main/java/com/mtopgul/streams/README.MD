@@ -137,7 +137,7 @@ _Reduction_ stream'in tek bir sonuca indirgendiği işleme türüdür.
 
 _**Table 10.4** Terminal stream operations_
 
-![img.png](table-10.4.png)
+![img.png](../../../../resources/img/table-10.4.png)
 
 #### Counting
 
@@ -467,6 +467,76 @@ System.out.println(count); // 1
 ---
 ### `Working with Primitive Streams`
 
+```java
+Stream<Integer> stream = Stream.of(1, 2, 3);
+System.out.println(stream.reduce(0, (s, n) -> s + n)); // 6
+        
+System.out.println(stream.mapToInt(x -> x).sum());     // 6
+```
+
+Üç adet primitive stream bulunur: **int**, **double** ve **long** stream. 
+
+Primitive streamler çok fazla faydalı methoda sahiptiler. Örneğin _Stream<Integer>_ ile sayıların ortalamasını almak için 
+iki kez stream çalıştırmak gerekirken _IntStream_ ile bunu doğrudan yapabiliriz.
+
+```java
+IntStream intStream = IntStream.of(1, 2, 3);
+OptionalDouble avg = intStream.average();
+System.out.println(avg.getAsDouble()); // 2.0
+```
+
+### Creating Primitive Streams
+
+Üç adet primitive stream vardır:
+
+- **IntStream**: **int**, **short**, **byte** ve **char** için kullanılır.
+- **LongStream**: **long** için kullanılır.
+- **DoubleStream**: **double** için kullanılır.
+
+**Table 10.5** Common primitive stream methods
+
+![img.png](../../../../resources/img/table-10.5.png)
+![img_1.png](../../../../resources/img/table-10.5.1.png)
+
+Primitive stream oluşturmak için kullanılan methodların bazıları normal _Stream_ methodlarına benzer.
+
+```java
+DoubleStream empty = DoubleStream.empty();
+
+DoubleStream oneValue = DoubleStream.of(3.14);
+oneValue.forEach(System.out::println);
+
+DoubleStream varargs = DoubleStream.of(1.0, 1.1, 1.2);
+varargs.forEach(System.out::println);
+```
+
+_Output:_
+<pre>
+3.14
+1.0
+1.1
+1.2
+</pre>
+
+Infinite stream oluşturma methodlarıda aynıdır.
+
+```java
+DoubleStream random = DoubleStream.generate(Math::random);
+DoubleStream fractions = DoubleStream.iterate(0.5, d -> d / 2);
+
+random.limit(3).forEach(System.out::println);
+fractions.limit(3).forEach(System.out::println);
+```
+
+_Output:_
+<pre>
+0.10989859419596859
+0.015402908907186652
+0.8187738229897128
+0.5
+0.25
+0.125
+</pre>
 
 ---
 ### `Working with Advanced Stream Pipeline Concepts`
