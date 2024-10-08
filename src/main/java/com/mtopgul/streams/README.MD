@@ -465,7 +465,7 @@ System.out.println(count); // 1
 ```
 
 ---
-### `Working with Primitive Streams`
+## `Working with Primitive Streams`
 
 ```java
 Stream<Integer> stream = Stream.of(1, 2, 3);
@@ -493,7 +493,7 @@ System.out.println(avg.getAsDouble()); // 2.0
 - **LongStream**: **long** için kullanılır.
 - **DoubleStream**: **double** için kullanılır.
 
-**Table 10.5** Common primitive stream methods
+_**Table 10.5** Common primitive stream methods_
 
 ![img.png](../../../../resources/img/table-10.5.png)
 ![img_1.png](../../../../resources/img/table-10.5.1.png)
@@ -538,5 +538,108 @@ _Output:_
 0.125
 </pre>
 
+### Mapping Streams
+
+Primitive stream olulturmanın diğer yolu da başka bir streamden _mapping()_ yapmaktır.
+
+_**Table 10.6** Mapping methods between types of streams_
+
+![img.png](../../../../resources/img/table-10.6.png)
+
+```java
+Stream<String> objStream = Stream.of("penguin", "fish");
+IntStream intStream = objStream.mapToInt(s -> s.length());
+LongStream longStream = objStream.mapToLong(s -> s.length());
+```
+
+_**Table 10.7** Function parameters when mapping between types of streams_
+
+![img_1.png](../../../../resources/img/table-10.7.png)
+
+_**mapToObj()**_ ve _**boxed()**_ methodları primitive streamleri _Stream_'e çevirir.
+
+```java
+private static Stream<Integer> mapping(IntStream stream) {
+    return stream.mapToObj(x -> x);
+}
+
+private static Stream<Integer> boxing(IntStream stream) {
+    return stream.boxed();
+}
+```
+
+### Using Optional with Primitive Streams
+
+```java
+IntStream intStream = IntStream.rangeClosed(1, 10);
+OptionalDouble avg = intStream.average();
+```
+
+_OptionalDouble_ primitiveler ve _Optional<Double>_ ise _Double_ wrapper sınıf için olmasıdır. Primitive optional sınıf 
+ile çalışmak _Optional_ sınıfın kendisiyle çalışmak gibidir.
+
+```java
+IntStream intStream = IntStream.rangeClosed(1, 10);
+OptionalDouble avg = intStream.average();
+
+avg.ifPresent(System.out::println);           // 5.5
+System.out.println(avg.getAsDouble());        // 5.5
+System.out.println(avg.orElseGet(() -> 0.0)); // 5.5
+```
+
+Tek fark _get()_ yerine _getAsDouble()_ kullanmamızdır. Bu bir primitive ile çalıştığımızı gösterir. Ayrıca, _orElseGet()_
+bir _Supplier_ yerine _DoubleSupplier_ alır.
+
+_**Table 10.8** Optional types for primitives_
+
+![img_2.png](../../../../resources/img/table-10.8.png)
+
+```java
+LongStream longStream = LongStream.of(5, 10);
+long sum = longStream.sum();
+System.out.println(sum); // 15
+
+DoubleStream doubleStream = DoubleStream.generate(() -> Math.PI);
+OptionalDouble min = doubleStream.min(); // runs infinitely
+```
+
+### Summarizing Statistics
+
+Primitive streamler üzerinde _count_, _average_ ve _sum_ gibi çok kullanılan işlemler yapmak için birden fazla sefer stream
+çalıştırması yapmak zorunda değiliz. Java'da bunun için özel bir _Statistic_ sınıfı vardır.
+
+```java
+IntStream intStream = IntStream.rangeClosed(1, 10);
+IntSummaryStatistics statistics = intStream.summaryStatistics();
+
+long count = statistics.getCount();
+double average = statistics.getAverage();
+long sum = statistics.getSum();
+int min = statistics.getMin();
+int max = statistics.getMax();
+```
+
+```java
+LongStream longStream = LongStream.rangeClosed(1, 10);
+LongSummaryStatistics statistics = longStream.summaryStatistics();
+
+long count = statistics.getCount();
+double average = statistics.getAverage();
+long sum = statistics.getSum();
+long min = statistics.getMin();
+long max = statistics.getMax();
+```
+
+```java
+DoubleStream doubleStream = DoubleStream.of(1, 2, 3);
+DoubleSummaryStatistics statistics = doubleStream.summaryStatistics();
+
+long count = statistics.getCount();
+double average = statistics.getAverage();
+double sum = statistics.getSum();
+double min = statistics.getMin();
+double max = statistics.getMax();
+```
+
 ---
-### `Working with Advanced Stream Pipeline Concepts`
+## `Working with Advanced Stream Pipeline Concepts`
