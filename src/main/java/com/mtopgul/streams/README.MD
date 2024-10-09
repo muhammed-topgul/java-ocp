@@ -643,3 +643,136 @@ double max = statistics.getMax();
 
 ---
 ## `Working with Advanced Stream Pipeline Concepts`
+
+### Linking Streams to the Underlying Data
+
+```java
+var cats = new ArrayList<String>();
+cats.add("Annie");
+cats.add("Ripley");
+var stream = cats.stream();
+
+cats.add("KC");
+
+System.out.println(stream.count()); // 3
+```
+
+Stream'ler _lazily evaluated_'dir. _stream.count()_ methodu çalıştırılana kadar streamler oluşturulmazlar.
+
+### Chaining Optionals
+
+```java
+private static void treeDigits(Optional<Integer> optional) {
+    if (optional.isPresent()) {
+        var num = optional.get();
+        var str = "" + num;
+        if (str.length() == 3) {
+            System.out.println(str);
+        }
+    }
+}
+
+private static void treeDigits(Optional<String> optional) {
+    optional.map(n -> "" + n)
+            .filter(s -> s.length() == 3)
+            .ifPresent(System.out::println);
+}
+```
+
+İki kod parçasıda aynı işlemi yapar. İkinci kod daha _expressive_'dir.
+
+> **Checked Exceptions and Functional Interfaces**
+> 
+> Çoğu _functional interfaces_ _checked exception_ fırlatmaz. Ama fırlattığı durumlarda bu bir problemdir. Fırlatılan 
+> hatanın ele alınması gerekir.
+> 
+> ```java
+> class ExceptionCaseStudy {
+>     private static List<String> create() throws IOException {
+>         throw new IOException();
+>     }
+>     
+>     public void good() throws IOException {
+>         ExceptionCaseStudy.create().stream().count();
+>     }
+>     
+>     public void bad() {
+>         Supplier<List<String>> supplier = () -> ExceptionCaseStudy.create(); // DOES NOT COMPILE
+>     }
+>     
+>     public void ugly() {
+>         Supplier<List<String>> supplier = () -> {
+>             try {
+>                 return ExceptionCaseStudy.create();
+>             } catch (IOException e) {
+>                 throw new RuntimeException(e);
+>             }
+>         };
+>     }
+> 
+>     private static List<String> createSafe() {
+>         try {
+>             return ExceptionCaseStudy.create();
+>         } catch (IOException e) {
+>             throw new RuntimeException(e);
+>         }
+>     }
+> 
+>     public void wrapped() {
+>         Supplier<List<String>> supplier = ExceptionCaseStudy::createSafe;
+>     }
+> }
+> ```
+
+### Using a Spliterator
+
+Diyelim ki iki çocuğun hayvanat bahçesindeki hayvanları beslemesi için bir torba yiyecek satın aldınız. Tartışmalardan 
+kaçınmak için fazladan boş bir torba ile hazırlıklı geldiniz. Ana torbadaki yiyeceğin yaklaşık yarısını çıkarıp evden 
+getirdiğiniz torbaya koyuyorsunuz. Orijinal torba yiyeceğin diğer yarısıyla birlikte hala duruyor.
+
+_**Table 10.9** Spliterator methods_
+
+![img.png](../../../../resources/img/table-10.9.png)
+
+```java
+var stream = List.of("bird-", "bunny-", "cat-", "dog-", "fish-", "lamb-", "mouse-");
+
+Spliterator<String> originalBagOfFood = stream.spliterator();
+Spliterator<String> emmasBag = originalBagOfFood.trySplit();
+emmasBag.forEachRemaining(System.out::print);   // bird-bunny-cat-
+
+Spliterator<String> jillsBag = originalBagOfFood.trySplit();
+jillsBag.tryAdvance(System.out::println);       // dog-
+jillsBag.forEachRemaining(System.out::print);   // fish-
+
+originalBagOfFood.forEachRemaining(System.out::print); // lamb-mouse-
+
+Spliterator<String> nullBag = originalBagOfFood.trySplit();
+System.out.println(nullBag);  // null
+```
+
+- _trySplit()_, mevcut _Spliterator_'dan verinin yarısını kaldırır ve yeni bir _Spliterator_ oluşturarak ona ekler. Bu method
+birden çok sefer çağrılabilir ve sonunda veriler artık bölünemez olduğunda **null** döndürür.
+
+
+- _forEachRemaining()_, _Spliterator_'da kalan elemanları işler.
+
+
+- _tryAdvance()_, eğer kaldıysa _Spliterator_'da bulunan tek bir elemanı işler. Eğer işlem yaptıysa **true** yoksa **false**
+ döndürür.
+- 
+```java
+var originalBag = Stream.iterate(1, n -> ++n)
+        .spliterator();
+Spliterator<Integer> newBag = originalBag.trySplit();
+
+newBag.tryAdvance(System.out::println); // 1
+newBag.tryAdvance(System.out::println); // 2
+newBag.tryAdvance(System.out::println); // 3
+```
+
+_Spliterator_ streamin _infinite_ olduğunu farkeder ve size yarısını vermeye çalışmaz. Bunun yerine, _newBag_ çok sayıda 
+eleman içerir. _tryAdvance()_'ı üç kez çağırdığımız için ilk üçünü elde ederiz. Sonsuz bir streamde _forEachRemaining()_'i
+çağırmak kötü bir fikir olurdu.
+
+### Collecting Results
