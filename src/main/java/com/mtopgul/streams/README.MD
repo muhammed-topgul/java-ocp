@@ -760,7 +760,7 @@ birden çok sefer çağrılabilir ve sonunda veriler artık bölünemez olduğun
 
 - _tryAdvance()_, eğer kaldıysa _Spliterator_'da bulunan tek bir elemanı işler. Eğer işlem yaptıysa **true** yoksa **false**
  döndürür.
-- 
+
 ```java
 var originalBag = Stream.iterate(1, n -> ++n)
         .spliterator();
@@ -776,3 +776,38 @@ eleman içerir. _tryAdvance()_'ı üç kez çağırdığımız için ilk üçün
 çağırmak kötü bir fikir olurdu.
 
 ### Collecting Results
+
+#### Using Basic Collectors
+
+```java
+var ohMy = Stream.of("lions", "tigers", "bears");
+
+String result = ohMy.collect(Collectors.joining());
+System.out.println(result); // lionstigersbears
+
+String result = ohMy.collect(Collectors.joining(","));
+System.out.println(result); // lions,tigers,bears
+```
+
+_**Table 10.10** Examples of grouping/partitioning collectors_
+
+![img.png](../../../../resources/img/table-10.10.png)
+![img_1.png](../../../../resources/img/table-10.10.1.png)
+
+```java
+var ohMy = Stream.of("lions", "tigers", "bears");
+
+Double result = ohMy.collect(Collectors.averagingInt(s -> s.length()));
+System.out.println(result); // 5.333333333333333
+```
+
+```java
+var ohMy = Stream.of("lions", "tigers", "bears");
+
+TreeSet<String> result = ohMy.filter(s -> s.startsWith("t"))
+        .collect(Collectors.toCollection(() -> new TreeSet<>()));
+System.out.println(result); // [tigers]
+```
+
+#### Collecting into Maps
+
