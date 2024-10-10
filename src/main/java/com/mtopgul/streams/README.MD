@@ -970,7 +970,7 @@ record Separations(String spaceSeparated, String commaSeparated) {
 ```
 
 ```java
-record Separations(int sum, double multiply) {
+record Separations(int sum, double avg) {
 
     public static void main(String[] args) {
         var list = List.of(10, 20, 38);
@@ -980,7 +980,7 @@ record Separations(int sum, double multiply) {
                         Collectors.averagingInt(i -> i),
                         (s, c) -> new Separations(s, c)
                 ));
-        System.out.println(separations); // Separations[sum=68, multiply=22.666666666666668]
+        System.out.println(separations); // Separations[sum=68, avg=22.666666666666668]
     }
 }
 ```
