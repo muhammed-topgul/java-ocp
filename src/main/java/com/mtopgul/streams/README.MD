@@ -811,3 +811,176 @@ System.out.println(result); // [tigers]
 
 #### Collecting into Maps
 
+```java
+var ohMy = Stream.of("lions", "tigers", "bears");
+
+Map<String, Integer> map = ohMy.collect(Collectors.toMap(s -> s, s -> s.length()));
+System.out.println(map); // {lions=5, bears=5, tigers=6}
+```
+
+String'in kendisi _key_ ve uzunluğu da _value_ oluyor.
+
+> Lambdaya geçirilen aynı değeri döndürmek yaygın bir işlemdir. _s -> s_ ifadesini _Function.identity()_ ile yeniden yazabiliriz.
+
+Şimdi ters bir map oluşturalım ve uzunluğu _key_ ve ismi de _value_ olarak ekleyelim. 
+
+```java
+Map<Integer, String> map = ohMy
+        .collect(Collectors.toMap(s -> s.length(), s -> s)); 
+// java.lang.IllegalStateException: Duplicate key 5 (attempted merging values lions and bears)
+```
+
+İki hayvan ismi eşit uzunluğa sahip. Bu da iki tane ayne _key_'in oluşmasına sebep oluyor ve hata fırlatıyor. Çünkü Java 
+böyle bir durumda ne yapacağını bilmiyor. Java'ya ne yapacağını söyleyebiliriz.
+
+```java
+Map<Integer, String> map = ohMy
+        .collect(Collectors.toMap(
+                s -> s.length(),
+                s -> s,
+                (s1, s2) -> s1 + "," + s2)
+        );
+System.out.println(map);            // {5=lions,bears, 6=tigers}
+System.out.println(map.getClass()); // class java.util.HashMap
+```
+
+_Collectors.toMap()_ methodu varsayılan olarak _HashMap_ döndürür. Ama dönüş tipini de belirleyebiliriz.
+
+```java
+Map<Integer, String> map = ohMy
+        .collect(Collectors.toMap(
+                s -> s.length(),
+                s -> s,
+                (s1, s2) -> s1 + "," + s2,
+                TreeMap::new
+        ));
+System.out.println(map);            // {5=lions,bears, 6=tigers}
+System.out.println(map.getClass()); // class java.util.TreeMap
+```
+
+#### Grouping
+
+İsim uzunluğuna göre gruplandırma.
+
+> _groupingBy()_ **null** değer dönemez. **null** _key_'lere izin vermez.
+
+```java
+var ohMy = Stream.of("lions", "tigers", "bears");
+
+Map<Integer, List<String>> map = ohMy
+        .collect(Collectors.groupingBy(s -> s.length()));
+System.out.println(map); // {5=[lions, bears], 6=[tigers]}
+```
+
+Varsayalım ki _List_ yerine _Set_ değeri istiyoruz. 
+
+```java
+Map<Integer, Set<String>> map = ohMy
+        .collect(Collectors.groupingBy(
+                s -> s.length(),
+                Collectors.toSet()
+        ));
+System.out.println(map); // {5=[lions, bears], 6=[tigers]}
+```
+
+Başka bir parametre aracılığıyla _map_'in dönüş tipini de değiştirebiliriz.
+
+```java
+TreeMap<Integer, Set<String>> map = ohMy
+        .collect(Collectors.groupingBy(
+                s -> s.length(),
+                TreeMap::new,
+                Collectors.toSet()
+        ));
+System.out.println(map); // {5=[lions, bears], 6=[tigers]}
+```
+
+_map_'in tipini değiştirip _value_ tipi olarak da _List_ yapmak istersek.
+
+```java
+TreeMap<Integer, List<String>> map = ohMy
+        .collect(Collectors.groupingBy(
+                s -> s.length(),
+                TreeMap::new,
+                Collectors.toList()
+        ));
+System.out.println(map); // {5=[lions, bears], 6=[tigers]}
+```
+
+#### Partitioning
+
+_Partitioning_ gruplamanın özel bir türüdür. Sadece iki grup vardır: **true** ve **false**. _Partitioning_ listeyi iki 
+parçaya ayırmaktır.
+
+```java
+Map<Boolean, List<String>> map = ohMy
+        .collect(Collectors.partitioningBy(s -> s.length() <= 5));
+System.out.println(map); // {false=[tigers], true=[lions, bears]}
+```
+
+```java
+Map<Boolean, List<String>> map = ohMy
+        .collect(Collectors.partitioningBy(s -> s.length() <= 7));
+System.out.println(map); // {false=[], true=[lions, tigers, bears]}
+```
+
+Gruplamada olduğu gibi _value_'nin dönüş tipini değiştirebiliriz.
+
+```java
+Map<Boolean, Set<String>> map = ohMy
+        .collect(Collectors.partitioningBy(
+                s -> s.length() <= 7,
+                Collectors.toSet()
+        ));
+System.out.println(map); // {false=[], true=[lions, bears, tigers]}
+```
+
+Gruplamanın aksine _map_'in tipini değiştiremeyiz. Zaten iki tane key olduğu için hangi map'in kullanılacağı önemli değildir.
+
+İstersek gruplamayı daha da özelleştirebiliriz.
+
+```java
+Map<Integer, Long> map = ohMy
+        .collect(Collectors.groupingBy(
+                String::length,
+                Collectors.counting()
+        ));
+System.out.println(map); // {5=2, 6=1}
+```
+
+#### Teeing
+
+Bir streamden bir değer döndürülebilir. Diyelim ki aynı streamde tek seferde iki değer döndürmek istiyoruz. Bu durumda 
+_Collectors.teeing()_ methodunu kullanabiliriz.
+
+```java
+record Separations(String spaceSeparated, String commaSeparated) {
+
+    public static void main(String[] args) {
+        var list = List.of("x", "y", "z");
+        Separations separations = list.stream()
+                .collect(Collectors.teeing(
+                        Collectors.joining(" "),
+                        Collectors.joining(","),
+                        (s, c) -> new Separations(s, c)
+                ));
+        System.out.println(separations); // Separations[spaceSeparated=x y z, commaSeparated=x,y,z]
+    }
+}
+```
+
+```java
+record Separations(int sum, double multiply) {
+
+    public static void main(String[] args) {
+        var list = List.of(10, 20, 38);
+        Separations separations = list.stream()
+                .collect(Collectors.teeing(
+                        Collectors.summingInt(i -> i),
+                        Collectors.averagingInt(i -> i),
+                        (s, c) -> new Separations(s, c)
+                ));
+        System.out.println(separations); // Separations[sum=68, multiply=22.666666666666668]
+    }
+}
+```
