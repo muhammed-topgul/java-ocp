@@ -63,7 +63,7 @@ try {
 public void good() {
     try {
         eatCarrot();
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
         System.out.println("Problematic");
     }
 }
@@ -654,7 +654,8 @@ LocalDateTime dateTime = LocalDateTime.of(date, time);
 
 var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-System.out.println(dateTime.format(format)); // 20/10/2022 13:12:34System.out.println(format.format(dateTime)); // 20/10/2022 13:12:34
+System.out.println(dateTime.format(format)); // 20/10/2022 13:12:34
+System.out.println(format.format(dateTime)); // 20/10/2022 13:12:34
 ```
 
 **Adding Custom Text Values**
@@ -871,8 +872,8 @@ System.out.println(formatDateTime); // 12.05.2005 22:14
 ```java
 public static void main(String[] args) {
     printUsername(new Locale("tr", "TR")); // Zoo_tr_TR
-    printUsername(Locale.US);                                // Zoo_en_US
-    printUsername(Locale.ENGLISH);                           // Zoo_en
+    printUsername(Locale.US);              // Zoo_en_US
+    printUsername(Locale.ENGLISH);         // Zoo_en
     printUsername(new Locale("en", "GB")); // Zoo_en_GB
     printUsername(new Locale("en", "CA")); // Zoo_en_CA
     printUsername(new Locale("fr", "FR")); // Zoo_fr_FR
