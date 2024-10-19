@@ -51,6 +51,6 @@ public class ScoreCalculator {
                 });
         double perQuestionRate = 100.0 / questionsCount;
         double total = (perQuestionRate * correctAnswersCount) + (partialTotal * perQuestionRate);
-        System.out.printf("Total: %.2f",  total);
+        System.out.printf("Score: %.2f",  total);
     }
 }
