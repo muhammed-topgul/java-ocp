@@ -575,6 +575,40 @@ Yukarıda ki kod thread-safe değildir. Çünkü _++sheepCount_ işlemi atomic d
 _sheepCount = sheepCount + 1_ işlemine eşittir. Yani değeri okur, değiştirir ve yazar. Yani 3 adımdan oluşur. **volatile**
 ise bu 3 adımın tutarlı olmasını sağlar.
 
+Volatile örnek:
+
+```java
+class VolatileExample {
+    private volatile boolean flag = true;
+
+    public void runExample() {
+        new Thread(() -> {
+            while (flag) {
+            }
+            System.out.println("Thread 1 sonlandı.");
+        }).start();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            flag = false;
+            System.out.println("Thread 2 flag'i false yaptı");
+        }).start();
+    }
+
+    public static void main(String[] args) {
+        new VolatileExample().runExample();
+    }
+}
+```
+
+Bu örnekte, **volatile** anahtar kelimesiyle tanımlanan _flag_ değişkeni, bir iş parçacığı tarafıdan değiştirildiği an 
+diğer iş parçacıkları tarafıdan hemen görülebilir. Eğer **volatile** kullanılmasaydı, iş parçacıkları güncellenen değeri 
+hemen göremeyebilidi.
+
 **Atomic Classes**
 
 Atomic action, bölünemez, süreç ortasında durmaz. Tamamen gerçekleşir ya da hiç çalışmaz. _Interleaved_ değildir.
@@ -612,7 +646,7 @@ yeterli olmayacaktır.
 - _Mutual exclusion_, belirli bir zamanda belirli bir kod parçasını tek bir threadin çalıştırdığı bir özelliktir.
 - Java, da her objenin tek bir kilidi vardır. Bu kilide, _intrinsic lock_ veya _monitor lock_ denir.
 - Kilidi bir thread ele geçirdiğinde başka bir thread bu kilidi ele geçiremez. Kilide sahip olan thread işini bitirdiğinde 
-kildi bırakır. Bu sayede diğer threadler de kilide erişip çalışmaya devam edebilir.
+kilidi bırakır. Bu sayede diğer threadler de kilide erişip çalışmaya devam edebilir.
 - **synchronized** anahtar kelimesi sadece _methodlar_ veya _bloklarda_ kullanılabilir. Değişkenler veya sınıflarda kullanılamaz.
 
 Aşağıda ki kod, threadlerin oluşturulmasını synchronized ediyor, çalışmasını değil. Bu yüzden beklediğimiz gibi çalışmaz.
@@ -1158,7 +1192,7 @@ System.out.print(List.of(1,2,3,4,5,6)
 ```
 
 _findFirst()_, _limit()_ ve _skip()_ gibi sıranın önemli olduğu işlemlerde senkronizasyon yapılır. Yani serial stream ile
-aynı sonuçları döner. Buda performans kaybına neden olabilir.
+aynı sonuçları döner. Bu performans kaybına neden olabilir.
 
 > Java'da tüm streamler varsayılan olarak sıralıdır. Sıralı bir streamden sırasız bir stream oluşturabilmek mümkündür. 
 >```java
@@ -1188,7 +1222,7 @@ System.out.println(text); // wolf
 ---
 ### `Review Questions Notes`
 
-- _tryLock()_ methodu **boolean** değer döner. Kilidi elde etmek için sonsuza kadar beklemez. Hemen cevabıdöner. 
+- _tryLock()_ methodu **boolean** değer döner. Kilidi elde etmek için sonsuza kadar beklemez. Hemen cevabı döner. 
   Yani kilidi her zaman elde edemeyebilir. Bu yüzden **if** ile kontrol edilmelidir. Eğer kilit elde edilirse _unlock()_
   methodu çağrılmalıdır. Aksi halde _IllegalMonitorStateException_ fırlatır.
   ```java
@@ -1203,7 +1237,7 @@ System.out.println(text); // wolf
   
 - _Callable.call()_ methodu, geri dönüş tipine sahiptir ve _Exception_ fırlatır. _Runnable.run()_ **void**'dir ve _Exception_ fırlatmaz.
 - _CopyOnWriteArrayList_ for loop üzerinde orjinal listesini korur. Fakat _ConcurrentSkipListSet_ her yeni eleman 
-  eklendiğinde for loop üzerşnde bulunan listeyide günceller.
+  eklendiğinde for loop üzerinde bulunan listeyide günceller.
 - _awaitTermination()_ methodu thread'i uyutur.
 - _execute()_ methodu sadece _Runnable_ parametre alır. _submit()_ methodu ise hem _Runnable_ hem _Callable_ parametre alır.
 - _future.get(1, TimeUnit.SECONDS)_ methodu belirtilen zaman içinde sonuç almazsa hata fırlatır.
