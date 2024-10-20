@@ -58,7 +58,7 @@ class MyThread extends Thread {
 
 > Thread'i başlatmak için _start()_ methodu kullanılır. _run()_ methodunu çağırmak thread'i başlatmaz.
 
-> Bir Thread üzerinde _start()_ methodusadece bir kez çalıştırılabilir. İkinci kez çağrılmayı denedeğimizde 
+> Bir Thread üzerinde _start()_ methodu sadece bir kez çalıştırılabilir. İkinci kez çağrılmayı denedeğimizde 
 > _IllegalThreadStateException_ hatasını alırız.
 > ```java
 > Thread thread = new Thread();
@@ -141,7 +141,7 @@ public static void main(String[] args) {
 Bazen bir threadin çalışabilmesi için başka bir threadin görevini tamamlamış olması gerekir. Polling belli aralıklarla
 verileri kontrol etme işlemidir.
 
-While loop ile işlemin sonucunu kontrol etmek CPU kaynaklarını gereksi yere tükettiği için _bad practice_'dir.
+While loop ile işlemin sonucunu kontrol etmek CPU kaynaklarını gereksiz yere tükettiği için _bad practice_'dir.
 
 ```java
 public static int counter = 0;
@@ -151,9 +151,11 @@ public static void main(String[] args) {
             counter++;
         }
     }).start();
+    
     while (counter < 100_000_000) {
         System.out.println(counter + " Not reached yet.");
     }
+    
     System.out.println("Reached: " + counter);
 }
 ```
@@ -167,10 +169,12 @@ public static void main(String[] args) throws InterruptedException {
             counter++;
         }
     }).start();
+    
     while (counter < 100_000_000) {
         System.out.println(counter + " Not reached yet.");
         Thread.sleep(1000);
     }
+    
     System.out.println("Reached: " + counter);
 }
 ```
@@ -576,9 +580,11 @@ ise bu 3 adımın tutarlı olmasını sağlar.
 Atomic action, bölünemez, süreç ortasında durmaz. Tamamen gerçekleşir ya da hiç çalışmaz. _Interleaved_ değildir.
 
 **Table 13.6** Atomic classes
+
 ![img_1.png](../../../../resources/img/table-13.6.png)
 
 **Table 13.7** Common atomic methods
+
 ![img.png](../../../../resources/img/table-13.7.png)
 
 ```java
