@@ -22,7 +22,7 @@ _relative path_ **animals\Bear.java**'dır.
 
 ![img.png](../../../../resources/img/table-14.1.png)
 
-Mevcut dizinimiz _fish/shark/hammerhead_ ise _..swim.txt_ dizini _/fish/shar/swim.txt_'e karşılık gelmektedir.
+Mevcut dizinimiz _fish/shark/hammerhead_ ise _..swim.txt_ dizini _/fish/shark/swim.txt_'e karşılık gelmektedir.
 
 _/fish/clownfish/../shark/./swim.txt_ dizini _/fish/shark/swim.txt_'e karşılık gelir.
 
@@ -65,11 +65,11 @@ System.out.println(file3.exists()); // true
 // Path.of()
 Path path1 = Path.of("C:\\tiger\\data\\stripes.txt");
 Path path2 = Path.of("C:", "tiger", "data", "stripes.txt");
-// Paths.of()
+// Paths.get()
 Path path3 = Paths.get("C:\\tiger\\data\\stripes.txt");
 Path path4 = Path.of("C:", "tiger", "data", "stripes.txt");
 
-System.out.println(**Files.exists(path1)); // true
+System.out.println(Files.exists(path1)); // true
 System.out.println(Files.exists(path2)); // true
 System.out.println(Files.exists(path3)); // true
 System.out.println(Files.exists(path4)); // true
@@ -93,7 +93,7 @@ File backToFile = nowPath.toFile();
 ```
 
 ---
-### `Operationg on File and Path`
+### `Operating on File and Path`
 
 ### Using Shared Functionality
 
