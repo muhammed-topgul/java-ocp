@@ -1,7 +1,9 @@
 ### _Chapter 14: I/O_
 
 ---
-### `Referencing Files and Directories`
+## `Referencing Files and Directories`
+
+### Conceptualizing the File System
 
 **Figure 14.1** Directory and file hierarchy 
 
@@ -93,7 +95,7 @@ File backToFile = nowPath.toFile();
 ```
 
 ---
-### `Operating on File and Path`
+## `Operating on File and Path`
 
 ### Using Shared Functionality
 
@@ -617,7 +619,7 @@ System.out.println(Files.mismatch(p1, p2)); // false
 ```
 
 ---
-### `Introducing I/O Streams`
+## `Introducing I/O Streams`
 
 ### Learning I/O Stream Nomenclature
 
@@ -639,7 +641,7 @@ _java.io_ API io streamleri okumak ve yazmak için iki grup io stream sınıfı 
 
 
 ---
-### `Reading and Writing Files`
+## `Reading and Writing Files`
 
 ### Using I/O Streams
 
@@ -838,7 +840,7 @@ private static void newBuffered(Path in, Path out) throws IOException {
 ```
 
 ---
-### `Serializing Data`
+## `Serializing Data`
 
 Nesneleri I/O streame ve I/O streami nesnelere çevirmek için _serialization_ mekanizmasını kullanabiliriz. 
 _Serialization_, in memory olan bir nesneyi byte streame dönüştürme işlemidir. _Deserialization_ ise byte streamden nesne 
@@ -1051,7 +1053,7 @@ Cat{name='Tekir', age=2, color='white', Animal{id=0, type='null'}}
 _Animal_ sınıfının no-args constructoru çalıştırılır. _id_ ve _type_ alanları varsayılan değerlerini alıyor.
 
 ---
-### `Interacting with Users`
+## `Interacting with Users`
 
 ### Reading Input as an I/O Stream
 
@@ -1098,7 +1100,7 @@ reader.readLine(); // throws IOException: Stream closed
 ```
 
 ---
-### `Working with Advanced APIs`
+## `Working with Advanced APIs`
 
 ### Manipulating Input Streams
 
