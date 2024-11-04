@@ -650,6 +650,9 @@ _OutputStream_ ve _Writer_ sınıflarında ise _write()_ methodu bulunur.
 
 Aşağıda ki kodda methodlar dosyaya okuma yazma işlemi yaparlar. Her iki örnekte de **-1** streamin sonunu belirtir.
 
+> _FileOutputStream_ ve _FileWriter_ sınıfları yapısıcısında belirtilen dosyalar yoksa Java bu dosyaları oluşturur. Yani
+> _target.txt_ dosyası yoksa dosya Java tarafından oluşturulur.
+
 ```java
 public static void main(String[] args) throws IOException {
     copy(new FileInputStream("source.txt"), new FileOutputStream("target.txt"));
@@ -680,7 +683,7 @@ _Output:_
 M y   s o u r c e . M y   s o u r c e . 
 </pre>
 
-Her seferinde tek tek okuyup yazmank verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar var.
+Her seferinde tek tek okuyup yazmank verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar vardır.
 
 ```java
 private static void copy(InputStream in, OutputStream out) throws IOException {
@@ -708,9 +711,12 @@ private static void copy(File src, File dest) throws IOException {
 }
 ```
 
-`var writer = new BufferedWriter(new FileWriter(dest));` şeklinde bir writer oluşturursak her seferinde dosya içeriğini 
-silip yeniden oluşturur. Her zaman sonuna eklemesini sağlamak için _append_ parametresini **true** olarak vermemiz gerekir.
-`var writer = new BufferedWriter(new FileWriter(dest, true));`
+> `var writer = new BufferedWriter(new FileWriter(dest));` veya `FileOutputStream fos = new FileOutputStream("target.txt");`
+> şeklinde bir yazıcı oluşturursak her seferinde dosya içeriğini silip yeniden oluşturur. 
+> 
+> Dosya içerisinde ki mevcut metni koruyup her zaman sonuna eklemesini sağlamak için _append_ parametresini **true** 
+> olarak vermemiz gerekir. `var writer = new BufferedWriter(new FileWriter(dest, true));` veya 
+> `FileOutputStream fos = new FileOutputStream("target.txt", true);`
 
 Aşağıda ki kodda _BufferedWriter_ yerine _PrintWriter_ kullanınca _writer.newLine()_ methodunu çağırmamız gerekmiyor.  
 _writer.println()_ methodu bunu otomatik yapıyor. 
