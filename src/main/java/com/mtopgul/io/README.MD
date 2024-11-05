@@ -1,7 +1,9 @@
 ### _Chapter 14: I/O_
 
 ---
-### `Referencing Files and Directories`
+## `Referencing Files and Directories`
+
+### Conceptualizing the File System
 
 **Figure 14.1** Directory and file hierarchy 
 
@@ -93,7 +95,7 @@ File backToFile = nowPath.toFile();
 ```
 
 ---
-### `Operating on File and Path`
+## `Operating on File and Path`
 
 ### Using Shared Functionality
 
@@ -617,7 +619,7 @@ System.out.println(Files.mismatch(p1, p2)); // false
 ```
 
 ---
-### `Introducing I/O Streams`
+## `Introducing I/O Streams`
 
 ### Learning I/O Stream Nomenclature
 
@@ -639,7 +641,7 @@ _java.io_ API io streamleri okumak ve yazmak için iki grup io stream sınıfı 
 
 
 ---
-### `Reading and Writing Files`
+## `Reading and Writing Files`
 
 ### Using I/O Streams
 
@@ -647,6 +649,9 @@ I/O stream sınıflarında _read()_ ve _write()_ methodları bulunur. _InputStre
 _OutputStream_ ve _Writer_ sınıflarında ise _write()_ methodu bulunur.
 
 Aşağıda ki kodda methodlar dosyaya okuma yazma işlemi yaparlar. Her iki örnekte de **-1** streamin sonunu belirtir.
+
+> _FileOutputStream_ ve _FileWriter_ sınıfları yapısıcısında belirtilen dosyalar yoksa Java bu dosyaları oluşturur. Yani
+> _target.txt_ dosyası yoksa dosya Java tarafından oluşturulur.
 
 ```java
 public static void main(String[] args) throws IOException {
@@ -678,7 +683,7 @@ _Output:_
 M y   s o u r c e . M y   s o u r c e . 
 </pre>
 
-Her seferinde tek tek okuyup yazmank verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar var.
+Her seferinde tek tek okuyup yazmank verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar vardır.
 
 ```java
 private static void copy(InputStream in, OutputStream out) throws IOException {
@@ -706,9 +711,12 @@ private static void copy(File src, File dest) throws IOException {
 }
 ```
 
-`var writer = new BufferedWriter(new FileWriter(dest));` şeklinde bir writer oluşturursak her seferinde dosya içeriğini 
-silip yeniden oluşturur. Her zaman sonuna eklemesini sağlamak için _append_ parametresini **true** olarak vermemiz gerekir.
-`var writer = new BufferedWriter(new FileWriter(dest, true));`
+> `var writer = new BufferedWriter(new FileWriter(dest));` veya `FileOutputStream fos = new FileOutputStream("target.txt");`
+> şeklinde bir yazıcı oluşturursak her seferinde dosya içeriğini silip yeniden oluşturur. 
+> 
+> Dosya içerisinde ki mevcut metni koruyup her zaman sonuna eklemesini sağlamak için _append_ parametresini **true** 
+> olarak vermemiz gerekir. `var writer = new BufferedWriter(new FileWriter(dest, true));` veya 
+> `FileOutputStream fos = new FileOutputStream("target.txt", true);`
 
 Aşağıda ki kodda _BufferedWriter_ yerine _PrintWriter_ kullanınca _writer.newLine()_ methodunu çağırmamız gerekmiyor.  
 _writer.println()_ methodu bunu otomatik yapıyor. 
@@ -838,7 +846,7 @@ private static void newBuffered(Path in, Path out) throws IOException {
 ```
 
 ---
-### `Serializing Data`
+## `Serializing Data`
 
 Nesneleri I/O streame ve I/O streami nesnelere çevirmek için _serialization_ mekanizmasını kullanabiliriz. 
 _Serialization_, in memory olan bir nesneyi byte streame dönüştürme işlemidir. _Deserialization_ ise byte streamden nesne 
@@ -1051,7 +1059,7 @@ Cat{name='Tekir', age=2, color='white', Animal{id=0, type='null'}}
 _Animal_ sınıfının no-args constructoru çalıştırılır. _id_ ve _type_ alanları varsayılan değerlerini alıyor.
 
 ---
-### `Interacting with Users`
+## `Interacting with Users`
 
 ### Reading Input as an I/O Stream
 
@@ -1098,7 +1106,7 @@ reader.readLine(); // throws IOException: Stream closed
 ```
 
 ---
-### `Working with Advanced APIs`
+## `Working with Advanced APIs`
 
 ### Manipulating Input Streams
 
