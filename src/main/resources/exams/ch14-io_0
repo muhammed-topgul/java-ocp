@@ -1,0 +1,39 @@
+# Chapter 13: Concurrency (Exam#01 06/11/2024)
+✅ 01 (1) -> C
+✅ 02 (2) -> A,F
+✅ 03 (2) -> B,D
+❌ 04 (1) -> C
+✅ 05 (1) -> C
+✅ 06 (1) -> C
+✅ 07 (2) -> B,C
+❌ 08 (1) -> C
+☑️ 09 (3) -> D,F,G  (1)
+✅ 10 (3) -> B,D,G
+✅ 11 (2) -> A,E
+✅ 12 (2) -> C,E
+✅ 13 (2) -> A,G
+✅ 14 (3) -> B,D,F
+✅ 15 (3) ->
+✅ 16 (2) ->
+✅ 17 (3) ->
+✅ 18 (1) ->
+✅ 19 (1) ->
+✅ 20 (1) ->
+✅ 21 (1) ->
+✅ 22 (1) ->
+✅ 23 (2) ->
+✅ 24 (1) ->
+✅ 25 (2) ->
+
+🎯 96.00/100
+
+Good to review:
+1. Methods in IO API that throws exceptions
+2. Test symbolic link in question 4 and 7
+3. BasicFileAttributeView setTime()
+
+Note:
+1. Most of the Files methods declare IOException,
+   especially the ones that modify a file or directory (Files.deleteIfExists(path))
+2. Files.readAllLines() geriye List<String> döner. Files.lines() geriye Stream<String> döner.
+3. BasicFileAttributes is read-only. BasicFileAttributeView to read and write.
