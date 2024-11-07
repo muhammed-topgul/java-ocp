@@ -12,25 +12,26 @@
 ✅ 11 (2) -> A,E
 ✅ 12 (2) -> C,E
 ✅ 13 (2) -> A,G
-✅ 14 (3) -> B,D,F
-✅ 15 (3) ->
-✅ 16 (2) ->
-✅ 17 (3) ->
-✅ 18 (1) ->
-✅ 19 (1) ->
-✅ 20 (1) ->
-✅ 21 (1) ->
-✅ 22 (1) ->
-✅ 23 (2) ->
-✅ 24 (1) ->
-✅ 25 (2) ->
+☑️ 14 (3) -> B,D,F  (2)
+✅ 15 (3) -> B,E,F
+❌ 16 (2) -> E,F
+✅ 17 (3) -> B,C,E
+✅ 18 (1) -> C
+✅ 19 (1) -> C
+✅ 20 (1) -> D
+✅ 21 (1) -> C
+❌ 22 (1) -> E
+✅ 23 (2) -> A,D
+✅ 24 (1) -> B
+☑️ 25 (2) -> A,B    (1)
 
-🎯 96.00/100
+🎯 78.00/100
 
 Good to review:
 1. Methods in IO API that throws exceptions
 2. Test symbolic link in question 4 and 7
 3. BasicFileAttributeView setTime()
+4. Read and Write.
 
 Note:
 1. Most of the Files methods declare IOException,
