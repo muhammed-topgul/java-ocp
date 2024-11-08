@@ -335,7 +335,7 @@ _Output:_
 - **Relativizing a Path**
 
 1. Bir dosyadan diğer dosyaya nasıl gidebileceğimizi belirler. 
-2. Bu işlemin gerçekleşebilmesi için iki parametreninde aynı anda _absolute_ veya _relative_ olması gerekiyor. 
+2. Bu işlemin gerçekleşebilmesi için iki parametreninde aynı anda _absolute path_ veya _relative path_ olması gerekiyor. 
 3. Farklı disklerde olursa (_C:\\_ ve _D:\\_) o zaman yine hata fırlatır.
 
 ```java
@@ -350,7 +350,6 @@ System.out.println(path2.relativize(path1));
 _Output:_
 <pre>
 ..\friendly\birds.txt
-
 ..\..\fish.txt
 </pre>
 
@@ -367,6 +366,22 @@ _Output:_
 ..\sanctuary\raven\poe.txt
 ..\..\..\habitat
 </pre>
+
+Path'lerden biri relative diğeri absolute ise hatafırlatır.
+
+```java
+Path path1 = Paths.get("/primate/chimpanzee");
+Path path2 = Paths.get("bananas.txt");
+path1.relativize(path2); // IllegalArgumentException
+```
+
+Windows işletim sisteminde path'ler farklı sürücüleri gösteriyorsa yine hata fırlatır.
+
+```java
+Path path3 = Paths.get("C:\\primate\\chimpanzee");
+Path path4 = Paths.get("D:\\storage\\bananas.txt");
+path3.relativize(path4); // IllegalArgumentException
+```
 
 **Normalizing a Path**
 
@@ -413,6 +428,15 @@ true
 
 Buraya kadar kullanılan methodlarda dosya veya dizinin gerçekte olup olmaması önemli değildi. _Path_ nesneleri üzerinde 
 teorik işlemler yaptık. **_toRealPath()_** methodu, eğer dosya gerçekte yoksa hata fırlatır.
+
+Ayrıca, _toRealPath()_ methodu sembolik linkleri de takip edecektir. Sembolik linkleri göz ardı etmek için _LinkOption_ 
+parametresini kullanabiliriz.
+
+```java
+Path path = Paths.get("/primate/chimpanzee");
+path.toRealPath();
+path.toRealPath(LinkOption.NOFOLLOW_LINKS);
+```
 
 ### Creating, Moving, and Deleting Files and Directories
 
