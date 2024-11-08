@@ -45,12 +45,21 @@ fakat _NIO.2_ destekler.
 ### Creating File or Path
 
 File sistemde yer alan bir dosya yada klasörü temsil edecek bir oluşturmamız gereklidir. Bunun için _java.io.File_ sınıfını
-veya _java.nio.file.Path_ sınıfını kullanabiliriz. _File_ veya _Path_ sınıfı dosya içeriğini okuyamaz veya dosyaya veri 
-yazamaz.
+veya _java.nio.file.Path_ sınıfını kullanabiliriz. _File_ ve _Path_ sınıfları; yeni bir dosya oluşturamazlar, 
+dosya içeriğini okuyamazlar veya dosyaya veri yazamazlar.
 
 _java.io.File_ bir sınıftır. _java.nio.file.Path_ ise bir **interface**'dir.
 
 **Creating a File**
+
+_File_ nesnesi oluşturabileceğimiz _File_ sınıfı üzerinde 3 adet _constructor_ bulunuyor.
+
+```java
+public File(String pathname)
+public File(String parent, String child)
+public File(File parent, String child)
+```
+
 ```java
 File file1 = new File("C:\\tiger\\data\\stripes.txt");
 File file2 = new File("C:\\tiger", "data\\stripes.txt");
@@ -93,6 +102,10 @@ File file = new File("rabbit");
 Path nowPath = file.toPath();
 File backToFile = nowPath.toFile();
 ```
+
+**Table 14.2** Options for creating File and Path
+
+![img.png](../../../../resources/img/table-14.2.png)
 
 ---
 ## `Operating on File and Path`
