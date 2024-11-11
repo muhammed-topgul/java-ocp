@@ -473,31 +473,38 @@ Files.createFile(Path.of("my-folder", "my-file-3"));
 public static Path copy(Path source, Path target, CopyOption... options) throws IOException
 ```
 
-Aşagıda ki kod önce dizinleri oluşturur (_files/panda_ ve _files/panda-new_). Sonra _bamboo.txt_ dosyasını. En 
-sonunda da _files/panda/bamboo.txt_ dosyasını _files/panda-new_ altına kopyalar.
+Aşagıda ki kod önce dizinleri oluşturur (_panda_ ve _panda-new_). Sonra _bamboo.txt_ dosyasını. En 
+sonunda da _panda/bamboo.txt_ dosyasını _panda-new_ altına kopyalar.
 ```java
 // Create folders (panda and panda-new)
-Path path = Path.of("files/panda");
+Path path = Path.of("panda");
 Files.createDirectories(path);
-Files.createDirectories(Path.of("files/panda-new"));
+Files.createDirectories(Path.of("panda-new"));
 
 // Create file
 Path bamboo = path.resolve("bamboo.txt");
-// Files.createFile(Path.of("files/panda", "bamboo.txt"));
+// Files.createFile(Path.of("panda", "bamboo.txt"));
 Files.createFile(bamboo);
 
 // Move files
-Files.copy(bamboo, Path.of("files/panda-new/bamboo.txt"));
+Files.copy(bamboo, Path.of("panda-new/bamboo.txt"));
 ```
 
-Dizinler kopyalandığında _shallow copy_ yapılır. Yani dizinin altında bulunan alt dizi ve dosyalar kopyalanmaz. Aşağıda ki
+_Files.copy()_ methodu:
+- Kopyalama işlemi esnasında sadece hedef dosya veya dizin yoksa ve diğer tüm üst dizinler varsa method başarılı bir 
+  şekilde çalışır.
+- Üst dizinleri oluşturmaz. _panda-new_ klasörü yoksa uygulama _NoSuchFileException_ 
+  hatası fırlatır.
+- _panda-new/bamboo.txt_ dosyası zaten mevcutsa _FileAlreadyExistsException_ hatası fırlatır.
+
+Dizinler kopyalandığında _shallow copy_ yapılır. Yani dizinin altında bulunan alt dizin ve dosyalar kopyalanmaz. Aşağıda ki
 kodda _turtle_ dizininin altında _turtle1.txt_ ve _turtle2.txt_ dosyaları mevcut. Kod çalıştığında sadece _turtleCopy_  
 dizinini oluşturur altında ki dosya ve dizinleri kopyalamaz. Bunun için recursive kopyalama işlemine ihtiyaç vardır.
 
 Kod iki kez arka arkaya çalışırsa _files\turtleCopy_ dizini için _FileAlreadyExistsException_ hatası fırlatır.
 
 ```java
-Files.copy(Path.of("files/turtle"), Path.of("files/turtleCopy"));
+Files.copy(Path.of("turtle"), Path.of("turtleCopy"));
 ```
 
 **Copying and Replacing Files**
