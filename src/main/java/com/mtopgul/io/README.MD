@@ -501,7 +501,7 @@ Dizinler kopyalandığında _shallow copy_ yapılır. Yani dizinin altında bulu
 kodda _turtle_ dizininin altında _turtle1.txt_ ve _turtle2.txt_ dosyaları mevcut. Kod çalıştığında sadece _turtleCopy_  
 dizinini oluşturur altında ki dosya ve dizinleri kopyalamaz. Bunun için recursive kopyalama işlemine ihtiyaç vardır.
 
-Kod iki kez arka arkaya çalışırsa _files\turtleCopy_ dizini için _FileAlreadyExistsException_ hatası fırlatır.
+- _turtleCopy_ dizini zaten mevcutsa _FileAlreadyExistsException_ hatası fılatılır.
 
 ```java
 Files.copy(Path.of("turtle"), Path.of("turtleCopy"));
@@ -538,6 +538,12 @@ try (var is = new FileInputStream("book.txt")) {
 }
 ```
 
+_OutputStream_ parametresi alarak kopyalama işlemi yapan method _StandardCopyOption_ parametresi almaz. Bu method hedef
+dosyayı her seferinde tekrar oluşturur. Varsayılan olarak _StandardCopyOption.REPLACE_EXISTING_ gibi davranır.
+```java
+Files.copy(Path.of("book.txt"), new FileOutputStream("movie.txt"));
+```
+
 Aşağıda ki kod çalıştığında _book.txt_ dosyasını içini _System.out_'a yani konsola kopyalar ve konsola yazdırır.
 ```java
 Files.copy(Path.of("book.txt"), System.out);
@@ -569,6 +575,8 @@ Path file = Path.of("food.txt");
 Path directory = Path.of("enclosure/food.txt");
 Files.copy(file, directory);
 ```
+
+**Moving or Renaming Paths with _move()_**
 
 Dosyaları ve dizinleri taşımak veya yeniden adlandırmak için _Files.move()_ methodu kullanılabilir.
 
