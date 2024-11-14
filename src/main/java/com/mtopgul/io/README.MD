@@ -618,7 +618,8 @@ public static boolean deleteIfExists(Path path) throws IOException
 
 Dizin ve dosyayı silmek için iki adet method bulunur. _deleteIfExists()_ methodu geriye **boolean** bir değer döner.
 
-Dizini silebilmek için dizinin mutlaka boş olması gerekir. Aksi takdirde _DirectoryNotEmptyException_ hatası fırlatılır.
+Dizini silebilmek için dizinin mutlaka boş olması gerekir. Aksi takdirde hem _delete()_ methodu hem de _deleteIfExists()_
+methodu _DirectoryNotEmptyException_ hatası fırlatılır.
 
 Eğer verilan _Path_ sembolik bir link ise sembolik link silinir. Sembolik linkin işaret ettiği dosya silinmez.
 
@@ -633,9 +634,13 @@ Files.deleteIfExists(Path.of("zoo/report.txt"));
 
 _Files.isSameFile()_ iki dizinin/dosyanın eşitliğini kontrol etmek için _equals()_ methodundan daha gelişmiş bir methodur.
 
-_isSameFile()_ methodu iki tane path parametresi alır. Eğer path'ler gerçekte mevcut değil ise hata fırlatır. Bunun tek 
-bir istisnası vardır. Eğer _equals()_ methodu **true** ise o zaman _isSameFile()_ methodu kontrole devam etmez. Doğrudan 
-**true** cevabını döner.
+_isSameFile()_ methodu iki tane path parametresi alır. Eğer path'ler gerçekte mevcut değil ise _NoSuchFileException_ hatası
+fırlatır. Bunun tek bir istisnası vardır. Eğer _equals()_ methodu **true** ise o zaman _isSameFile()_ methodu kontrole 
+devam etmez. Doğrudan **true** cevabını döner.
+
+_mismatch()_ methodu da aynı şekilde iki tane path parametresi alır. Eğer path'ler gerçekte mevcut değil ise 
+_NoSuchFileException_ hatası fırlatır. Bunun tek bir istisnası vardır. Eğer _equals()_ methodu **true** ise o zaman 
+_mismatch()_ methodu kontrole devam etmez doğrudan _-1_ cevanını döner.
 
 Aşağıda ki kodda _missing-file.txt_ dosyası gerçekte mevcut değil fakat _equals()_ **true** değer döndüğü için _isSameFile()_
 methodu hata fırlatmaz.
@@ -681,6 +686,18 @@ _java.io_ API io streamleri okumak ve yazmak için iki grup io stream sınıfı 
 
 - Byte I/O Streamler verileri _binary_ data olarak okur ve yazar. Sınıf isimleri _InputStream_ veya _OutputStream_ ile biter.
 - Character I/O Streamler verileri text olarak okur ve yazar. Sınıf isimleri _Reader_ veya _Writer_ ile biter.
+
+API, _FileInputStream_ ve _FileReader_ gibi hem byte hemde character I/O stream'ler için sıklıkla benzer sınıfları içerir.
+İki sınıf arasında ki fark byte'ların nasıl okunduğuna veya yazıldığına dayanır.
+
+Character I/O stream'leri sınıf isimlerinde _Stream_ kelimesi bulunmasa bile, yine de I/O Stream oldukarını unutmamak gerekir.
+İsimlerinde _Reader/Writer_ kullanılması, bunları byte stream'lerden ayırmak içindir.
+
+> Bölüm içerisinde _InputStream_ ve _Reader_ sınıfları _input stream_ olarak, _OutputStream_ ve _Writer_ sınıflarını ise 
+> _outout stream_ olarak isimlendirilmektedir.
+
+Byte I/O streamler daha çok resim ve _executable_ dosyalar gibi binary veri ile çalışmak için uydundur. Character I/O streamler
+ise text dosyaları ile çalışmak için uygundur.
 
 **Table 14.7** The java.io abstract stream base classes
 
