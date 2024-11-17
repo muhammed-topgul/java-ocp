@@ -749,10 +749,11 @@ private static void copy(Reader in, Writer out) throws IOException {
 
 _Output:_
 <pre>
-M y   s o u r c e . M y   s o u r c e . 
+My source.
+My source. 
 </pre>
 
-Her seferinde tek tek okuyup yazmank verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar vardır.
+Her seferinde tek tek okuyup yazmak verimsiz bir yol. Çoklu byte okuma/yazma için overloaded methodlar vardır.
 
 ```java
 private static void copy(InputStream in, OutputStream out) throws IOException {
@@ -914,6 +915,17 @@ private static void newBuffered(Path in, Path out) throws IOException {
 }
 ```
 
+**Reviewing Common Read and Write Methods**
+
+**Table 14.9** Common I/O read and write methods
+
+![img.png](img.png)
+![img_1.png](img_1.png)
+
+**Table 14.10** Common _Files NIO.2_ read and write methods
+
+![img_2.png](img_2.png)
+
 ---
 ## `Serializing Data`
 
@@ -971,7 +983,7 @@ public class Tail implements Serializable {
 ```
 
 _Fur_ sınıfı _Serializable_ olarak işaretlenmediği için _Cat_ sınıfı serileştirilemez. Serileştirme sırasına _fur_ değişkeni 
-**null** değere sahip olursa hata fırlatmaz. Aksi takdirde fırlatır.
+**null** değere sahip olursa veya **transient** olarak işaretlenirse hata fırlatmaz. Aksi takdirde fırlatır.
 
 ### Storing Data with ObjectOutputStream and ObjectInputStream
 
@@ -980,10 +992,10 @@ _ObjectInputStream_ sınıfı nesneyi deserialize etmek için, _ObjectOutputStre
 methodlarına ihtiyaç var.
 
 ```java
-// ObjectInputStream
+// ObjectInputStream.java
 public Object readObject() throws IOException, ClassNotFoundException
 
-// ObjectOutputStream
+// ObjectOutputStream.java
 public void writeObject(Object obj) throws IOException
 ```
 
@@ -1029,7 +1041,8 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
     Cat cat = new Cat("tekir", 2, "black");
     objectOutputStream.writeObject(cat);
     objectOutputStream.close();
-    
+
+    System.out.println("> Starting deserialize");
     var objectInputStream = new ObjectInputStream(new FileInputStream("cat.serial"));
     Cat deserilaizedCat = (Cat) objectInputStream.readObject();
     objectInputStream.close();
@@ -1041,6 +1054,7 @@ public static void main(String[] args) throws IOException, ClassNotFoundExceptio
 _Output:_
 <pre>
 All-args constructor
+> Starting deserialize
 Cat{name='tekir', age=2, color='black'}
 </pre>
 
@@ -1179,7 +1193,7 @@ reader.readLine(); // throws IOException: Stream closed
 
 ### Manipulating Input Streams
 
-**TABLE 14.11** Common I/O stream methods
+**Table 14.11** Common I/O stream methods
 
 ![img.png](../../../../resources/img/table-14.11.png)
 
