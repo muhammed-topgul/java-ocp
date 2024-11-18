@@ -1187,6 +1187,44 @@ var reader = new BufferedReader(new InputStreamReader(new FileInputStream("cat.t
 reader.close();
 reader.readLine(); // throws IOException: Stream closed
 ```
+### Acquiring Input with Console
+
+_java.io.Console_ sınıfı kullanıcı etkileşimlerini ele almak için özel olarak tasarlanmıştır. _Sytem.in_ ve _System.out_ 
+streamleri düz streamlerdir. _Console_ sınıfı kullanıcı girdileri için geliştirilmiş çok sayıda methoda sahiptir.
+
+```java
+Console console = System.console();
+if (console != null) {
+    System.out.println("Console is not null!");
+    String userInput = console.readLine();
+    console.writer().println("You entered: " + userInput);
+} else {
+    System.err.println("Console not available.");
+}
+```
+
+Yukarıdaki kod IDE ile çalıştırılırsa _console_ nesnesi **null** olur. Komut satırı ile çalıştırılması gerekiyor.
+
+**Reviewing Console Methods**
+
+```java
+Console console = System.console();
+if (console == null) {
+    throw new RuntimeException("No console available");
+}
+
+String name = console.readLine("Enter your name: ");
+console.writer().format("Hi %s", name);
+console.writer().println();
+
+console.format("What is your address? ");
+String address = console.readLine();
+console.writer().println("Your address: " + address);
+
+char[] password = console.readPassword("Enter a password between %d and %d characters: ", 5, 10);
+char[] verify = console.readPassword("Enter the password again: ");
+console.printf("Passwords " + (Arrays.equals(password, verify) ? "match" : "do not match"));
+```
 
 ---
 ## `Working with Advanced APIs`
