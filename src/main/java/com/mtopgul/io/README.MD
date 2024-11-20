@@ -1330,6 +1330,12 @@ dizine ineceğini belirtiriz.
 
 Varsayılan olarak circular path'leri engellemek için sembolik linkleri takip etmez. Sembolik linkleri aktif hale getirmek 
 için _Files.walk(src, **FileVisitOption.FOLLOW_LINKS**)_.
+
+```java
+public static Stream<Path> walk(Path start, FileVisitOption... options) throws IOException
+public static Stream<Path> walk(Path start, int maxDepth, FileVisitOption... options) throws IOException
+```
+
 ```java
 public static void main(String[] args) throws IOException {
     System.out.println(new Test().getPathSize(Path.of("src")));
@@ -1346,8 +1352,8 @@ private long getSize(Path path) {
 private long getPathSize(Path src) throws IOException {
     try(var s = Files.walk(src)) {
         return s.parallel()
-                .filter( p -> !Files.isDirectory(p))
-                .peek(p -> System.out.println(p))
+                .filter(path -> !Files.isDirectory(path))
+                .peek(path -> System.out.println(path))
                 .mapToLong(this::getSize)
                 .sum();
     }
@@ -1371,16 +1377,17 @@ Aşağıda ki kod, bir dizin ağacını arar ve en az 1.000 bayt boyutundaki tü
 kullanarak yazdırır. Bu işlem _Files.walk()_ ile de yapılabilir fakat daha fazla işlem gerekecektir.
 
 ```java
-Path path = Path.of("src");
-long minSize = 1000;
+public static Stream<Path> find(Path start, int maxDepth, BiPredicate<Path, BasicFileAttributes> matcher, FileVisitOption... options) throws IOException
+```
 
+```java
+Path src = Path.of("src");
+long minSize = 1000;
 try (var s = Files.find(
-        path,
+        src,
         10,
-        (p, f) -> f.isRegularFile()
-                && p.toString().endsWith(".java")
-                && f.size() > minSize)) {
-    s.forEach(System.out::println);
+        (path, basicFileAttributes) -> basicFileAttributes.isRegularFile() && path.toString().endsWith(".java") && basicFileAttributes.size() > minSize)) {
+        s.forEach(System.out::println);
 }
 ```
 
