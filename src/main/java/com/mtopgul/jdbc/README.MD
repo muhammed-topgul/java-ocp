@@ -26,10 +26,10 @@ Bağlantı URL'i üç parçdan oluşur:
 
 Diğer örnekler:
 
-_jdbc:postgresql:**//localhost/zoo**_
-_jdbc:oracle:thin:**@123.123.123.123:1521:zoo**_
-_jdbc:mysql:**//localhost:3306**_
-_jdbc:mysql:**//localhost:3306/zoo?profileSQL=true**_
+_jdbc:postgresql:**//localhost/zoo**_</br>
+_jdbc:oracle:thin:**@123.123.123.123:1521:zoo**_</br>
+_jdbc:mysql:**//localhost:3306**_</br>
+_jdbc:mysql:**//localhost:3306/zoo?profileSQL=true**_</br>
 
 ### Getting a Database Connection
 
@@ -396,7 +396,7 @@ _Output:_
 java.sql.SQLException: invalid cursor state
 </pre>
 
-_resultSet.next()_ çelıştırılmadan _resultSet_ okunursa uygulama hata fırlatır.
+_resultSet.next()_ çalıştırılmadan _resultSet_ okunursa uygulama hata fırlatır.
 
 ```java
 var selectSql = "SELECT * FROM exhibits WHERE name='Zebra'";
@@ -447,7 +447,7 @@ Zebra
 ---
 ### `Calling a CallableStatement`
 
-Bazı durumlarda SQL sorgularını veritabanında saklamak daha kullanışlıdır. Özellikle çok sayıda karmaşık sorgu oludğunda
+Bazı durumlarda SQL sorgularını veritabanında saklamak daha kullanışlıdır. Özellikle çok sayıda karmaşık sorgu olduğunda
 kullanışlıdır. Bu sorgulara _Stored Procedure_ adı verilir.
 
 _Stored Procedure_'ler önceden derlenen ve veritabanında saklanan SQL kodlarıdır. Network trafiğini azaltırlar. 
