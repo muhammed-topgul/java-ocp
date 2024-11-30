@@ -429,3 +429,29 @@ int y = -2;
 do System.out.print(++y + " ");
 while(y <= 5);
 ```
+4. **case** ifadesinde çoklu seçenekler için araya _,_ koyulmalıdır. 
+```java
+// Yanlış
+case 'B': 'C': System.out.print("great ");
+
+// Doğru
+case 'B', 'C': System.out.print("great ");
+```
+4. _Switch expession_' da **case** içerisinde çoklu satır için **yield** kullanılırsa süslü parantezden sonra _;_ kullanılmaz.
+```java
+// Yanlış
+case 20 -> {yield "Lisa";};
+
+// Doğru
+case 20 -> {yield "Lisa";}
+```
+5. _Flow scoping_' den sonra **instanceof**'un sağ tarafında ki değişken ismi method içerisinde geçerlidir.
+```java
+void getFish(Object fish) {
+  if (!(fish instanceof String guppy))
+    System.out.print("Eat!");
+  else if (!(fish instanceof String guppy)) { // DOES NOT COMPILE guppy zaten scop içerisnde tanımlanmış durumda.
+    throw new RuntimeException();
+  }
+}
+```
