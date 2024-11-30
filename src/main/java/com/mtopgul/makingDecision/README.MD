@@ -432,7 +432,7 @@ while(y <= 5);
 4. **case** ifadesinde çoklu seçenekler için araya _,_ koyulmalıdır. 
 ```java
 // Yanlış
-case 'B': 'C': System.out.print("great ");
+case 'B': 'C': System.out.print("great "); // DOES NOT COMPILE
 
 // Doğru
 case 'B', 'C': System.out.print("great ");
@@ -440,7 +440,7 @@ case 'B', 'C': System.out.print("great ");
 4. _Switch expession_' da **case** içerisinde çoklu satır için **yield** kullanılırsa süslü parantezden sonra _;_ kullanılmaz.
 ```java
 // Yanlış
-case 20 -> {yield "Lisa";};
+case 20 -> {yield "Lisa";}; // DOES NOT COMPILE
 
 // Doğru
 case 20 -> {yield "Lisa";}
