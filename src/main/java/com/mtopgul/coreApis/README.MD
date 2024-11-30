@@ -865,3 +865,21 @@ var dateTime = ZonedDateTime.of(date, time, zone);
 System.out.println(dateTime); // 2022–03–13T03:30–04:00[US/Eastern]
 ```
 
+---
+
+**Ek Notlar**
+
+1. _LocalDate_ sınıfı üzerinde _plusHours()_ methodu bulunmuyor.
+```java
+var date = LocalDate.of(2022, 4, 3);
+date.plusHours(3); // DOES NOT COMPILE
+```
+
+2. _Arrays.compare()_ methodu, birinci dizi büyükse _pozitif_ ikinci dizi büyükse _negatif_ değer döndürür.
+```java
+String[] s1 = {"Camel", "Peacock", "Llama"};
+String[] s2 = {"Camel", "Llama", "Peacock"};
+System.out.println(Arrays.compare(s1, s2)); // 4
+System.out.println(Arrays.compare(s2, s1)); // -4
+System.out.println(Arrays.compare(s1, s1)); // 0
+```
