@@ -14,7 +14,34 @@ _incidental_ sağında kalan kısım ise _essential_ whitespace olur.
 
 **Figure 1.3** Text Block
 
-![img.png](img.png)
+![img_3.png](../resources/img/figure-1.3.png)
+
+* Text block içerisinde _\\"""_ ve _\\"\\"\\"_ aynı anlama gelir (_"""_). Ama tek başına _"""_ tanımlaması derlenemez.
+
+- **indent()** _and_ **stripIndent()**
+> **indent()** methodu;
+>  - Pozitif bir sayı ile çağrılırsa, her satırın başına eşit sayıda boşluk ekler.
+>  - Negatif bir sayı ile çağrılırsa, her satırın başından o sayıdaki boşluk karakterini silmeye çalışır.
+>  - 0 ile çağrılırsa bir etkisi olmayacaktır.
+>  - Boşluk karakterlerini normalize eder.
+>   - Satır sonu karakteri (Windows için satır sonu **_\r\n_**, Mac için satır sonu **_\n_**) var ise normalize eder. (_Normalize_: **_\n_**)
+>   - Satır sonu karakteri (**_\n_**) yoksa ekler.
+
+> **stripIndent()** methodu;
+> - Başta bulunan tüm tesadüfi boşlukları siler.
+> - Satır sonu karakteri var ise normalize eder.
+> - Satır sonu karakteri yok ise <u>eklemez</u>.
+
+_**Table 4.1** Rules for indent() and stripIndent()_
+
+![img_3.png](../resources/img/table-4.1.png)
+
+---
+### `Wrapper Classes`
+
+* _Number_ sıfını üzerinde  _byteValue()_, _shortValue()_, _intValue()_, _longValue()_, _floatValue()_, ve _doubleValue()_
+helper methodları bulunur.
+* _Character_ sınıfı _Number_ sınıfını kalıtmaz.
 
 
 </details>
