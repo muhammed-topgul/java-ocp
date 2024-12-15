@@ -655,6 +655,7 @@
  - [Chapter 13: Concurrency]
  - [Chapter 14: I/O]
  - [Chapter 15: JDBC]
+ - [The Final Notes]
 
 [Chapter 01: Building Blocks]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/buildingBlocks/README.MD>
 [Chapter 03: Making Decisions]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/makingDecision/README.MD>
@@ -670,3 +671,4 @@
 [Chapter 13: Concurrency]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/concurrency/README.MD>
 [Chapter 14: I/O]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/io/README.MD>
 [Chapter 15: JDBC]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/java/com/mtopgul/jdbc/README.MD>
+[The Final Notes]: <https://github.com/muhammed-topgul/java-ocp/blob/master/src/main/resources/README.MD>
