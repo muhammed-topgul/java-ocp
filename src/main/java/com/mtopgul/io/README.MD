@@ -429,6 +429,13 @@ true
 Buraya kadar kullanılan methodlarda dosya veya dizinin gerçekte olup olmaması önemli değildi. _Path_ nesneleri üzerinde 
 teorik işlemler yaptık. **_toRealPath()_** methodu, eğer dosya gerçekte yoksa hata fırlatır.
 
+_toRealPath()_ otomatik olarak normalize işlemi uygular.
+
+```java
+var x = Path.of("/animals/fluffy/..");
+System.out.println(x.toRealPath().getParent()); // /animals
+```
+
 Ayrıca, _toRealPath()_ methodu sembolik linkleri de takip edecektir. Sembolik linkleri göz ardı etmek için _LinkOption_ 
 parametresini kullanabiliriz.
 
