@@ -3,6 +3,20 @@
 <details>
   <summary>Chapter 1: Building Blocks</summary>
 
+---
+### `Text Blocks`
+
+* _Incidental Whitespace_: Sonuca bir etkisi yoktur. Sadece kod okunabilirliğini artırmak için eklenebilir.
+* _Essential Whitespace_: Çıktıya etki eder.
+
+Text içerisinde en solda ki karakterden bir çizgi çekilir (IDE üzerinde görlebilir). Bu çizginin solunda kalan kısım 
+_incidental_ sağında kalan kısım ise _essential_ whitespace olur. 
+
+**Figure 1.3** Text Block
+
+![img.png](img.png)
+
+
 </details>
 
 <details>
@@ -17,6 +31,20 @@
 
 <details>
   <summary>Chapter 4: Core APIs</summary>
+
+---
+### `String and StringBuilder`
+
+* String sınıfı, _reverse()_ methoduna sahip değildir. StringBuilder sınıfı, _reverse()_ methoduna sahiptir.
+```java
+String str = "12";
+str.reverse();  // DOES NOT COMPILE
+
+StringBuilder sb = new StringBuilder("12");
+sb.reverse();   // 21
+```
+
+* String sınıfı, _insert()_ methoduna sahip değildir. StringBuilder sınıfı, _insert()_ methoduna sahiptir.
 
 </details>
 
