@@ -54,6 +54,78 @@ helper methodları bulunur.
 <details>
   <summary>Chapter 3: Making Decisions</summary>
 
+---
+### `The switch Statement`
+
+* `switch statement` tarafından desteklenen veri tipleri:
+1. `byte` ve `Byte`
+2. `short` ve `Short`
+3. `char` ve `Character`
+4. `int` ve `Integer`
+5. `String`
+6. `enum` değerleri
+7. `var` (Değişken tipi yukarda ki türlerden birine çözümlenirse)
+
+* _Acceptable Case Values_
+1. _Literal_'ler. (3 * 5 veya "15")
+2. _Enum_'lar.
+3. `final constant` değişkenler. (final int bananas = 5;)
+
+```java
+final int getCookies() {
+    return 4;
+}
+
+void feedAnimals() {
+    final int bananas = 1;
+    int apples = 2;
+    int numberOfAnimals = 3;
+    final int cookies = getCookies();
+    final int pears;
+    pears = 5;
+    switch (numberOfAnimals) {
+        case bananas:
+        case 3 * 5:
+        case apples:       // DOES NOT COMPILE
+        case getCookies(): // DOES NOT COMPILE
+        case cookies:      // DOES NOT COMPILE
+        case pears:        // DOES NOT COMPILE
+        case "6":          // DOES NOT COMPILE
+    }
+}
+```
+
+* Java da klasik `switch statement`'ler ile de değer döndürebiliriz. Aşağıda ki iki kod aynı işlemi yapar.
+```java
+public static String getNumberName(int number) {
+    switch (number) {
+        case 1:
+            return "One";
+        case 2:
+            return "Two";
+        case 3:
+            return "Three";
+        case 4:
+            return "Four";
+        case 5:
+            return "Five";
+        default:
+            return "Unknown number";
+    }
+}
+
+public static String getNumberName(int number) {
+    return switch (number) {
+        case 1 -> "One";
+        case 2 -> "Two";
+        case 3 -> "Three";
+        case 4 -> "Four";
+        case 5 -> "Five";
+        default -> "Unknown number";
+    };
+}
+```
+
 </details>
 
 <details>
