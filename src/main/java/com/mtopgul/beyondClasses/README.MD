@@ -7,9 +7,11 @@
 2. _Interface_ değişkenleri implicit olarak **public**, **static** ve **final**'dır.
 3. Gövdesi olmayan _Interface_ metholdarı implicit olarak **abstract**'tır.
 4. **private** olmayan _Interface_ methodları implicit olarak **public**'tir.
-5. _Interface_ değişkenleri varsayılan olarak **public static final**'dır.
+5. _Interface_ değişkenleri varsayılan olarak **public static final**'dır. Bu yüzden değişkenlerde **public** dışına bir
+   _access modifier_ kullanılamaz.
 6. **final** anahtar kelimesi _Interface_ içerisinde sadece değişkenler ile kullanılabilir. Methodlar ile birlikte 
    kullanılamaz.
+7. Methodlar sadece **public** ve **private** _access modifier_ alabilirler.
 ```java
 public interface Soar {
     int MAX_HEIGHT = 10;
@@ -331,6 +333,16 @@ public sealed class Snake /*permits Snake.Cobra*/ {
     final class Cobra extends Snake {}
 }
 ```
+
+- Eğer aynı sınıf dosyası içerisinde bile olsa, bir _child_ sınıf **permits** listesine eklenirse diğer tüm _child_ 
+  sınıflarda **permits** listesine eklenmeli.
+```java
+public sealed class Snake permits Cobra, /*Python*/ {}
+
+final class Cobra extends Snake {}
+non-sealed class Python extends Snake {} // DOES NOT COMPILE
+```
+
 _**Table 7.3** Usage of the permits clause in sealed classes_
 
 ![img.png](../../../../resources/img/table-7.3.png)
@@ -404,7 +416,7 @@ public interface Bird {}
 public record Crane(int numberEggs, String name) implements Bird {}
 ```
 **Constructor Oluşturma**
-- **Long Constructor**
+- **Long (Canonical) Constructor**
   - Tüm fieldlar implicit olarak **final**'dır. Bu yüzden tün fieldlara değer atanmalıdır.
 ```java
 public record Crane(int numberEggs, String name) {
@@ -457,11 +469,13 @@ public record Crane(int numberEggs, String name) {
     - Accessors methodları override ettiğimizde _@Override_ anotasyonunu kullanabiliriz.
     - **static** değişken tanımlayabiliriz.
     - _instance_ değişken tanımlayamayız. (**private** olsa bile)
+    - _instance initializer block_ tanımlayamayız.
 ```java
 public record Crane(int numberEggs, String name) {
     private static int type = 10;
     public int size;          // DOES NOT COMPILE
     private boolean friendly; // DOES NOT COMPILE
+    { size = 10; }            // DOES NOT COMPILE
 
     @Override
     public int numberEggs() {
