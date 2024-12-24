@@ -152,3 +152,29 @@ public record Pony(String name) {
   { age = 10; } // DOES NOT COMPILE
 }
 ```
+
+<br/><br/>
+
+---
+### `@Inner Classes (ch03)`
+
+_Inner_ sınıf kullanımında, eğer **static** olmayan method içerisindeysek _inner_ sınıfın nesnesini;
+1. _Outer_ sınıfın nesnesi üzerinden.
+2. _Outer_ sınıfın ismi üzerinden.
+3. Veya doğrudan 
+
+oluşturabiliriz.
+
+```java
+class Dinosaur {
+  class Pterodactyl extends Dinosaur {
+  }
+
+  public void roar() {
+    var dino = new Dinosaur();
+    Pterodactyl p1 = dino.new Pterodactyl();     // 1.
+    Pterodactyl p2 = new Dinosaur.Pterodactyl(); // 2.
+    Pterodactyl p3 = new Pterodactyl();          // 3.
+  }
+}
+```
