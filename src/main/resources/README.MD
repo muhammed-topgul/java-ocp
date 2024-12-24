@@ -108,7 +108,7 @@ void feedAnimals() {
 
 ---
 ### `@The switch Statement (ch02)`
-* Java da klasik `switch statement`'ler ile de değer döndürebiliriz. Aşağıda ki iki kod aynı işlemi yapar.
+Java da klasik `switch statement`'ler ile de değer döndürebiliriz. Aşağıda ki iki kod aynı işlemi yapar.
 ```java
 public static String getNumberName(int number) {
     switch (number) {
@@ -136,5 +136,19 @@ public static String getNumberName(int number) {
         case 5 -> "Five";
         default -> "Unknown number";
     };
+}
+```
+
+<br/><br/>
+
+---
+### `@Records (ch03)`
+
+_Record_ sınıfları içerisinde _instance_ değişken ve _instance initializer block_ yazılamaz.
+
+```java
+public record Pony(String name) {
+  int age;      // DOES NOT COMPILE
+  { age = 10; } // DOES NOT COMPILE
 }
 ```
