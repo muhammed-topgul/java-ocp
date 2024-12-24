@@ -1,8 +1,4 @@
 ### The Final Notes
-
-```diff
-- Text Blocks
-````
 ---
 ### `@Text Blocks (ch01)`
 
@@ -20,8 +16,8 @@ _incidental_ sağında kalan kısım ise _essential_ whitespace olur.
 
 ---
 #### `@Text Blocks (ch01)`
--  **indent()** _and_ **stripIndent()**
-   **indent()** methodu;
+- **indent()** _and_ **stripIndent()**
+- **indent()** methodu;
   - Pozitif bir sayı ile çağrılırsa, her satırın başına eşit sayıda boşluk ekler.
   - Negatif bir sayı ile çağrılırsa, her satırın başından o sayıdaki boşluk karakterini silmeye çalışır.
   - 0 ile çağrılırsa bir etkisi olmayacaktır.
@@ -37,11 +33,4 @@ _incidental_ sağında kalan kısım ise _essential_ whitespace olur.
 _**Table 4.1** Rules for indent() and stripIndent()_
 
 ![img_3.png](../resources/img/table-4.1.png)
-
-```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-```
+<hr/>
