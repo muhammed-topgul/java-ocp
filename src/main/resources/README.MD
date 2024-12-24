@@ -245,9 +245,7 @@ _Inner_ sınıf kullanımında, eğer **static** olmayan method içerisindeysek 
 3. Veya doğrudan (Aynı sınıf içerisindeyse)
 oluşturabiliriz.
 
-```diff
-! Başka bir sınıf içerisinde nesnesini oluşturabilmek için sadece 1. yöntem geçerlidir. Yani dış sınıfın nesnesine ihtiyaç vardır.
-```
+> Başka bir sınıf içerisinde nesnesini oluşturabilmek için sadece 1. yöntem geçerlidir. Yani dış sınıfın nesnesine ihtiyaç vardır.
 
 ```java
 class Dinosaur {
