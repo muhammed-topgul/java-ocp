@@ -156,18 +156,102 @@ public record Pony(String name) {
 <br/><br/>
 
 ---
+### `@Records (ch03)`
+
+_Record_ sınıflarında bulunan _compact constructor_ sadece validasyon ve dönüşüm için kullanılabilir. Bu constructor 
+içerisinde **this** anathar kelimesi ile değişkenlere değer ataması yapılamaz.
+
+```java
+public record Panda(String name) {
+    public Panda {
+        this.name = name.toLowerCase(); // DOES NOT COMPILE
+    }
+}
+```
+
+<br/><br/>
+
+---
+### `@Records (ch03)`
+
+_Record_ sınıflarında hem _Compact_ hem de _Long/Canonical_ constructor tanımlaması aynı anda yapılamaz.
+
+```java
+record Panda(String name) {
+  public Panda(String name) { // DOES NOT COMPILE
+    this.name = "TaiShan";
+  }
+
+  public Panda {              // DOES NOT COMPILE
+    name = name.toLowerCase();
+  }
+}
+```
+
+<br/><br/>
+
+---
+### `@Records (ch03)`
+
+_Record_ sınıflarında _Long / Canonical_ constructor tanımlaması yapılabilir.
+
+```java
+record Panda(String name) {
+    public Panda(String name) {
+        this.name = name;
+    }
+}
+```
+
+<br/><br/>
+
+---
+### `@Records (ch03)`
+
+_Record_ sınıflarında _Non-Canonical_ constructor mutlaka _this()_ ile _Canonical_ constructor'u çağırmalı.
+
+```java
+record Panda(String name) {
+  public Panda() { // DOES NOT COMPILE
+    this.name = "TaiShan";
+  }
+
+  public Panda(String name) {
+    this.name = name;
+  }
+}
+```
+
+```java
+record Panda(String name) {
+  public Panda() {
+    this("TaiShan");
+  }
+
+  public Panda(String name) {
+    this.name = name;
+  }
+}
+```
+
+<br/><br/>
+
+---
 ### `@Inner Classes (ch03)`
 
 _Inner_ sınıf kullanımında, eğer **static** olmayan method içerisindeysek _inner_ sınıfın nesnesini;
 1. _Outer_ sınıfın nesnesi üzerinden.
-2. _Outer_ sınıfın ismi üzerinden.
-3. Veya doğrudan 
-
+2. _Outer_ sınıfın ismi üzerinden. (Aynı sınıf içerisindeyse)
+3. Veya doğrudan (Aynı sınıf içerisindeyse)
 oluşturabiliriz.
+
+```diff
++ Başka bir sınıf içerisinde nesnesini oluşturabilmek için sadece 1. yöntem geçerlidir. Yani dış sınıfın nesnesine ihtiyaç vardır.
+```
 
 ```java
 class Dinosaur {
-  class Pterodactyl extends Dinosaur {
+  public class Pterodactyl extends Dinosaur {
   }
 
   public void roar() {
@@ -177,4 +261,41 @@ class Dinosaur {
     Pterodactyl p3 = new Pterodactyl();          // 3.
   }
 }
+
+class Another {
+  Dinosaur.Pterodactyl p2 = new Dinosaur(). new Pterodactyl(); // 2.
+}
 ```
+
+<br/><br/>
+
+---
+### `@Nested Classes (ch03)`
+
+_Static Inner (Nested)_ sınıfa _outer_ sınıfın nesnesi üzerinden ulaşamayız.
+1. _Outer_ sınıfın ismi üzerinden.
+2. Veya doğrudan (Aynı sınıf içerisindeyse)
+```java
+class Bottle {
+    public static class Ship {
+    }
+
+    public static void info() {
+        var bottle = new Bottle();
+        Ship s1 = bottle.new Ship(); // DOES NOT COMPILE
+        Ship s2 = new Bottle.Ship(); // 1.
+        Ship s3 = new Ship();        // 2.
+    }
+}
+
+class Another {
+  Bottle.Ship s1 = new Bottle.Ship(); // 1.
+}
+```
+
+<br/><br/>
+
+---
+### `@Interfaces (ch03)`
+
+Bir **interface** üzerinde hiç bir method **final** anahtar kelimesi ile işaretlenemez.
