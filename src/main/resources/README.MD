@@ -14,6 +14,8 @@ _incidental_ sağında kalan kısım ise _essential_ whitespace olur.
 
 * Text block içerisinde _\\"""_ ve _\\"\\"\\"_ aynı anlama gelir (_"""_). Ama tek başına _"""_ tanımlaması derlenemez.
 
+<br/><br/>
+
 ---
 ### `@Text Blocks (ch01)`
 - **indent()** _and_ **stripIndent()**
@@ -34,6 +36,7 @@ _**Table 4.1** Rules for indent() and stripIndent()_
 
 ![img_3.png](../resources/img/table-4.1.png)
 
+<br/><br/>
 
 ---
 ### `@Wrapper Classes (ch01)`
@@ -41,6 +44,8 @@ _**Table 4.1** Rules for indent() and stripIndent()_
 * _Number_ sıfını üzerinde  _byteValue()_, _shortValue()_, _intValue()_, _longValue()_, _floatValue()_, ve _doubleValue()_
   helper methodları bulunur.
 * _Character_ sınıfı _Number_ sınıfını kalıtmaz.
+
+<br/><br/>
 
 ---
 ### `@String and StringBuilder`
@@ -55,6 +60,8 @@ _**Table 4.1** Rules for indent() and stripIndent()_
  ```
 
 * String sınıfı, _insert()_ methoduna sahip değildir. StringBuilder sınıfı, _insert()_ methoduna sahiptir.
+
+<br/><br/>
 
 ---
 ### `@The switch Statement (ch02)`
@@ -96,6 +103,8 @@ void feedAnimals() {
     }
 }
 ```
+
+<br/><br/>
 
 ---
 ### `@The switch Statement (ch02)`
