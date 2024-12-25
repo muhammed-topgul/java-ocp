@@ -294,6 +294,351 @@ class Another {
 <br/><br/>
 
 ---
+### `@Nested Interfaces (ch03)`
+
+Bir sınıf içerisinde bulunan _inner interface_ tanımı implicit olarak **static**'tir.
+
+```java
+class Electricity {
+    /*static*/ interface Power {}
+}
+```
+
+<br/><br/>
+
+---
 ### `@Interfaces (ch03)`
 
 Bir **interface** üzerinde hiç bir method **final** anahtar kelimesi ile işaretlenemez.
+
+<br/><br/>
+
+---
+### `@Interfaces (ch03)`
+
+Interface'i kalıtan sınıf, _interface_ üzerinde bulunan değişkenleri _interface_ ismini belirtmeden kullanabilir. Fakat 
+**static** _interface_ methodlarını _interface_ ismini belirtmeden kullanamaz.
+
+```java
+interface Ready {
+   /*public static final*/ int DEFAULT_VALUE = 10;
+    
+    public static void info() {
+        System.out.println("Default value: " + DEFAULT_VALUE);
+    }
+}
+
+class GetSet implements Ready {
+    static int second = DEFAULT_VALUE; // n2
+
+    public static void main(String[] begin) {
+        Ready.info();
+        info(); // DOES NOT COMPILE
+    }
+}
+```
+
+
+<br/><br/>
+
+---
+### `@Overriding (ch03)`
+
+_Override_ edilen, aynı method imzasına sahip iki methodun dönüş tipler birbirlerinin _covariant_ tipinde değilse 
+kalıtan sınıf derlenmez.
+
+```java
+interface Building {
+    default Double getHeight() { return 1.0; } 
+}
+interface Office {
+    public default String getHeight() { return null; }
+}
+class Tower implements Building, Office { } // DOES NOT COMPILE
+```
+
+```java
+class Building {
+    public Double getHeight() { return 1.0; } 
+}
+interface Office {
+    public default String getHeight() { return null; }
+}
+class Tower extends Building implements Office { } // DOES NOT COMPILE
+```
+
+<br/><br/>
+
+---
+### `@Overloading (ch03)`
+
+Java'nın ilk versiyonlarında _autoboxing_ ve _varargs_ kavramları yoktu. Eski kodlarla uyumluluk için _autoboxing_ ve 
+_varargs_ parametreli methodlar en az öncelik sıralamasına sahiptirler. Öncelik kuralları aşağıdaki gibidir.
+1. Tam olarak eşlesen method
+2. Daha büyük primitive tip. (Widenig yapar)
+3. Autoboxed tip
+4. Varargs
+```java
+public class Glider {
+    // 1. Öncelik (Kural-1)
+    public static void glide(int a) {
+        System.out.println("int");
+    }
+
+    // 2. Öncelik (Kural-2)
+    public static void glide(long a) {
+        System.out.println("long");
+    }
+
+    // 3. Öncelik (Kural-3)
+    public static void glide(Integer a) {
+        System.out.println("Integer");
+    }
+
+    // 4. Öncelik (Kural-3)
+    public static void glide(Object a) {
+        System.out.println("Object");
+    }
+
+    // 5. Öncelik (Kural-4)
+    public static void glide(int... a) {
+        System.out.println("varargs");
+    }
+
+    public static void main(String[] args) {
+        glide(1);
+    }
+}
+```
+
+
+<br/><br/>
+
+---
+### `@Lambdas (ch03)`
+
+- Lambda içerisinde _effectively final_ olup olmamasına bakılmaksızın _instance_ ve _**static**_ değişkenler kullanılabilir.
+- _Local_ değişkenlerin ve method parametrelerinin kullanılabilmesi için _effectively final_ olmaları gereklidir.
+
+```java
+interface Tasty {
+     void eat();
+}
+
+class Cat {
+    private static int id = 1;
+    private String name = "Tom";
+
+    public void good(String info) {
+        String extraInfo = "Cat is eating";
+        Tasty tasty = () -> {
+            System.out.println(extraInfo);
+            System.out.println(info);
+            System.out.println(id);
+            System.out.println(name);
+        };
+    }
+
+    public void bad(String info) {
+        String extraInfo = "Cat is eating";
+        Tasty tasty = () -> {
+            System.out.println(extraInfo); // DOES NOT COMPILE
+            System.out.println(info);      // DOES NOT COMPILE
+            System.out.println(id);
+            System.out.println(name);
+        };
+        tasty.eat();
+
+        info = "";
+        extraInfo = "";
+        name = "Terry";
+        id = 2;
+    }
+}
+```
+
+<br/><br/>
+
+---
+### `@Enums (ch03)`
+
+Tüm _enum_ constructor'ları implicit olarak **private**'dır.
+
+```java
+enum Number {
+    ONE(1), TWO(2);
+
+    private int num;
+
+    private Number(int num) {
+        this.num = num;
+    }
+}
+
+enum Number {
+    ONE(1), TWO(2);
+
+    private int num;
+
+    Number(int num) {
+        this.num = num;
+    }
+}
+```
+
+<br/><br/>
+
+---
+### `@Enums (ch03)`
+
+Enum içinde bulunan veya _interface_'den _override_ edilen soyut methoda mutlaka gövde yazılmalıdır. 
+
+```java
+interface Base {
+    void toText();
+}
+
+enum Number implements Base {
+    ONE(1) {
+        @Override
+        public void toText() {
+            System.out.println("One");
+        }
+
+        @Override
+        void printAsTurkish() {
+            System.out.println("Bir");
+        }
+    },
+    TWO(2) {
+        @Override
+        public void toText() {
+            System.out.println("Two");
+        }
+
+        @Override
+        void printAsTurkish() {
+            System.out.println("İki");
+        }
+    };
+
+    private int num;
+
+    private Number(int num) {
+        this.num = num;
+    }
+
+    abstract void printAsTurkish();
+}
+```
+
+<br/><br/>
+
+---
+### `@Enums (ch03)`
+
+Interface'den _override_ edilen methoda _enum_ sınıfı içerisinde gövde verilirse, her _enum_ değerinin içerisinde _override_
+edilmek zorunda değildir.
+
+```java
+interface Base {
+    void toText();
+}
+
+enum Number implements Base {
+    ONE(1) {
+    },
+    TWO(2) {
+        @Override
+        public void toText() { // Opsiyonel override
+            super.toText();
+        }
+    };
+
+    private int num;
+
+    private Number(int num) {
+        this.num = num;
+    }
+
+    @Override
+    public void toText() {
+        System.out.println("This is " + num);
+    }
+}
+```
+
+
+<br/><br/>
+
+---
+### `@Enums (ch03)`
+
+Her ne kadar kullanımı önerilmesede, _enum_ değerleri oluşturuldaktan sonra değiştirilebilir.
+
+```java
+class Eggs {
+    enum Animal {
+        CHICKEN(10), PENGUIN(50);
+
+        private int numDays;
+
+        private Animal(int numDays) {
+            this.numDays = numDays;
+        }
+
+        public int getNumDays() {
+            return numDays;
+        }
+
+        public void setNumDays(int numDays) {
+            this.numDays = numDays;
+        }
+    }
+
+    public static void main(String[] args) {
+        Animal chicken = Animal.CHICKEN;
+        System.out.println(chicken.getNumDays()); // 10
+
+        chicken.setNumDays(20);
+        System.out.println(chicken.getNumDays()); // 20
+    }
+}
+```
+
+<br/><br/>
+
+---
+### `@If Statements (ch03)`
+
+Dönüş tipine sahip bir method içerisinde koşullu ifadelerin sonunda **else** yoksa, **if** statement dışında mutlaka 
+değer dönüşü yapılmalıdır. Kod mutlaka **if** veya **else if** içerisine girecek bile olsa eklenmelidir.
+
+Aşağıdaki kod içerisinde _price_ değişkenini mutlaka **if** veya **else if**' e girecek olsa bile varsayılan bir değer 
+döndürülmediği için method derlenemz.
+```java
+private static int price = 5;
+public boolean sell() {
+  if (price < 10) {
+      price++;
+      return true;
+  } else if (price >= 10) {
+      return false;
+  }
+} // DOES NOT COMPILE
+```
+
+
+<br/><br/>
+
+---
+### `@Static (ch03)`
+
+Static method içerisinde **this** kullanılamaz.
+
+```java
+int name;
+private static void info() {
+    this.name; // DOES NOT COMPILE
+}
+```
