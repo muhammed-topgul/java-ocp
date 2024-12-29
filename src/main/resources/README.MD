@@ -642,3 +642,66 @@ private static void info() {
     this.name; // DOES NOT COMPILE
 }
 ```
+
+
+<br/><br/>
+
+---
+### `@Exceptions (ch04)`
+
+Java da _generic exception_ sınıfı tanımlanamaz.
+
+```java
+class BadException<T> extends Exception { } // DOES NOT COMPILE
+```
+
+
+<br/><br/>
+
+---
+### `@Exceptions (ch04)`
+
+**finally** block her zaman _exception_ loglarından önce basılır.
+
+```java
+try {
+    System.out.print(1);
+    throw new ClassCastException();
+} finally {
+    System.out.print(2);
+}
+```
+``
+12Exception in thread "main" java.lang.ClassCastException...
+``
+
+
+<br/><br/>
+
+---
+### `@Exceptions (ch04)`
+
+**null** değere sahip _wrapper_ sınıfı _primitive_ bir tipe atadığımızda _NullPointerException_ alırız.
+
+``
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because "null" is null...
+``
+
+
+<br/><br/>
+
+---
+### `@Exceptions (ch04)`
+
+Catch block içerisinde bir exception fırlatılsa bile en sonda **finally** block çalışacağı için **finally** block içerisinde
+fırlatılan _exception_ tüm _exception_'ları ezer. 
+
+```java
+try {
+    throw new ClassCastException();
+} catch (RuntimeException e) {
+    throw new NullPointerException();
+} finally {
+    throw new RuntimeException();
+}
+```
