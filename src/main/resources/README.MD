@@ -705,3 +705,7 @@ try {
     throw new RuntimeException();
 }
 ```
+
+``
+java.lang.RuntimeException
+``
