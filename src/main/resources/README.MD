@@ -709,3 +709,102 @@ try {
 ``
 java.lang.RuntimeException
 ``
+
+<br/><br/>
+
+---
+### `@Arrays (ch05)`
+
+Array oluşturmak.
+
+```java
+int[] numbers = new int[3];
+int[] moreNumbers = new int[] {42, 55, 99};
+int[] moreNumbers = {42, 55, 99}; // anonymous array
+
+var numbers = new int[3];
+var moreNumbers = new int[] {42, 55, 99};
+var moreNumbers = {42, 55, 99}; // DOES NOT COMPILE
+```
+<br/><br/>
+
+---
+### `@Array (ch05)`
+
+Array'lerde array uzunluğu ve değerleri aynı anda tanımlanamaz.
+
+```java
+String[] tigers = new String[1] {"tiger"}; // DOES NOT COMPILE
+String ohMy [] = new String[0] {};         // DOES NOT COMPILE
+
+String[] tigers = new String[1]; // OK
+String ohMy [] = new String[0];  // OK
+
+String[] tigers = new String[] {"tiger"};  // OK
+String ohMy [] = new String[] {};          // OK
+```
+
+<br/><br/>
+
+---
+### `@Array (ch05)`
+
+Array uzunuluğunu almak için _length_ çağrılır. _size()_ değil.
+
+```java
+public static void main(String... original) {
+    System.out.println(original.length);
+    System.out.println(original.size()); // DOES NOT COMPILE
+}
+```
+
+
+<br/><br/>
+
+---
+### `@Set (ch05)`
+
+_Set_ arayüzünde _set()_ methodu bulunmaz. Çünkü _Set_ arayüzünde sıralama ve index mevcut değildir.
+
+```java
+var chars = new HashSet<>();
+chars.add('a');
+chars.remove(0);
+chars.set(1, 'c');  // DOES NOT COMPILE
+```
+
+
+<br/><br/>
+
+---
+### `@Generics (ch05)`
+
+Generiklerde boş _<>_ ile _\<Object>_ aynı anlama gelir.
+
+```java
+var list = new ArrayList<Object>();
+var list = new ArrayList<>(); // ArrayList<Object>()
+```
+
+
+<br/><br/>
+
+---
+### `@List (ch05)`
+
+_Arrays.asList()_ mevcut dizinin kopyasını oluşturur. Array üzerinde veya oluşturulan dizi üzerinde yapılan elemen 
+güncelleme işlemleri iki tarafta da gözlemlenebilir.
+
+```java
+Integer[] array = {1, 2, 3};
+
+List<Integer> asList = Arrays.asList(array); // [1, 2, 3]
+System.out.println(asList);
+
+array[0] = 100;
+System.out.println(asList);                  // [100, 2, 3]
+
+asList.set(1, 200);
+System.out.println(asList);                  // [100, 200, 3]
+System.out.println(Arrays.toString(array));  // [100, 200, 3]
+```
