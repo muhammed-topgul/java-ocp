@@ -48,6 +48,20 @@ _**Table 4.1** Rules for indent() and stripIndent()_
 <br/><br/>
 
 ---
+### `@Wrapper Classes (ch06)`
+
+_Integer_ ile _Double_ üzerinde işlem yapıldığında sonuç _Double_ olur.
+
+```java
+Integer a = 10;
+Double d = 2.0;
+Double result = a + d;
+System.out.println(result); // 12.0
+```
+
+<br/><br/>
+
+---
 ### `@String and StringBuilder`
 
 * String sınıfı, _reverse()_ methoduna sahip değildir. StringBuilder sınıfı, _reverse()_ methoduna sahiptir.
@@ -808,3 +822,71 @@ asList.set(1, 200);
 System.out.println(asList);                  // [100, 200, 3]
 System.out.println(Arrays.toString(array));  // [100, 200, 3]
 ```
+
+<br/><br/>
+
+---
+### `@Functional Interfaces (ch06)`
+
+_**Table 8.4** Common functional interfaces_
+
+![table-8.4.png](img%2Ftable-8.4.png)
+![table-8.4.png](img%2Ftable-8.4.1.png)
+
+<br/><br/>
+
+---
+### `@Predicate (ch06)`
+
+_Predicate_ functional interface de bulunan _test()_ methodu geriye _primitive_ **boolean** çevirir.
+
+```java
+@FunctionalInterface
+public interface Predicate<T> {
+    boolean test(T t);
+    ...
+}
+```
+
+<br/><br/>
+
+---
+### `@Parallel Streams (ch06)`
+
+_Stream_'lerde _parallel_ stream'i tekrar sıralı hale getirmek için _sequential()_ kullanılır.
+
+```java
+IntStream.range(1, 50)
+        .parallel()
+        .filter(i -> i % 7 == 0)
+        .sequential()
+        .forEach(System.out::println);
+```
+
+<br/><br/>
+
+---
+### `@Stream Concat (ch06)`
+
+İki tane _inifinitive stream_ _concat_ edildiğinde ikinci stream hiç kullanılmaz.
+
+```java
+var one = IntStream.iterate(0, a -> a + 1);
+var two = IntStream.iterate(0, a -> a + 10);
+IntStream.concat(one, two)
+        .limit(10)
+        .forEach(System.out::print); // 0123456789
+```
+
+<br/><br/>
+
+---
+### `@ForEach (ch06)`
+
+_Iterable_ veya _stream_ üzerinden çağrılan _forEach()_ methodu parametre olarak _Consumer_ alır.
+
+```java
+void forEach(Consumer<? super T> action)
+```
+
+Örneğin Double listesi için bu _Consumer\<Double>_ olur.
