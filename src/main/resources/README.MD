@@ -14,7 +14,6 @@ _incidental_ sağında kalan kısım ise _essential_ whitespace olur.
 
 * Text block içerisinde _\\"""_ ve _\\"\\"\\"_ aynı anlama gelir (_"""_). Ama tek başına _"""_ tanımlaması derlenemez.
 
-<br/><br/>
 
 ---
 ### `@Text Blocks (ch01)`
@@ -36,7 +35,6 @@ _**Table 4.1** Rules for indent() and stripIndent()_
 
 ![img_3.png](../resources/img/table-4.1.png)
 
-<br/><br/>
 
 ---
 ### `@Wrapper Classes (ch01)`
@@ -45,7 +43,6 @@ _**Table 4.1** Rules for indent() and stripIndent()_
   helper methodları bulunur.
 * _Character_ sınıfı _Number_ sınıfını kalıtmaz.
 
-<br/><br/>
 
 ---
 ### `@Wrapper Classes (ch06)`
@@ -59,7 +56,6 @@ Double result = a + d;
 System.out.println(result); // 12.0
 ```
 
-<br/><br/>
 
 ---
 ### `@String and StringBuilder`
@@ -75,7 +71,6 @@ System.out.println(result); // 12.0
 
 * String sınıfı, _insert()_ methoduna sahip değildir. StringBuilder sınıfı, _insert()_ methoduna sahiptir.
 
-<br/><br/>
 
 ---
 ### `@The switch Statement (ch02)`
@@ -118,7 +113,6 @@ void feedAnimals() {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@The switch Statement (ch02)`
@@ -153,7 +147,6 @@ public static String getNumberName(int number) {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Records (ch03)`
@@ -167,7 +160,6 @@ public record Pony(String name) {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Records (ch03)`
@@ -183,7 +175,6 @@ public record Panda(String name) {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Records (ch03)`
@@ -202,7 +193,6 @@ record Panda(String name) {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Records (ch03)`
@@ -217,7 +207,6 @@ record Panda(String name) {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Records (ch03)`
@@ -248,7 +237,6 @@ record Panda(String name) {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Inner Classes (ch03)`
@@ -279,7 +267,6 @@ class Another {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Nested Classes (ch03)`
@@ -305,7 +292,6 @@ class Another {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Nested Interfaces (ch03)`
@@ -318,14 +304,12 @@ class Electricity {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Interfaces (ch03)`
 
 Bir **interface** üzerinde hiç bir method **final** anahtar kelimesi ile işaretlenemez.
 
-<br/><br/>
 
 ---
 ### `@Interfaces (ch03)`
@@ -353,7 +337,6 @@ class GetSet implements Ready {
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Overriding (ch03)`
@@ -381,7 +364,6 @@ interface Office {
 class Tower extends Building implements Office { } // DOES NOT COMPILE
 ```
 
-<br/><br/>
 
 ---
 ### `@Overloading (ch03)`
@@ -426,7 +408,6 @@ public class Glider {
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Lambdas (ch03)`
@@ -471,7 +452,6 @@ class Cat {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Enums (ch03)`
@@ -500,7 +480,6 @@ enum Number {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Enums (ch03)`
@@ -546,7 +525,6 @@ enum Number implements Base {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Enums (ch03)`
@@ -583,7 +561,6 @@ enum Number implements Base {
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Enums (ch03)`
@@ -620,7 +597,6 @@ class Eggs {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@If Statements (ch03)`
@@ -643,7 +619,6 @@ public boolean sell() {
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Static (ch03)`
@@ -658,7 +633,6 @@ private static void info() {
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Exceptions (ch04)`
@@ -670,7 +644,6 @@ class BadException<T> extends Exception { } // DOES NOT COMPILE
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Exceptions (ch04)`
@@ -690,7 +663,6 @@ try {
 ``
 
 
-<br/><br/>
 
 ---
 ### `@Exceptions (ch04)`
@@ -702,7 +674,6 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.l
 ``
 
 
-<br/><br/>
 
 ---
 ### `@Exceptions (ch04)`
@@ -724,7 +695,6 @@ try {
 java.lang.RuntimeException
 ``
 
-<br/><br/>
 
 ---
 ### `@Arrays (ch05)`
@@ -740,7 +710,6 @@ var numbers = new int[3];
 var moreNumbers = new int[] {42, 55, 99};
 var moreNumbers = {42, 55, 99}; // DOES NOT COMPILE
 ```
-<br/><br/>
 
 ---
 ### `@Array (ch05)`
@@ -758,7 +727,6 @@ String[] tigers = new String[] {"tiger"};  // OK
 String ohMy [] = new String[] {};          // OK
 ```
 
-<br/><br/>
 
 ---
 ### `@Array (ch05)`
@@ -773,7 +741,6 @@ public static void main(String... original) {
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Set (ch05)`
@@ -788,7 +755,6 @@ chars.set(1, 'c');  // DOES NOT COMPILE
 ```
 
 
-<br/><br/>
 
 ---
 ### `@Generics (ch05)`
@@ -801,7 +767,6 @@ var list = new ArrayList<>(); // ArrayList<Object>()
 ```
 
 
-<br/><br/>
 
 ---
 ### `@List (ch05)`
@@ -823,7 +788,6 @@ System.out.println(asList);                  // [100, 200, 3]
 System.out.println(Arrays.toString(array));  // [100, 200, 3]
 ```
 
-<br/><br/>
 
 ---
 ### `@Functional Interfaces (ch06)`
@@ -833,7 +797,6 @@ _**Table 8.4** Common functional interfaces_
 ![table-8.4.png](img%2Ftable-8.4.png)
 ![table-8.4.png](img%2Ftable-8.4.1.png)
 
-<br/><br/>
 
 ---
 ### `@Predicate (ch06)`
@@ -848,7 +811,6 @@ public interface Predicate<T> {
 }
 ```
 
-<br/><br/>
 
 ---
 ### `@Parallel Streams (ch06)`
@@ -863,7 +825,6 @@ IntStream.range(1, 50)
         .forEach(System.out::println);
 ```
 
-<br/><br/>
 
 ---
 ### `@Stream Concat (ch06)`
@@ -878,7 +839,6 @@ IntStream.concat(one, two)
         .forEach(System.out::print); // 0123456789
 ```
 
-<br/><br/>
 
 ---
 ### `@ForEach (ch06)`
@@ -890,3 +850,252 @@ void forEach(Consumer<? super T> action)
 ```
 
 Örneğin Double listesi için bu _Consumer\<Double>_ olur.
+
+
+---
+### `@Primtive Stream (ch06)`
+
+Primitive stream'ler de _count()_ ve _sum()_ methodları dışındaki çoğu method _Optional_ tipte döner.
+
+```java
+long count = DoubleStream.of(1, 2, 3).count();
+double sum = DoubleStream.of(1, 2, 3).sum();
+OptionalDouble optionalDouble = DoubleStream.of(1, 2, 3).average();
+OptionalDouble min = DoubleStream.of(1, 2, 3).min();
+OptionalDouble max = DoubleStream.of(1, 2, 3).max();
+```
+
+
+---
+### `@Primtive Stream (Double) (ch06)`
+
+DoubleStream üzerinde _range()_ methodu bulunmaz.
+
+```java
+IntStream intStream = IntStream.range(1, 20);
+LongStream longStream = LongStream.range(1, 20);
+DoubleStream doubleStream = DoubleStream.range(1, 20); // DOES NOT COMPILE
+```
+
+---
+### `@Method Reference (ch06)`
+
+Method referansı bir operatör ile birlikte kullanılamaz.
+
+```java
+List.of("A", "B", "")
+        .stream()
+        .filter(!String::isEmpty)  // DOES NOT COMPILE
+        .forEach(System.out::println);
+
+
+List.of("A", "B", "")
+        .stream()
+        .filter(s -> !s.isEmpty()) // OK
+        .forEach(System.out::println);
+```
+
+---
+### `@Infinitive Stream (ch06)`
+
+Infinitive bir stream, _sorted()_ yapılmak istenirse kod tamamlanamaz. En sonunda _java.lang.OutOfMemoryError: Java heap space_
+hatasını üretir.
+
+```java
+var chars = Stream.generate(() -> 'a');
+chars.filter(c -> c < 'b')
+        .sorted()
+        .findFirst()
+        .ifPresent(System.out::print);
+```
+
+---
+### `@Primtive Stream (ch06)`
+
+Primitive stream'ler de _count()_ ve _sum()_ methodları dışındaki çoğu method _Optional_ tipte döner.
+
+```java
+long count = DoubleStream.of(1, 2, 3).count();
+double sum = DoubleStream.of(1, 2, 3).sum();
+OptionalDouble optionalDouble = DoubleStream.of(1, 2, 3).average();
+OptionalDouble min = DoubleStream.of(1, 2, 3).min();
+OptionalDouble max = DoubleStream.of(1, 2, 3).max();
+```
+
+---
+### `@Primtive Stream (ch06)`
+
+Primitive streamler kendilerine map'lenemezler.
+
+```java
+LongStream longStream = IntStream.of(1, 2, 3).mapToLong(a -> a);
+DoubleStream doubleStream = IntStream.of(1, 2, 3).mapToDouble(a -> a);
+Stream<Integer> integerStream = IntStream.of(1, 2, 3).mapToObj(a -> a);
+Stream<Integer> boxed = IntStream.of(1, 2, 3).boxed();
+
+IntStream intStream = IntStream.of(1, 2, 3).mapToInt(a -> a); // DOES NOT COMPILE
+```
+
+---
+### `@Primtive Stream (Double) (ch06)`
+
+DoubleStream üzerinde _range()_ methodu bulunmaz.
+
+```java
+IntStream intStream = IntStream.range(1, 20);
+LongStream longStream = LongStream.range(1, 20);
+DoubleStream doubleStream = DoubleStream.range(1, 20); // DOES NOT COMPILE
+```
+
+---
+### `@Summary Statistics (ch06)`
+
+```java
+IntSummaryStatistics intSummaryStatistics = IntStream.range(1, 20).summaryStatistics();
+LongSummaryStatistics longSummaryStatistics = LongStream.range(1, 20).summaryStatistics();
+DoubleSummaryStatistics doubleSummaryStatistics = DoubleStream.of(1, 2, 3).summaryStatistics();
+
+
+double average = intSummaryStatistics.getAverage();
+int max = intSummaryStatistics.getMax();
+int min = intSummaryStatistics.getMin();
+long sum = intSummaryStatistics.getSum();
+long count = intSummaryStatistics.getCount();
+```
+
+---
+### `@Summary Statistics (ch06)`
+
+Summary Statistic methodları _Optional_ değer dönmezler.
+
+```java
+IntSummaryStatistics intSummaryStatistics = Stream.of().mapToInt(a -> 2).summaryStatistics();
+System.out.println(intSummaryStatistics.getCount());   // 0
+System.out.println(intSummaryStatistics.getSum());     // 0
+System.out.println(intSummaryStatistics.getAverage()); // 0.0
+System.out.println(intSummaryStatistics.getMax());     // -2147483648 (Integer.MAX_VALUE)
+System.out.println(intSummaryStatistics.getMin());     // 2147483647  (Integer.MIN_VALUE)
+```
+
+
+---
+### `@Primtive Stream (Double) (ch06)`
+
+Primitive streamlerde method parametresi mutlaka _primitive_ olmalıdır.
+
+```java
+IntConsumer intConsumer = (Integer i) -> System.out.println(i); // DOES NOT COMPILE
+
+IntConsumer intConsumer = (int i) -> System.out.println(i); 
+```
+
+---
+### `@Non-Primtive Stream (ch06)`
+
+Primitive olmayan streamlerde method parametresi mutlaka _Wrapper_ sınıf tipinde olmalıdır.
+
+```java
+Consumer<Double> consumer = (double d) -> System.out.println("Res: " + d); // DOES NOT COMPILE
+
+Consumer<Double> consumer = (Double d) -> System.out.println("Res: " + d); // OK
+```
+
+---
+### `@Optional Primitive (ch06)`
+
+Optional primitive sınıflar üzerinde doğrudan _get()_ methodu bulunmaz. Bunun yerine _getAsInt()_, _getASLong()_ ve 
+_getAsDouble()_ methodları bulunur.
+
+```java
+OptionalInt.empty().getAsInt();
+OptionalLong.empty().getAsLong();
+OptionalDouble.empty().getAsDouble();
+```
+
+---
+### `@Parallel Stream (ch06)`
+
+Bir streami parallel yapabilmek için sadece _parallel()_ methodunu kullanabiliriz.
+
+```java
+Stream.of().parallelStream(); // DOES NOT COMPILE
+Stream.of().parallel();       // OK
+```
+
+---
+### `@FindFirst (ch06)`
+
+_findFirst()_ methodu serial veya parallel stream de her zaman ilk elemanı döndürür fakat _unordered_ bir stream de herhangi
+bir elemanı döndürebilir.
+
+---
+### `@Sorted Stream (ch06)`
+
+Stream üzerinde sıralama yapabilmek için sadece _sorted()_ methodunu kullanabiliriz.
+
+---
+### `@Sorted Stream (ch06)`
+
+```java
+var s = Stream.of("over the river",
+        "through the woods",
+        "to grandmother's house we go");
+s.filter(n -> n.startsWith("t"))
+        // .sorted(Comparator::reverseOrder) // DOES NOT COMPILE 
+        .sorted(Comparator.reverseOrder()) 
+        .findFirst()
+        .ifPresent(System.out::println);
+```
+
+---
+### `@Sorted Stream (ch06)`
+
+_Comparable_ olmayan bir stream üzerinde _sorted()_ çalıştırılırsa _ClassCastException_ fırlatılır.
+
+```java
+record Student(String name) {
+  public static void main(String[] args) {
+    List<Student> students = List.of(new Student("A"), new Student("B"), new Student("C"));
+    students.stream()
+            .sorted() // java.lang.ClassCastException
+            .forEach(System.out::println);
+  }
+}
+```
+
+```java
+record Student(String name) implements Comparable<Student> {
+    public static void main(String[] args) {
+        List<Student> students = List.of(new Student("A"), new Student("B"), new Student("C"));
+
+        students.stream()
+                .sorted()
+                .forEach(System.out::print); // ABC
+        
+        students.stream()
+                .sorted((a, b) -> b.name.compareTo(a.name))
+                .forEach(System.out::print); // CBA
+    }
+
+    @Override
+    public int compareTo(Student o) {
+        return name.compareTo(o.name);
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+}
+```
+
+---
+### `@Stream Concat (ch06)`
+
+Stream concat işlemi primitive streamler ile yapılamaz.
+
+```java
+var odds = IntStream.iterate(1, a -> a + 2);
+var evens = IntStream.iterate(2, a -> a + 2);
+Stream.concat(odds, evens); // DOES NOT COMPILE
+```

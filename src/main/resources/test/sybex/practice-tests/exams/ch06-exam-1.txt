@@ -51,3 +51,10 @@
 ✅ 50 (1) -> F
 
 🎯 80.33/100
+
+# Primitive Functional Interfaces (20,30,31,42,59,103,140,148)
+# Reduce (41,69,79,115,137)
+# Collectors (54,80,124)
+# FlatMap (81)
+# Spliterator (106)
+# allMatch(), anyMatch(), ... (133)
