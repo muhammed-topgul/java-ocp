@@ -276,7 +276,7 @@ parçalanıp tekrar birleşitirilmesi olanak tanır.
 
 #### Collecting
 
-_collect()_ methodu _mutable reduction_ olarak isimlendşrilen özel bir _reduction_ türüdür. Normal _reduction_'dan daha 
+_collect()_ methodu _mutable reduction_ olarak isimlendirilen özel bir _reduction_ türüdür. Normal _reduction_'dan daha 
 verimlidir çünkü aynı _mutable_ nesne üzerinde güncelleme işlemi yapılır. Yaygın kullanılan _mutable_ nesneler 
 _StringBuilder_ ve _ArrayList_'dir. Çok kullanışlı bir yöntemdir çünkü verileri streamden çıkarıp başka bir forma 
 sokmamızı sağlar.

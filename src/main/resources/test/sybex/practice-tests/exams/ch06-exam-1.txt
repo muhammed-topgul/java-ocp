@@ -57,4 +57,3 @@
 # Collectors (54,80,124)
 # FlatMap (81)
 # Spliterator (106)
-# allMatch(), anyMatch(), ... (133)
