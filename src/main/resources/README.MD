@@ -1099,3 +1099,107 @@ var odds = IntStream.iterate(1, a -> a + 2);
 var evens = IntStream.iterate(2, a -> a + 2);
 Stream.concat(odds, evens); // DOES NOT COMPILE
 ```
+
+---
+### `@Concurrency (ch08)`
+
+_Callable_ geriye bir değer döner ve geriye _exception_ fırlatabilir.
+
+```java
+@FunctionalInterface
+public interface Callable<V> {
+    V call() throws Exception;
+}
+```
+
+---
+### `@Concurrency (ch08)`
+
+_Runnable_ geriye bir değer dönemez ve _checked exception_ fırlatamaz.
+
+```java
+@FunctionalInterface
+public interface Runnable {
+    void run();
+}
+```
+
+---
+### `@Concurrency (ch08)`
+
+_CopyOnWriteArrayList_, _for-loop_ içerisinde içinde ki eleman sayısı kadar eleman ekleyebilir veya tüm elemanları silebilir.
+
+```java
+var original = List.of(1, 2, 3);
+
+var copy1 = new CopyOnWriteArrayList<Integer>(original);
+for (Integer w : copy1)
+    copy1.add(w * 10);
+System.out.println(copy1); // [1, 2, 3, 10, 20, 30]
+
+for (Integer w : copy1)
+    copy1.remove(w);
+System.out.println(copy1); // []
+```
+
+---
+### `@Concurrency (ch08)`
+
+_Collections.synchronizedList()_ geriye _immutable_ ve _multi-thread_ ortamda çalışabilecek bir liste döner. Ekleme, 
+silme veya güncelleme işlemi yapılamaz.
+
+```java
+var original = List.of(1, 2, 3);
+
+var copy2 = Collections.synchronizedList(original);
+for(Integer w : copy2) {
+    copy2.remove(w);   // UnsupportedOperationException
+    copy2.add(w * 10); // UnsupportedOperationException
+}
+copy2.set(1, 10);      // UnsupportedOperationException
+```
+
+---
+### `@Concurrency (ch08)`
+
+_ConcurrentLinkedQueue_ ile _for-loop_ üzerinde ekleme ve silme işlemi yapılabilir. Ekleme işlemini sonsuza kadar yapabilir.
+
+---
+### `@Concurrency (ch08)`
+
+_Future.get()_ methodu _checked exception_ fırlatır.
+
+```java
+V get() throws InterruptedException, ExecutionException;
+
+V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException;
+```
+
+Eğer timeout alan _get()_ methodu belirtilen süre içerisinde tamamlanmazsa _TimeoutException_ fırlatır.
+
+```java
+var s = Executors.newCachedThreadPool();
+Future<Integer> bosses = s.submit(() -> {
+    Thread.sleep(2000);
+    return 1;
+});
+s.shutdown();
+System.out.print(bosses.get(1, TimeUnit.SECONDS)); // TimeoutException
+```
+
+---
+### `@Concurrency (ch08)`
+
+**volatile** _Thread-safe_ değildir.
+
+```java
+ExecutorService service = Executors.newCachedThreadPool();
+for (int i = 0; i < 100; i++) {
+    service.submit(() -> {
+        count++;
+    });
+}
+service.shutdown();
+service.awaitTermination(2, TimeUnit.SECONDS);
+System.out.println(count); // 97
+```
