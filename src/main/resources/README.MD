@@ -1175,6 +1175,8 @@ V get() throws InterruptedException, ExecutionException;
 V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException;
 ```
 
+_get()_ methodu, cevap gelene kadar bekler.
+
 Eğer timeout alan _get()_ methodu belirtilen süre içerisinde tamamlanmazsa _TimeoutException_ fırlatır.
 
 ```java
