@@ -1205,3 +1205,320 @@ service.shutdown();
 service.awaitTermination(2, TimeUnit.SECONDS);
 System.out.println(count); // 97
 ```
+
+---
+### `@I/O (ch09)`
+
+Bir dizin _/_ veya _C:/_ ile başlıyorsa _absolute_ yoksa _relative directory_'dir.
+```text
+/bird/parrot.png -> Absolute path
+bird/parrot.png  -> Relative path
+```
+
+---
+### `@I/O (ch09)`
+
+_File_ sınıfı üzerinde 3 adet contstructor bulunur. Bir tane 1 adet 2 tanesi 2 adet parametre alır.
+
+```java
+public File(String pathname)
+public File(String parent, String child)
+public File(File parent, String child)
+```
+
+---
+### `@I/O (ch09)`
+
+_Path_ nesnesi oluşturmanın 3 adet yolu vardır.
+
+1. _Path.of()_:
+
+```java
+public static Path of(URI uri)
+public static Path of(String first, String... more)
+
+Path path1 = Path.of("C:\\tiger\\data\\stripes.txt");
+Path path2 = Path.of("C:", "tiger", "data", "stripes.txt");
+```
+
+2. _Paths.get()_:
+
+```java
+public static Path get(URI uri)
+public static Path get(String first, String... more)
+
+Path path3 = Paths.get("C:\\tiger\\data\\stripes.txt");
+Path path4 = Path.of("C:", "tiger", "data", "stripes.txt");
+```
+
+3. _FileSystems.getDefault().getPath()_
+
+```java
+public abstract Path getPath(String first, String... more)
+  
+Path path1 = FileSystems.getDefault().getPath("C:\\tiger\\data\\stripes.txt");
+Path path2 = FileSystems.getDefault().getPath("C:", "tiger", "data", "stripes.txt");
+```
+
+---
+### `@I/O (ch09)`
+
+_Path_ nesneleri _immutable_'dir.
+
+```java
+Path path = Path.of("whale");
+path.resolve("krill");
+System.out.println(path); // whale
+```
+
+---
+### `@I/O (ch09)`
+
+```java
+Path path = Paths.get("/land/hippo/harry.happy");
+System.out.println("Name: " + path);                      // Name: \land\hippo\harry.happy
+System.out.println("Name Count: " + path.getNameCount()); // 3
+System.out.println("First Name: " + path.getName(0));     // land
+System.out.println("File Name: " + path.getFileName());   // harry.happy
+System.out.println("Exception: "  + path.getName(3));     // IllegalArgumentException
+```
+
+---
+### `@I/O (ch09)`
+
+_Path.resolve()_ methoduna parametre olarak geçilen değer _absolute path_ ise doğrudan onu döner.
+
+```java
+Path resolve(Path other)
+Path resolve(String other)
+
+Path path1 = Path.of("/cats/../panther");
+Path path2 = Path.of("food");
+System.out.println(path1.resolve(path2));         // /cats/../panther/food
+
+Path path3 = Path.of("/turkey/food");
+System.out.println(path3.resolve("/tiger/cage")); // /tiger/cage
+```
+
+---
+### `@I/O (ch09)`
+
+_Relativizing path_ bir dosyadan diğerine nasıl gidebileceğimizi belirler.
+
+> İki parametreninde aynı anda _absolute path_ veya _relative path_ olması gerekir.
+> Farklı diskleride olursa hata fırlatır. (Örn: _C:/_ ve _D:/_)
+
+```java
+var path1 = Path.of("fish.txt");
+var path2 = Path.of("friendly/birds.txt");
+
+// path1'den path2'e nasıl gidilir
+System.out.println(path1.relativize(path2)); // ../friendly/birds.txt
+
+// path2'den path1'e nasıl gidilir
+System.out.println(path2.relativize(path1)); // ../../fish.txt
+```
+
+```java
+var path1 = Path.of("E:\\habitat");
+var path2 = Path.of("E:\\sanctuary\\raven\\poe.txt");
+
+System.out.println(path1.relativize(path2)); // ../sanctuary/raven/poe.txt
+System.out.println(path2.relativize(path1)); // ../../../habitat
+```
+
+```java
+Path path1 = Paths.get("/primate/chimpanzee");
+Path path2 = Paths.get("bananas.txt");
+path1.relativize(path2); // IllegalArgumentException
+```
+
+```java
+Path path3 = Paths.get("C:\\primate\\chimpanzee");
+Path path4 = Paths.get("D:\\storage\\bananas.txt");
+path3.relativize(path4); // IllegalArgumentException
+```
+
+---
+### `@I/O (ch09)`
+
+_toRealPath()_ methodu eğer dosya gerçekte yoksa hata fırlatır.
+
+> _toRealPath()_ methodu varsayılan olarak sembolik linkleri takip eder.
+
+```java
+Path path = Paths.get("/primate/chimpanzee");
+path.toRealPath();
+path.toRealPath(LinkOption.NOFOLLOW_LINKS);
+```
+
+---
+### `@I/O (ch09)`
+
+_**createDirectory()**_: Tek bir dizin oluşturacaktır. Eğer dizin mevcut ise veya dizine giden üst dizinler mevcut değil ise hata fırlatacaktır.
+
+_**createDirectories()**_: İlgili dizin ile mevcut olmayan üst dizinleri de oluşturacaktır. Tüm dizinler zaten mevcut ise createDirectories() hiç bir şey yapmaz.
+
+```java
+Files.createDirectory(Path.of("C:\\bison\\field"));
+Files.createDirectories(Path.of("C:\\bison\\field\\pasture\\green"));
+```
+
+---
+### `@I/O (ch09)`
+
+_**createFile()**_: Tek bir dosya oluşturacaktır. Eğer üst dizinler mevcut ise veya dizine giden üst dizinler mevcut değil
+ise hata fırlatacaktır.
+
+```java
+Files.createFile(Path.of("my-file-1"));
+```
+
+---
+### `@I/O (ch09)`
+
+> - Kopyalama işlemi sadece hedef dosya/dizin yoksa başarılı olur. Yoksa hata fırlatır.
+
+> - Üst dizinleri _(panda-new)_ oluşturmaz.
+
+> - _panda-new/bamboo.txt_ dosyaları zaten mevcutsa _FileAlreadyExistsException_ fırlatır.
+
+> - Dizinler kopyalandığında _shallow copy_ yapılır. Yani alt dizinler kopyalanmaz.
+
+```java
+// Creates panda dir
+Path panda = Files.createDirectory(Path.of("panda"));
+// Creates panda-new dir
+Path pandaNew = Files.createDirectories(Path.of("panda-new"));
+
+// Creates panda/bamboo.txt file
+Path bamboo = Files.createFile(panda.resolve("bamboo.txt"));
+
+// Copies panda/bamboo.txt file to panda-new/bamboo.txt
+Files.copy(bamboo, pandaNew.resolve("bamboo.txt"));
+```
+
+---
+### `@I/O (ch09)`
+
+_Files.copy()_ methodu hedefte ki dosya zaten mevcutsa _FileAlreadyExistsException_ fırlatır. **StandardCopyOption.REPLACE_EXISTING**
+ile her seferinde kopyalama işlemi yapmasını sağlayabiliriz.
+
+```java
+// Copies panda/bamboo.txt file to panda-new/bamboo.txt
+Path bamboo = Path.of("panda/bamboo.txt");
+Path pandaNew = Path.of("panda-new/bamboo.txt");
+Files.copy(bamboo, pandaNew, StandardCopyOption.REPLACE_EXISTING);
+```
+
+---
+### `@I/O (ch09)`
+
+_Files.copy()_ methodu hem _Path_ nesnesi hem de _FileInputStream_ ve _FileOutputStream_ alan methodları bulunur. 
+
+```java
+// Copies panda/bamboo.txt file to panda-new/bamboo.txt
+Path pandaNew = Path.of("panda-new/bamboo.txt");
+try (var fis = new FileInputStream("panda/bamboo.txt")) {
+    Files.copy(fis, pandaNew, StandardCopyOption.REPLACE_EXISTING);
+}
+```
+
+Aşağıda  ki method her seferinde kopyalama işlemini yapar. 
+```java
+// Copies panda/bamboo.txt file to panda-new/bamboo.txt
+Path panda = Path.of("panda/bamboo.txt");
+try (var fos = new FileOutputStream("panda-new/bamboo.txt")) {
+    Files.copy(panda, fos);
+}
+```
+
+---
+### `@I/O (ch09)`
+
+Aşağıda ki kod _panda/bamboo.txt_ dosyasını sonunda uzantı olmadan _panda-new_ dosyası oluşturarak kopyalar.
+
+```java
+// Copies panda/bamboo.txt file to panda-new
+Path bamboo = Path.of("panda/bamboo.txt");
+Path pandaNew = Path.of("panda-new");
+Files.copy(bamboo, pandaNew, StandardCopyOption.REPLACE_EXISTING);
+```
+
+---
+### `@I/O (ch09)`
+
+_Files.move()_ dosyayı yeniden adlandırır veya taşır.
+
+```java
+ // Renames zoo.txt file as new-zoo.txt
+ Files.move(Path.of("zoo.txt"), Path.of("new-zoo.txt"));
+```
+
+---
+### `@I/O (ch09)`
+
+Aşağıda ki kod _addresses.txt_ dosyasını, _zoo/addresses2.txt_ olarak taşır.
+
+> _user/addresses.txt_ dosyası yoksa veya _zoo_ dizini yoksa hata fırlatır.
+
+```java
+// Moves addresses.txt file to zoo/addresses2.txt
+Files.move(Path.of("user/addresses.txt"), Path.of("zoo/addresses2.txt"));
+```
+
+---
+### `@I/O (ch09)`
+
+```java
+public static void delete(Path path) throws IOException
+public static boolean deleteIfExists(Path path) throws IOException
+```
+
+> - Dizini silebilmek için mutlaka boş olması gerekir. Yoksa _DirectoryNotEmptyException_ fırlatır.
+
+> - Eğer sembolik link verilirse sadece sembolik link silinir. İşaret edilen gerçek dosya silinmez.
+ 
+> - _Files.delete()_ methodu eğer dosya yoksa _NoSuchFileException_ fırlatır.
+
+```java
+Files.delete(Path.of("zoo/report.txt"));
+Files.deleteIfExists(Path.of("zoo/report.txt"));
+```
+
+---
+### `@I/O (ch09)`
+
+_equals()_, _isSameFile()_ ve _mismatch()_ methodları dosyaları karşılaştırır.
+
+1. _equals()_ dosya path isimleri birebir aynı ise **true** döner.
+
+```java
+Path p1 = Path.of("zoo/report.txt");
+Path p2 = Path.of("zoo/../zoo/report.txt");
+Path p3 = Path.of("zoo/report.txt");
+
+System.out.println(p1.equals(p2)); // false
+System.out.println(p1.equals(p3)); // true
+```
+
+2. _Files.isSameFile()_ eğer parametre olarak verilen path'ler gerçekte mevcut değilse _NoSuchFileException_ fırlatır. Tek 
+istisnası _equals()_ **true** ise doğrudan **true** döner.
+
+```java
+Path p1 = Path.of("missing-file.txt");
+Path p2 = Path.of("missing-file.txt");
+
+System.out.println(p1.equals(p2));            // true
+System.out.println(Files.isSameFile(p1, p2)); // true
+```
+
+3. _Files.mismatch()_ eğer parametre olarak verilen path'ler gerçekte mevcut değilse _NoSuchFileException_ fırlatır. Tek
+   istisnası _equals()_ **true** ise doğrudan **-1** döner.
+
+```java
+Path p1 = Path.of("animals/lion.txt");
+Path p2 = Path.of("animals/wolf.txt");
+
+System.out.println(Files.mismatch(p1, p2)); // false
+```
