@@ -1522,3 +1522,110 @@ Path p2 = Path.of("animals/wolf.txt");
 
 System.out.println(Files.mismatch(p1, p2)); // false
 ```
+
+---
+### `@I/O (ch09)`
+
+_FileOutputStream_ ve _FileWriter_ sınıf constructor'larına geçilen hedef dosyalar mevcut değilse bu dosyalar oluşturulur.
+
+> Hedef dosyanın içinde bulunduğu üst dizinler oluşturulmaz.
+
+---
+### `@I/O (ch09)`
+
+_source.txt_ dosyası okunur ve _target.txt_ dosyasına (_yoksa oluşturulur_) yazılır.
+
+```java
+var fis = new FileInputStream("source.txt");
+var fos = new FileOutputStream("target.txt");
+
+int b;
+while ((b = fis.read()) != -1) {
+    System.out.print((char) b);
+    fos.write(b);
+}
+
+fis.close();
+fos.close();
+```
+
+```java
+FileReader reader = new FileReader("source.txt");
+FileWriter writer = new FileWriter("target.txt");
+
+int b;
+while ((b = reader.read()) != -1) {
+    System.out.print((char) b);
+    writer.write(b);
+}
+
+reader.close();
+writer.close();
+```
+
+---
+### `@I/O (ch09)`
+
+Her sefereinde tek tek okuyup yazmak verimsiz bir yoldur. Çoklu _read()/write()_ overloaded methodları vardır.
+
+```java
+var fis = new FileInputStream("source.txt");
+var fos = new FileOutputStream("target.txt");
+
+int size = 1024;
+var buffer = new byte[size];
+int lengthRead;
+
+while ((lengthRead = fis.read(buffer, 0, size)) > 0) {
+    System.out.print(lengthRead); // 40
+    fos.write(buffer, 0, lengthRead);
+}
+
+fis.close();
+fos.close();
+```
+
+```java
+var reader = new BufferedReader(new FileReader("source.txt"));
+var writer = new BufferedWriter(new FileWriter("target.txt"));
+String line;
+
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    writer.write(line);
+    writer.newLine();
+}
+
+reader.close();
+writer.close();
+```
+
+---
+### `@I/O (ch09)`
+
+Bir önceki örnekte _BufferedWriter_ yerine _PrintWriter_ kullanınca ayıca _newLine()_ methodu çağrısı yapmaya gerek kalmaz.
+
+```java
+var reader = new BufferedReader(new FileReader("source.txt"));
+var writer = new PrintWriter(new FileWriter("target.txt"));
+String line;
+
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    writer.println(line);
+}
+
+reader.close();
+writer.close();
+```
+
+---
+### `@I/O (ch09)`
+
+_FileWriter_ ve _FileOutputStream_ sınıfları dosya içeriklerini her seferinde silip yeniden oluştururlar. Mevcut verinin
+üzerine ekleme yapmak için _append_ parametresi **true** verilmelidir.
+
+```java
+FileWriter writer = new FileWriter("target.txt", true);
+FileOutputStream fos = new FileOutputStream("target.txt", true);
+```

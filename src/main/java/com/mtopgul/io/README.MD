@@ -701,7 +701,7 @@ Character I/O stream'leri sınıf isimlerinde _Stream_ kelimesi bulunmasa bile, 
 İsimlerinde _Reader/Writer_ kullanılması, bunları byte stream'lerden ayırmak içindir.
 
 > Bölüm içerisinde _InputStream_ ve _Reader_ sınıfları _input stream_ olarak, _OutputStream_ ve _Writer_ sınıflarını ise 
-> _outout stream_ olarak isimlendirilmektedir.
+> _output stream_ olarak isimlendirilmektedir.
 
 Byte I/O streamler daha çok resim ve _executable_ dosyalar gibi binary veri ile çalışmak için uydundur. Character I/O streamler
 ise text dosyaları ile çalışmak için uygundur.
@@ -926,12 +926,12 @@ private static void newBuffered(Path in, Path out) throws IOException {
 
 **Table 14.9** Common I/O read and write methods
 
-![img.png](img.png)
-![img_1.png](img_1.png)
+![table-14.9.png](..%2F..%2F..%2F..%2Fresources%2Fimg%2Ftable-14.9.png)
+![table-14.9.1.png](..%2F..%2F..%2F..%2Fresources%2Fimg%2Ftable-14.9.1.png)
 
 **Table 14.10** Common _Files NIO.2_ read and write methods
 
-![img_2.png](img_2.png)
+![table-14.10.png](..%2F..%2F..%2F..%2Fresources%2Fimg%2Ftable-14.10.png)
 
 ---
 ## `Serializing Data`
