@@ -1263,24 +1263,24 @@ Path path2 = FileSystems.getDefault().getPath("C:", "tiger", "data", "stripes.tx
 ---
 ### `@I/O (ch09)`
 
+```java
+Path path = Paths.get("/land/hippo/harry.happy");
+System.out.println("Name: " + path);                      // /land/hippo/harry.happy
+System.out.println("Name Count: " + path.getNameCount()); // 3
+System.out.println("First Name: " + path.getName(0));     // land
+System.out.println("File Name: " + path.getFileName());   // harry.happy
+System.out.println("Exception: "  + path.getName(3));     // IllegalArgumentException
+```
+
+---
+### `@I/O (ch09)`
+
 _Path_ nesneleri _immutable_'dir.
 
 ```java
 Path path = Path.of("whale");
 path.resolve("krill");
 System.out.println(path); // whale
-```
-
----
-### `@I/O (ch09)`
-
-```java
-Path path = Paths.get("/land/hippo/harry.happy");
-System.out.println("Name: " + path);                      // Name: \land\hippo\harry.happy
-System.out.println("Name Count: " + path.getNameCount()); // 3
-System.out.println("First Name: " + path.getName(0));     // land
-System.out.println("File Name: " + path.getFileName());   // harry.happy
-System.out.println("Exception: "  + path.getName(3));     // IllegalArgumentException
 ```
 
 ---
@@ -1765,4 +1765,19 @@ System.out.println("After try"); // Will not print
 var reader = new BufferedReader(new InputStreamReader(new FileInputStream("cat.txt")));
 reader.close();
 reader.readLine(); // throws IOException: Stream closed
+```
+
+---
+### `@I/O (ch09)`
+
+_Console_ nesnesi sadece _System_ sınıfı üzerinden oluşturulabilir.
+
+```java
+Console console = System.console();
+
+if (console != null) {
+    System.out.println("Console is not null!");
+    String userInput = console.readLine();
+    console.writer().println("You entered: " + userInput);
+} 
 ```
