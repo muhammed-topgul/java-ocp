@@ -1677,3 +1677,92 @@ private static void readLazily(Path in) throws IOException {
     }
 }
 ```
+
+---
+### `@I/O (ch09)`
+
+_Files.newBufferedReader()_ ve _Files.newBufferedWriter()_
+
+```java
+var reader = new BufferedReader(new FileReader("source.txt"));
+var writer = new BufferedWriter(new FileWriter("target.txt"));
+String line;
+
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    writer.write(line);
+    writer.newLine();
+    // writer.flush();
+}
+
+reader.close();
+writer.close();
+```
+
+```java
+var reader = Files.newBufferedReader(Path.of("source.txt"));
+var writer = Files.newBufferedWriter(Path.of("target.txt"));
+String line;
+
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    writer.write(line);
+    writer.newLine();
+}
+
+reader.close();
+writer.close();
+```
+
+
+---
+### `@I/O (ch09)`
+
+1. Serileştirilmek istenen sınıf _java.io.Serializable_ arayüzünü kalıtmalıdır.
+2. **transient** değişkenler serileştirilmezler.
+3. **static** değişkenler serileştirilmezler.
+4. Sadece ismi _serialVersionUID_ olan static değişken serileştirilir.
+5. _serialVersionUID_ değişkeni tanımlamak iyi bir yaklaşımdır. Sınıf her değiştiğinde bir artırılır. Deserilizasyon işlemi 
+   esnasında uymusuzluklar _InvalidClassException_'e neden olur.
+
+```java
+class Gorilla implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private int age;
+    private Boolean friendly;
+    private transient String favoriteFood;
+}
+```
+
+---
+### `@I/O (ch09)`
+
+Bir sınıfın serileştirilebilmesin emin olmak için:
+
+1. _Serializable_ arayüzü uygulanmalı. Yoksa uygulama _NotSerializableException_ fırlatır.
+2. Tüm _instance_ değişkenler; _serializable_, **transient** veya serileştirme işlemi sırasında **null** değere sahip olmalıdır.
+
+---
+### `@I/O (ch09)`
+
+Deserilizasyon işlemi esnasıda:
+
+1. Hiç bir _constructor_ veya _initialization_ block çalıştırılmaz.
+2. Sınıf hierarşisinde bulunan ilk _non-serialized_ sınıfın _no-args constructor_'ü çalıştırılır. 
+3. Hiç bir set methodu çalıştırılmaz.
+4. Değişkenlerin başlangıç değerleri göz ardı edilir. Varsayılan değerleri setlenir.
+
+---
+### `@I/O (ch09)`
+
+_PrintStream_ dışında bir çok _InputStream_ uygulamaları kapanmış _I/O_ stream'ler üzerinde işlem yaparsa hata fırlatılır.
+
+```java
+System.out.close();
+System.out.println("After try"); // Will not print
+
+var reader = new BufferedReader(new InputStreamReader(new FileInputStream("cat.txt")));
+reader.close();
+reader.readLine(); // throws IOException: Stream closed
+```
