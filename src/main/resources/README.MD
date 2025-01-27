@@ -1629,3 +1629,51 @@ _FileWriter_ ve _FileOutputStream_ sınıfları dosya içeriklerini her seferind
 FileWriter writer = new FileWriter("target.txt", true);
 FileOutputStream fos = new FileOutputStream("target.txt", true);
 ```
+
+---
+### `@I/O (ch09)`
+
+_Files_ sınıfı üzerinde okuma/yazma işlemleri için daha kolay methodlar vardır.
+
+1. String olarak okuma/yazma.
+
+```java
+Path source = Path.of("source.txt");
+Path target = Path.of("target.txt");
+
+String string = Files.readString(source);
+System.out.println(string); // This is source.txt
+
+Files.writeString(target, string);
+// Files.writeString(target, string, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+```
+
+2. Byte array olarak okuma/yazma.
+
+```java
+byte[] bytes = Files.readAllBytes(source);
+Files.write(target, bytes);
+```
+
+3. List<String> olarak okuma/yazma.
+
+```java
+List<String> lines = Files.readAllLines(source);
+Files.write(target, lines);
+```
+
+> _readString()_, _readAllBytes()_ ve _readAllLines()_ methodları tüm dosyayı tek seferde okur ve hafızaya alır. Büyük 
+> dosyalarda uygulama _OutOfMemoryError_ fırlatabilir.
+
+---
+### `@I/O (ch09)`
+
+_Files.lines()_ lazily olarak çalışır. Dosyanın küçük bir kısmını hafıza da tutar.
+
+```java
+private static void readLazily(Path in) throws IOException {
+    try (Stream<String> stream = Files.lines(in)) {
+        stream.forEach(System.out::println);
+    }
+}
+```
