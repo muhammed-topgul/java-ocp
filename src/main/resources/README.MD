@@ -1781,3 +1781,26 @@ if (console != null) {
     console.writer().println("You entered: " + userInput);
 } 
 ```
+
+---
+### `@I/O (ch09)`
+
+Tüm stream'ler _mark_ işlemini desteklemez. Bu yüzden _mark()_ işlemini çağırmadan önce _markSupported()_ çağırılmalıdır.
+Mark işlemini desteklemeyen bir stream üzerinde _mark()_ methodu çağırılırsa uygulama _IOException_ fırlatır.
+
+```java
+private static void readData(InputStream inputStream) throws IOException {
+    System.out.print((char) inputStream.read()); // L
+    
+  if (inputStream.markSupported()) {
+        inputStream.mark(100);
+        System.out.print((char) inputStream.read()); // I
+        System.out.print((char) inputStream.read()); // O
+        inputStream.reset();
+    }
+ 
+    System.out.print((char) inputStream.read()); // I
+    System.out.print((char) inputStream.read()); // O
+    System.out.print((char) inputStream.read()); // N
+}
+```
