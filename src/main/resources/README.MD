@@ -1804,3 +1804,213 @@ private static void readData(InputStream inputStream) throws IOException {
     System.out.print((char) inputStream.read()); // N
 }
 ```
+
+---
+### `@JDBC (ch10)`
+
+_JDBC_ üzerinde beş temel arayüz vardır:
+
+1. **Driver**: Veritabanına bağlantı kurar.
+2. **Connection**: Veritabanına komut gönderir.
+3. **PreparedStatement**: SQL sorgusu yürütür.
+4. **CallableStatement**: Veritabanında bulunan _stored procedure_'leri yürütür.
+5. **ResultSet**: Sorgu sonucu okur.
+
+---
+### `@JDBC (ch10)`
+
+_PreparedStatement_ üzerinde üç adet sql komutu çalıştırma methodu bulunur.
+1. _executeUpdate()_: _Create_, _update_ ve _delete_ işlemleri için kullanılır. Geriye **int** değer döner. Çalıştırılan 
+   komut sonucunda kaç adet satırın etkilendiği bilgisini döner.
+```java
+try (var ps = connection.prepareStatement(insertSql)) {
+     int affectedRows = ps.executeUpdate();
+     System.out.printf("%d rows affected after insert.\n", affectedRows);
+}
+```
+2. _executeQuery()_: _Read_ komutları için kullanılır. Geriye _ResultSet_ döner.
+```java
+try (var ps = connection.prepareStatement(selectSql)) {
+    ResultSet rs = ps.executeQuery();
+    while (rs.next()) {
+        int id = rs.getInt(1);
+        String name = rs.getString(2);
+        System.out.println(id + " " + name);
+    }
+}
+```
+3. _execute()_: _executeQuery()_ ve _executeUpdate()_ methodlarının yaptığı işlemleri yapar. Geriye **boolean** döner. 
+   Eğer sonuç **true** ise _ResultSet_ elde edilir, eğer **false** ise _affected row_ döner.
+```java
+private static void execute(PreparedStatement ps) throws SQLException {
+    boolean isResultSet = ps.execute();
+    if (isResultSet) {
+        try (ResultSet rs = ps.getResultSet()) {
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                System.out.println(id + " " + name);
+            }
+        }
+    } else {
+        int affectedRows = ps.getUpdateCount();
+        System.out.printf("%d rows affected.\n", affectedRows);
+    }
+}
+```
+
+---
+### `@JDBC (ch10)`
+
+Değerleri paremetrik olarak geçmek için _?_ kullanabiliriz. Bu yöntem _bind_ variable olarak adlandırılır.
+
+_?_ sayısı kadar değer _bind_ edilmeli. Eksik veya fazla _bind_ işlemi yapılırsa uygulama hata fırlatır.
+
+```java
+var insertSql = "INSERT INTO names VALUES (?, ?, ?)";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+        ps.setInt(1, 58);
+        ps.setInt(2, 1);
+        // Missing the set for parameter number 3. java.sql.SQLException: Parameter not set
+        int affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+    }
+}
+```
+
+---
+### `@JDBC (ch10)`
+
+Tek bir _PreparedStatement_ ile birden fazla kayıt üzerinde işlem yapılabilir.
+
+```java
+var insertSql = "INSERT INTO names VALUES (?, ?, ?)";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
+        ps.setInt(1, 100);
+        ps.setInt(2, 1);
+        ps.setString(3, "Muhammed");
+        int affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+        
+        ps.setInt(1, 101);
+        ps.setString(3, "John");
+        affectedRow = ps.executeUpdate();
+        System.out.println(affectedRow + " rows affected.");
+    }
+}
+```
+
+Burada dikkat edilmesi gereken durum, ikinci kayıt için 3 yerine 2 adet parametre verdik. Bu durumda _PreparedStatement_ 
+en son bind edilen değeri kullanır. Yani 2. parametrenin değeri hala 1'dir.
+
+---
+### `@JDBC (ch10)`
+
+Bir _ResultSet_ okunmadan önce mutlaka _next()_ methodu çalıştrılmalıdır. Aksi durumda 
+
+```java
+var idToNameMap = new HashMap<>();
+var selectSql = "SELECT id, name FROM exhibits";
+
+try (Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo")) {
+    try (PreparedStatement ps = connection.prepareStatement(selectSql)) {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            idToNameMap.put(id, name);
+        }
+    }
+    System.out.println(idToNameMap);
+}
+```
+
+---
+### `@JDBC (ch10)`
+
+_Autocommit_ mod açık olduğunda _execute()/executeUpdate()_ methodları hemen veritabanına yansıtılır.  
+
+Aşağıda ki kod örneğinde ilk iki kayıt hemen veritabanına kaydedilir. Üçüncü kayıt hata nedeniyle kaydedilmez.
+
+_Connection_ üzerinde _setAutoCommit(false)_ yaparsak hata durumunda tüm işlemler geri alınacaktır.
+
+```java
+Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo");
+String sql = "INSERT INTO exhibits VALUES (?, ?, ?)";
+try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    connection.setAutoCommit(false);
+    
+    ps.setInt(1, 3);
+    ps.setString(2, "Dog-1");
+    ps.setDouble(3, 1.5);
+    ps.execute();
+    
+    ps.setInt(1, 4);
+    ps.setString(2, "Dog-2");
+    ps.setDouble(3, 2.5);
+    ps.execute();
+    ps.setInt(1, 3); // Throws exception. ID 3 already exist!
+    
+    ps.setString(2, "Dog-3");
+    ps.setDouble(3, 3.5);
+    ps.execute();
+    connection.commit();
+} catch (Exception e) {
+    System.out.println("Rolling back...");
+    connection.rollback();
+}
+```
+
+---
+### `@JDBC (ch10)`
+
+- Varsayılan olarak _rollback()_ tüm işlemleri geriye alıyor. _Rollback_ üzerinde daha fazla kontrole sahip olabilmek için 
+_Savepoint_ kullanabiliriz.
+
+- _Savepoint_ sadece _auto commit_ mod kapalı olduğunda kullanılabilir. Aksi durumda hata fırlatır.
+- _Savepoint_'ler oluşturulduğu sıranın tersinde _rollback_ edilmelidir. Aksi durumda hata fırlatır.
+
+```java
+Connection connection = DriverManager.getConnection("jdbc:hsqldb:file:zoo");
+String sql = "INSERT INTO exhibits VALUES (?, ?, ?)";
+
+try (PreparedStatement ps = connection.prepareStatement(sql)) {
+    connection.setAutoCommit(false);
+    ps.setInt(1, 3);
+    ps.setString(2, "Dog-1");
+    ps.setDouble(3, 1.5);
+    ps.execute();
+    
+    Savepoint sp1 = connection.setSavepoint();
+    
+    ps.setInt(1, 4);
+    ps.setString(2, "Dog-2");
+    ps.setDouble(3, 2.5);
+    ps.execute();
+   
+    Savepoint sp2 = connection.setSavepoint("Second save point");
+    
+    ps.setInt(1, 5);
+    ps.setString(2, "Dog-3");
+    ps.setDouble(3, 3.5);
+    ps.execute();
+   
+    connection.rollback(sp2);
+    // connection.rollback(sp1);
+    connection.commit();
+}
+```
+
+---
+### `@JDBC (ch10)`
+
+Datasource kapatılma sırası:
+1. ResultSet
+2. PreparedStatement/CallableStatement
+3. Connection
+
+Kapatılan her datasource eğer açıksa kendinden önceki datasource'ları da kapatır.
