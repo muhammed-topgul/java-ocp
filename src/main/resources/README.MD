@@ -2014,3 +2014,55 @@ Datasource kapatılma sırası:
 3. Connection
 
 Kapatılan her datasource eğer açıksa kendinden önceki datasource'ları da kapatır.
+
+---
+### `@Locale (ch11)`
+
+Oracle'a göre _locale_ kültürel, politik ve coğrafii bölgedir.
+
+---
+### `@Resource Bundle (ch11)`
+
+Resource Bundle'dan okuma.
+
+```java
+ResourceBundle.getBundle("name");
+ResourceBundle.getBundle("name", locale);
+```
+
+---
+### `@Resource Bundle (ch11)`
+
+Java'da varsayılan locale _en_US_ ve aranan locale _fr_FR_ için dosyalara bakma sırası;
+
+1. **_Zoo_fr_FR.properties_**: Tam olarak istenen locale.
+2. **_Zoo_fr.properties_**: İstenen locale ülke olmadan.
+3. **_Zoo_en_US.properties_**: Varsayılan locale.
+4. **_Zoo_en.properties_**: Varsayılan locale ülke olmadan.
+5. **_Zoo.properties_**: Varsayılan bundle.
+6. _MissingResourceException_, locale veya varsayılan locale de yoksa. 
+
+---
+### `@Resource Bundle (ch11)`
+
+Eğer _fr_FR_ veya _fr_ bundle dosyaları yoksa varsayılan locale (_en_US_ veya _en_) dosyalarında bakar.
+
+_fr_FR.properties_ veya _fr.propertis_ dosyaları varsa dosyalara bakma sırası;
+
+1. **_Zoo_fr_FR.properties_**: Tam olarak istenen locale.
+2. **_Zoo_fr.properties_**: İstenen locale ülke olmadan.
+3. **_Zoo.properties_**: Varsayılan bundle.
+4. _MissingResourceException_, locale veya varsayılan locale de yoksa.
+
+
+---
+### `@Message Format (ch11)`
+
+```java
+/*
+  helloByName=Hello, {0} and {1}      
+ */
+ResourceBundle rb = ResourceBundle.getBundle("Zoo");
+String message = rb.getString("helloByName");
+System.out.println(MessageFormat.format(message, "Muhammed", "Topgül")); // Hello, Muhammed and Topgül
+```
