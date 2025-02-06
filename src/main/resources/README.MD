@@ -2066,3 +2066,87 @@ ResourceBundle rb = ResourceBundle.getBundle("Zoo");
 String message = rb.getString("helloByName");
 System.out.println(MessageFormat.format(message, "Muhammed", "Topgül")); // Hello, Muhammed and Topgül
 ```
+
+---
+### `@CompactNumberInstance (ch11)`
+
+Yakın olan üste veya alta yuvarlar. Oluşturmak için 2 adet method vardır. 
+1. Parametre almaz. Varsayılan formatı _NumberFormat.Style.SHORT_;
+2. _Locale_ ve _NumberFormat.Style_ olmak üzere iki adet parametre alır.
+
+```java
+NumberFormat.getCompactNumberIntance();
+NumberFormat.getCompactNumberIntance(Locale locale, NumberFormat.Style formatStyle);
+```
+
+```java
+long number = 7_123_456;
+NumberFormat format1 = NumberFormat.getCompactNumberInstance();
+System.out.println(format1.format(number)); // 7M
+
+NumberFormat format2 = NumberFormat.getCompactNumberInstance(Locale.US, NumberFormat.Style.SHORT);
+System.out.println(format2.format(number)); // 7M
+
+NumberFormat format3 = NumberFormat.getCompactNumberInstance(Locale.US, NumberFormat.Style.LONG);
+System.out.println(format3.format(number)); // 7 million
+```
+
+---
+### `@DateTimeFormatter (ch11)`
+
+- _DateTimeFormatter.ISO_LOCAL_DATE_ ve _DateTimeFormatter.ISO_DATE_ aynıdır.
+- _DateTimeFormatter.ISO_LOCAL_TIME_ ve _DateTimeFormatter.ISO_TIME_ aynıdır.
+
+
+---
+### `@DateTimeFormatter (ch11)`
+
+_LocalDateTime_ ile _ISO_LOCAL_DATE_ ve _ISO_LOCAL_TIME_ kullanılabilir.
+
+```java
+LocalDateTime now = LocalDateTime.now();
+
+System.out.println(now);                                               // 2025-02-06T08:59:06.601858200
+System.out.println(now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)); // 2025-02-06T08:59:06.6018582
+
+System.out.println(now.format(DateTimeFormatter.ISO_LOCAL_DATE));      // 2025-02-06
+System.out.println(now.format(DateTimeFormatter.ISO_DATE));            // 2025-02-06
+
+System.out.println(now.format(DateTimeFormatter.ISO_LOCAL_TIME));      // 08:59:06.6018582
+System.out.println(now.format(DateTimeFormatter.ISO_TIME));            // 08:59:06.6018582
+```
+
+---
+### `@DateTimeFormatter (ch11)`
+
+_parse_ işlemleri sırasında mutlaka ilgili _DateTimeFormatter_ kullanılmalıdır. Yoksa uygulama hata fırlatır.
+
+- _LocalTime_ ile _DateTimeFormatter.ISO_LOCAL_TIME_
+- _LocalDate_ ile _DateTimeFormatter.ISO_LOCAL_DATE_
+- _LocaleDateTime_ ile _DateTimeFormatter.ISO_LOCAL_DATE_TIME_
+
+```java
+var d = LocalDateTime.parse("2022-01-21T12:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+System.out.println(d); // 2022-01-21T12:00
+
+var d = LocalDate.parse("2022-01-21", DateTimeFormatter.ISO_LOCAL_DATE);
+System.out.println(d); // 2022-01-21
+
+var d = LocalTime.parse("12:00:00", DateTimeFormatter.ISO_LOCAL_TIME);
+System.out.println(d); // 12:00
+        
+```
+
+---
+### `@DateTimeFormatter (ch11)`
+
+Tarihleri formatlamak için _DateTimeFormatter_ sınıfı kullanılır. _DateFormatter_ kullanılmaz.
+
+```java
+LocalDate date = LocalDate.of(2022, Month.OCTOBER, 20);
+LocalTime time = LocalTime.of(13, 12, 34);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+var format1 = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm");
+System.out.println(dateTime.format(format1)); // October 20, 2022 at 01:12
+```
