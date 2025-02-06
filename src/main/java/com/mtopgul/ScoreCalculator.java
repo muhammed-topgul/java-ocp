@@ -30,7 +30,7 @@ public class ScoreCalculator {
         Predicate<String> wrong = s -> s.startsWith("❌");
         Predicate<String> questions = correct.or(wrong).or(partially);
 
-        InputStream fileResource = ClassLoader.getSystemResourceAsStream("test/sybex/practice-tests/exams/" + examName);
+        InputStream fileResource = ClassLoader.getSystemResourceAsStream("test/sybex/study-guide/test02/" + examName);
         if (Objects.isNull(fileResource)) {
             System.err.println(examName + " file not found!");
             return;

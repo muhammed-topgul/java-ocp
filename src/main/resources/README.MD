@@ -2,6 +2,23 @@
 ---
 ### `@Text Blocks (ch01)`
 
+Text block sonunda varsayılan da _\n_ karakteri yoktur.
+
+```java
+var blocky = """
+        pigeon
+        termite""";
+System.out.print(blocky);
+
+/*
+pigeon
+termite
+ */
+```
+
+---
+### `@Text Blocks (ch01)`
+
 * _Incidental Whitespace_: Sonuca bir etkisi yoktur. Sadece kod okunabilirliğini artırmak için eklenebilir.
 * _Essential Whitespace_: Çıktıya etki eder.
 
