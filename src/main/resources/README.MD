@@ -2021,6 +2021,14 @@ Kapatılan her datasource eğer açıksa kendinden önceki datasource'ları da k
 Oracle'a göre _locale_ kültürel, politik ve coğrafii bölgedir.
 
 ---
+### `@Locale (ch11)`
+
+```java
+Locale.setDefault(new Locale("en_US"));    // Yanlış
+Locale.setDefault(new Locale("en", "US")); // Doğru
+```
+
+---
 ### `@Resource Bundle (ch11)`
 
 Resource Bundle'dan okuma.
