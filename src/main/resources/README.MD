@@ -106,12 +106,14 @@ System.out.println(result); // 12.0
 2. _Enum_'lar.
 3. `final constant` değişkenler. (final int bananas = 5;)
 
+> Method parametreleri **final** olsa bile `final constant` olmadığı için **case** value olarak kullanılamazlar.
+ 
 ```java
 final int getCookies() {
     return 4;
 }
 
-void feedAnimals() {
+void feedAnimals(final int orange) {
     final int bananas = 1;
     int apples = 2;
     int numberOfAnimals = 3;
@@ -121,6 +123,7 @@ void feedAnimals() {
     switch (numberOfAnimals) {
         case bananas:
         case 3 * 5:
+        case orange:       // DOES NOT COMPILE
         case apples:       // DOES NOT COMPILE
         case getCookies(): // DOES NOT COMPILE
         case cookies:      // DOES NOT COMPILE
