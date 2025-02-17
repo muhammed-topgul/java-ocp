@@ -2178,3 +2178,22 @@ LocalDateTime dateTime = LocalDateTime.of(date, time);
 var format1 = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm");
 System.out.println(dateTime.format(format1)); // October 20, 2022 at 01:12
 ```
+
+---
+### `@Varargs`
+Aşağıda ki örnekte ikinci _mod()_ methodu çağrımı derlenmez. Java hangi methodu çağıracağını bilemez.
+
+```java
+public static void main(String[] args) {
+  moo();        // OK
+  moo(1, 2, 3); // DOES NOT COMPILE 
+}
+
+public static void moo(int m, int... n) {
+  System.out.println("1");
+}
+
+private static void moo(int... x) {
+  System.out.println("2");
+}
+```
