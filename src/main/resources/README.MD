@@ -356,8 +356,6 @@ class GetSet implements Ready {
 }
 ```
 
-
-
 ---
 ### `@Overriding (ch03)`
 
@@ -383,6 +381,27 @@ interface Office {
 }
 class Tower extends Building implements Office { } // DOES NOT COMPILE
 ```
+
+---
+### `@Overriding`
+
+_Override_ edilen methodun dönüş tipi _wrapper_ sınıflar için aynı olmalıdır. Primitive tip olursa method derlenmez.
+
+```java
+class Parent {
+    public Integer chew() {
+        return 1;
+    }
+}
+
+class Child extends Parent {
+    @Override
+    public int chew() {  // DOES NOT COMPILE
+        return 2;
+    }
+}
+```
+
 
 
 ---
