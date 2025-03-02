@@ -1246,6 +1246,66 @@ System.out.println(count); // 97
 ```
 
 ---
+### `@Concurrency (ch08)`
+
+- Aynı _lock_ üzerinde ne kadar _lock()_ veya _tryLock()_ çalıştırılırsa o kadar _unlock()_ methodu çalıştırılımalıdır.
+- _lock()_ methodu çağırılmadan _unlock()_ methodu çağrılırsa _IllegalMonitorStateException_ fırlatılır.
+
+```java
+class Bank {
+    private static Lock lock = new ReentrantLock();
+
+    public static void lockOk() {
+        lock.lock();
+        lock.unlock();
+    }
+
+    public static void lockNotOk() {
+        lock.tryLock();
+        lock.unlock();
+    }
+
+    public static void lockException() {
+        // lock.lock();
+        lock.unlock(); // IllegalMonitorStateException
+    }
+
+    public static void main(String[] unused) {
+        lockOk();
+        lockNotOk();
+        lockException();
+    }
+}
+```
+
+
+---
+### `@Concurrency (ch08)`
+
+Sadece **null** olmayan nesneler **synchronized** blokta kullanılabilir.
+
+```java
+int i1 = 1;
+synchronized (i1) { // DOES NOT COMPILE
+    System.out.println("Synchronized block 1");
+}
+
+synchronized (null) { // DOES NOT COMPILE
+    System.out.println("Synchronized block 2");
+}
+
+Integer i2 = null;
+synchronized (i2) { // NullPointerException
+    System.out.println("Synchronized block");
+}
+
+String s = "";
+synchronized (s) { // OK
+    System.out.println("Synchronized block 3");
+}
+```
+
+---
 ### `@I/O (ch09)`
 
 Bir dizin _/_ veya _C:/_ ile başlıyorsa _absolute_ yoksa _relative directory_'dir.
