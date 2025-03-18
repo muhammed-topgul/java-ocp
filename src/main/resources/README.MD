@@ -137,6 +137,8 @@ void feedAnimals(final int orange) {
 ---
 ### `@The switch Statement (ch02)`
 Java da klasik `switch statement`'ler ile de değer döndürebiliriz. Aşağıda ki iki kod aynı işlemi yapar.
+
+`switch statement`'ler doğrudan bir değişkene atanamazlar. 
 ```java
 public static String getNumberName(int number) {
     switch (number) {
@@ -167,6 +169,59 @@ public static String getNumberName(int number) {
 }
 ```
 
+---
+### `@Multiple Switch Values (ch02)`
+
+```java
+public static void main(String[] args) {
+  System.out.println(getNumberName1(3)); // Three-Four
+  System.out.println(getNumberName2(2)); // One-Two
+  System.out.println(getNumberName3(1)); // One-Two
+}
+
+public static String getNumberName1(int number) {
+  switch (number) {
+    case 1:
+    case 2:
+      return "One-Two";
+    case 3:
+    case 4:
+      return "Three-Four";
+    default:
+      return "Unknown number";
+  }
+}
+
+public static String getNumberName2(int number) {
+  switch (number) {
+    case 1, 2:
+      return "One-Two";
+    case 3, 4:
+      return "Three-Four";
+    default:
+      return "Unknown number";
+  }
+}
+
+public static String getNumberName3(int number) {
+  return switch (number) {
+    case 1, 2 -> "One-Two";
+    case 3, 4 -> "Three-Four";
+    default -> "Unknown number";
+  };
+}
+```
+
+---
+### `@Pre/Post Inrement/Decrement Operator (ch02)`
+
+_Pre/Post Inrement/Decrement_ işlemi sadece değişkenlere uygulanabilir. Doğrudan değere uygulanamaz.
+
+```java
+int a = 0;
+System.out.println(++a); // 1
+System.out.println(++0); // DOES NOT COMPILE
+```
 
 ---
 ### `@Records (ch03)`
