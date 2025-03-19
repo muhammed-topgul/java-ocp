@@ -226,6 +226,18 @@ System.out.println(++0); // DOES NOT COMPILE
 ---
 ### `@Records (ch03)`
 
+`abstract` methodlar **final** veya **private** olamazlar.
+
+```java
+abstract class Animal {
+    private abstract void info1(); // DOES NOT COMPILE
+    final abstract void info2();   // DOES NOT COMPILE
+} 
+```
+
+---
+### `@Records (ch03)`
+
 _Record_ sınıfları içerisinde _instance_ değişken ve _instance initializer block_ yazılamaz.
 
 ```java
