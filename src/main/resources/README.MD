@@ -328,11 +328,11 @@ record Panda(String name) {
 - `permits` ifadesinde tanımlanan tüm sınıflar `sealed` sınıfı kalıtmalıdır.
 - `sealed` sınıfı kalıtan alt sınıf mutlaka `sealed`, `non-sealed` veya `final` olarak işaretlenmelidir.
 - Aynı sınıf dosyası içerisinde bulunan alt sınıflar için `sealed` sınıf üzerinde `permits` ifadesi zorunlu değildir. 
-  Ama tekbir `permits` ifadesi kullanılsa bile kalıtan tüm alt sınıflar (aynı dosya veya farklı dosyada tanımlanan) için
+  Ama tek bir `permits` ifadesi kullanılsa bile kalıtan tüm alt sınıflar (aynı dosya veya farklı dosyada tanımlanan) için
   zorunludur.
 
 ```java
-public abstract sealed class Planet permits Mercury, Venus, Ea
+public abstract sealed class Planet permits Mercury, Venus, Earth {}
 
 non-sealed class Venus extends Planet {}
 
