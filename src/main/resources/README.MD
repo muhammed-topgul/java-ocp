@@ -247,6 +247,18 @@ public record Pony(String name) {
 }
 ```
 
+---
+### `@Records (ch03)`
+
+_Record_ sınıflarında _Long / Canonical_ constructor tanımlaması yapılabilir.
+
+```java
+record Panda(String name) {
+    public Panda(String name) {
+        this.name = name;
+    }
+}
+```
 
 ---
 ### `@Records (ch03)`
@@ -279,21 +291,6 @@ record Panda(String name) {
   }
 }
 ```
-
-
----
-### `@Records (ch03)`
-
-_Record_ sınıflarında _Long / Canonical_ constructor tanımlaması yapılabilir.
-
-```java
-record Panda(String name) {
-    public Panda(String name) {
-        this.name = name;
-    }
-}
-```
-
 
 ---
 ### `@Records (ch03)`
@@ -350,7 +347,7 @@ class Dinosaur {
 }
 
 class Another {
-  Dinosaur.Pterodactyl p2 = new Dinosaur(). new Pterodactyl(); // 2.
+  Dinosaur.Pterodactyl p2 = new Dinosaur(). new Pterodactyl(); // 1.
 }
 ```
 
@@ -971,18 +968,6 @@ OptionalDouble min = DoubleStream.of(1, 2, 3).min();
 OptionalDouble max = DoubleStream.of(1, 2, 3).max();
 ```
 
-
----
-### `@Primtive Stream (Double) (ch06)`
-
-DoubleStream üzerinde _range()_ methodu bulunmaz.
-
-```java
-IntStream intStream = IntStream.range(1, 20);
-LongStream longStream = LongStream.range(1, 20);
-DoubleStream doubleStream = DoubleStream.range(1, 20); // DOES NOT COMPILE
-```
-
 ---
 ### `@Method Reference (ch06)`
 
@@ -1013,19 +998,6 @@ chars.filter(c -> c < 'b')
         .sorted()
         .findFirst()
         .ifPresent(System.out::print);
-```
-
----
-### `@Primtive Stream (ch06)`
-
-Primitive stream'ler de _count()_ ve _sum()_ methodları dışındaki çoğu method _Optional_ tipte döner.
-
-```java
-long count = DoubleStream.of(1, 2, 3).count();
-double sum = DoubleStream.of(1, 2, 3).sum();
-OptionalDouble optionalDouble = DoubleStream.of(1, 2, 3).average();
-OptionalDouble min = DoubleStream.of(1, 2, 3).min();
-OptionalDouble max = DoubleStream.of(1, 2, 3).max();
 ```
 
 ---
