@@ -274,7 +274,6 @@ public record Panda(String name) {
 }
 ```
 
-
 ---
 ### `@Records (ch03)`
 
@@ -321,6 +320,28 @@ record Panda(String name) {
 }
 ```
 
+---
+### `@Sealed (ch03)`
+
+- `sealed` sınıf/arayüz mutlaka kendisini kalıtan alt sınıfları olmalıdır.
+- `non-sealed` olarak işaretlenen bir sınıf/arayüz mutlaka `sealed` bir parent'ı kalıtmalıdır.
+- `permits` ifadesinde tanımlanan tüm sınıflar `sealed` sınıfı kalıtmalıdır.
+- `sealed` sınıfı kalıtan alt sınıf mutlaka `sealed`, `non-sealed` veya `final` olarak işaretlenmelidir.
+- Aynı sınıf dosyası içerisinde bulunan alt sınıflar için `sealed` sınıf üzerinde `permits` ifadesi zorunlu değildir. 
+  Ama tekbir `permits` ifadesi kullanılsa bile kalıtan tüm alt sınıflar (aynı dosya veya farklı dosyada tanımlanan) için
+  zorunludur.
+
+```java
+public abstract sealed class Planet permits Mercury, Venus, Ea
+
+non-sealed class Venus extends Planet {}
+
+non-sealed class Mercury extends Planet {}
+
+final class Earth extends Planet {}
+
+non-sealed class Mars extends Planet {} // DOES NOT COMPILE
+```
 
 ---
 ### `@Inner Classes (ch03)`
@@ -735,6 +756,22 @@ private static void info() {
 }
 ```
 
+---
+### `@Varargs (ch03)`
+
+_Varargs_ method hem parametreleri tek tek alabilir. Hem de parametre olarak bir array alabilir. Ama ikisini bir arada alamaz.
+
+```java
+public static void main(String[] args) {
+    print("Dog");
+    print(new String[]{"Cat", "Ape"});
+    print("Dog", new String[]{"Cat", "Ape"}); // DOES NOT COMPILE
+}
+
+public static void print(String... names) {
+    System.out.println(Arrays.toString(names));
+}
+```
 
 
 ---
