@@ -401,11 +401,13 @@ class Another {
 ---
 ### `@Nested Interfaces (ch03)`
 
-Bir sınıf içerisinde bulunan _inner interface_ tanımı implicit olarak **static**'tir.
+Bir sınıf içerisinde bulunan `interface`, `enum` ve `record` tanımıları implicit olarak `static`'tir.
 
 ```java
 class Electricity {
-    /*static*/ interface Power {}
+  /*static*/ interface Power {}
+  /*static*/ enum Tree {}
+  /*static*/ record Apple() {}
 }
 ```
 
@@ -465,6 +467,25 @@ interface Office {
     public default String getHeight() { return null; }
 }
 class Tower extends Building implements Office { } // DOES NOT COMPILE
+```
+
+---
+### `@Overriding (ch03)`
+Eğer aynı imzaya sahip iki methoddan biri `default` bir gövdeye sahipse bu `interface`'leri kalıtan sınıf `abstract` olsa
+bile derlenmez. Mutlaka ilgili methodu _override_ etmelidir.
+
+```java
+interface Building {
+    default String getHeight() {
+        return "Building";
+    }
+}
+
+interface Office {
+    String getHeight();
+}
+
+abstract class Tower implements Building, Office {} // DOES NOT COMPILE
 ```
 
 ---
