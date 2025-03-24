@@ -372,6 +372,19 @@ class Another {
 }
 ```
 
+---
+### `@Inner Classes (ch03)`
+
+_Inner_ sınıflar başka bir sınıf içerisinde _outer_ sınıf (`Woods`) olmadan doğrudan kullanılamazlar.
+
+```java
+class Woods {
+    class Tree {}
+}
+
+class Oak extends Woods.Tree {} // DOES NOT COMPILE
+```
+
 
 ---
 ### `@Nested Classes (ch03)`
