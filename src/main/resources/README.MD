@@ -807,6 +807,64 @@ public static void print(String... names) {
 }
 ```
 
+---
+### `@Initialization Order (ch03)`
+
+```java
+class Car {
+    static {
+        System.out.print("1");
+    }
+
+    {
+        System.out.print("3");
+    }
+
+    public Car() {
+        System.out.print("4");
+    }
+}
+
+class BlueCar extends Car {
+    static {
+        System.out.print("2");
+    }
+
+    {
+        System.out.print("5");
+    }
+
+    public BlueCar() {
+        System.out.print("6");
+    }
+
+    public static void main(String[] gears) {
+        new BlueCar(); // 123456
+    }
+}
+```
+
+---
+### `@Initialization Blocks (ch03)`
+
+_Initialzation_ bloklar sadece kendilerinden önce tanımlanan değişkenleri kullanabilirler.
+
+```java
+class InitBlock {
+    static {
+        System.out.println(ZERO); // DOES NOT COMPILE (Illegal forward reference)
+    }
+    private static int ZERO = 0;
+
+    {
+        System.out.println(ONE);  // DOES NOT COMPILE (Illegal forward reference)
+    }
+    private int ONE = 1;
+}
+```
+
+---
+### `@Initialization Order (ch03)`
 
 ---
 ### `@Exceptions (ch04)`
