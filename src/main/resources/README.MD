@@ -565,7 +565,36 @@ public class Glider {
 }
 ```
 
+---
+### `@Overriding (ch03)`
 
+`protected` methodlara paket dışında yalnızca kalıtım yoluyla erişilebilir. Kendi nesnesi üzerinden dahi `protected` method
+farklı bir pakette bulunan _child_ sınıf içerisinden erişilemez.
+
+```java
+// Hare.java
+package com.mtopgul.p1;
+public class Hare {
+    protected void race() {
+        System.out.print("hare-");
+    }
+}
+
+// Tortoise.java
+package com.mtopgul.p2;
+import com.mtopgul.p1.Hare;
+public class Tortoise extends Hare {
+    private void info() {
+        new Hare().race(); // DOES NOT COMPILE
+        race();            // OK
+    }
+
+    public static void main(String[] args) {
+        Hare hare = new Hare();
+        hare.race();
+    }
+}
+```
 
 ---
 ### `@Lambdas (ch03)`
