@@ -988,6 +988,19 @@ String[] tigers = new String[] {"tiger"};  // OK
 String ohMy [] = new String[] {};          // OK
 ```
 
+---
+### `@Arrays (ch05)`
+
+Derlenmeyen array tanımları.
+
+```java
+String[] ohMy = new[1] String;             // DOES NOT COMPILE
+[]String lions = new String[];             // DOES NOT COMPILE
+[]String monkeys = new String[3];          // DOES NOT COMPILE
+String[] tigers = new String[1] {"tiger"}; // DOES NOT COMPILE
+String ohMy [] = new String[0] {};         // DOES NOT COMPILE
+var[] zeta;                                // DOES NOT COMPILE
+```
 
 ---
 ### `@Array (ch05)`
@@ -1001,8 +1014,6 @@ public static void main(String... original) {
 }
 ```
 
-
-
 ---
 ### `@Set (ch05)`
 
@@ -1015,7 +1026,16 @@ chars.remove(0);
 chars.set(1, 'c');  // DOES NOT COMPILE
 ```
 
+---
+### `@Set (ch05)`
 
+_HashSet_' e `null` değer eklenebilir.
+
+```java
+HashSet<String> set = new HashSet<>();
+set.add(null);
+System.out.println(set); // [null]
+```
 
 ---
 ### `@Generics (ch05)`
@@ -1027,7 +1047,36 @@ var list = new ArrayList<Object>();
 var list = new ArrayList<>(); // ArrayList<Object>()
 ```
 
+---
+### `@Generics (ch05)`
 
+_Wildcard_'lar sadece generik referans tip olarak kullanılabilirler. Yani sadece değişken tipi ve method parametresi olarak 
+tanımlanabilirler. Üç tipi _wildcard_ vardır:
+
+1. `Un-Bounded`: `?` ile ifade edilir. 
+    > Listeye sadece `null` değer eklenebilir. Başka bir tipte değer eklenmeye çalışıldığında kod derlenmez.
+   ```java
+   List<?> exceptions = new ArrayList<>();
+   exceptions.add(null);                   // [null]
+   exceptions.add(new RuntimeException()); // DOES NOT COMPILE
+   ```
+2. `Upper-Bounded`: `? extends type` ile ifade edilir. 
+   > Listeye sadece `null` değer eklenebilir. Başka bir tipte değer eklenmeye çalışıldığında kod derlenmez.
+   ```java
+   List<? extends RuntimeException> exceptions = new ArrayList<>();
+   exceptions.add(null);                   // [null]
+   exceptions.add(new RuntimeException()); // DOES NOT COMPILE
+   ```
+3. `Lower-Bound`: `? super type` ile ifade edilir.
+   > Sadece _RuntimeException_ veya daha alt tipte değerler eklenebilir. Parametre olarak _RuntimeException_ veya daha 
+   geniş bir tipte parametre geçilebilir.
+   ```java
+   List<? super RuntimeException> exceptions = new ArrayList<>();
+   exceptions.add(null);                       // [null]
+   exceptions.add(new RuntimeException());     // OK
+   exceptions.add(new NullPointerException()); // OK
+   exceptions.add(new Exception());            // DOES NOT COMPILE
+   ```
 
 ---
 ### `@List (ch05)`
