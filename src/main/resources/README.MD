@@ -1308,6 +1308,22 @@ Stream.of().parallel();       // OK
 ```
 
 ---
+### `@Stream Reduce (ch06)`
+
+Tüm streamden tek bir sonuç üretir. Toplama parametreleri her zaman _Wrapper_ sınıftır.
+
+```java
+Integer reduce = Stream.of("Java", "Streams", "are", "powerful")
+                .reduce(0, (Integer i, String s) -> i + s.length(), (Integer a, Integer b) -> a + b);
+System.out.println(reduce);
+
+
+Integer reduce = Stream.of("Java", "Streams", "are", "powerful")
+        .reduce(0, (int i, String s) -> i + s.length(), (int a, int b) -> a + b); // DOES NOT COMPILE
+System.out.println(reduce);
+```
+
+---
 ### `@FindFirst (ch06)`
 
 _findFirst()_ methodu serial veya parallel stream de her zaman ilk elemanı döndürür fakat _unordered_ bir stream de herhangi
