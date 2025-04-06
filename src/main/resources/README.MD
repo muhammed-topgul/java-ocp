@@ -1568,6 +1568,20 @@ synchronized (s) { // OK
 ```
 
 ---
+### `@Concurrency (ch08)`
+
+- _invokeAll()_ ve _invokeAny()_ generic tipi _Callable_ olan collection'ları parametre olarak alır.
+
+- _execute()_ sadece _Runnable_ parametre alır.
+
+- _submit()_ hem _Runnable_ hem de _Callable_ parametre alır.
+
+**Table 13.1** ExecutorService methods
+
+![table-13.1.png](img%2Ftable-13.1.png)
+
+
+---
 ### `@I/O (ch09)`
 
 Bir dizin _/_ veya _C:/_ ile başlıyorsa _absolute_ yoksa _relative directory_'dir.
