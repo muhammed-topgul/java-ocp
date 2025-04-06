@@ -1570,6 +1570,38 @@ synchronized (s) { // OK
 ---
 ### `@Concurrency (ch08)`
 
+Tüm methodlar derlenir. _sync1()_ ve _sync2()_ nesne üzerinde _sync3()_ ve _sync4()_ ise sınıf üzerinden `synchronized`
+olmuştur.
+
+Ayrıca sınıf kilidi ve nesne kilidi aynı sınftan üretilse bile iki ayrı kilittir. Tek bir kilit olarak işlem yapılamaz. 
+
+```java
+private static int number = 0;
+
+private void sync1() {
+    synchronized (this) {
+        number++;
+    }
+}
+
+private synchronized void sync2() {
+    number++;
+}
+
+private void sync3() {
+    synchronized (Test.class) {
+        number++;
+    }
+}
+
+private synchronized static void sync4() {
+    number++;
+}
+```
+
+---
+### `@Concurrency (ch08)`
+
 - _invokeAll()_ ve _invokeAny()_ generic tipi _Callable_ olan collection'ları parametre olarak alır.
 
 - _execute()_ sadece _Runnable_ parametre alır.
@@ -1580,6 +1612,41 @@ synchronized (s) { // OK
 
 ![table-13.1.png](img%2Ftable-13.1.png)
 
+
+---
+### `@Concurrency (ch08)`
+
+Atomic değişkenlerde her method tek başına atomiktir. İki method bir arada kullanılırsa ikisi de ayrı ayrı atomiktir ama
+aynı anda iki işlem atomic değildir.
+
+
+```java
+AtomicInteger num = new AtomicInteger(0);
+ExecutorService executorService = Executors.newCachedThreadPool();
+for (int i = 0; i < 1_000_000; i++) {
+    // executorService.submit(() -> num.incrementAndGet());     // 1_000_000
+    executorService.submit(() -> num.getAndSet(num.get() + 1)); // 980_486
+}
+Thread.sleep(2000);
+System.out.println(num.get());
+```
+
+---
+### `@Concurrency (ch08)`
+
+_Scheduled_ örnekleri. Hepsi _Runnable_, _initialDelay_ ve _TimeUnit_ alır. Fixed olanlar ayrıca _period_ alır. 
+
+```java
+ScheduledExecutorService scheduled = Executors.newSingleThreadScheduledExecutor();
+
+Runnable command = () -> System.out.println("Hello World!");
+long initialDelay = 2;
+long period = 5;
+
+scheduled.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.SECONDS);
+scheduled.scheduleWithFixedDelay(command, initialDelay, period, TimeUnit.SECONDS);
+scheduled.schedule(command, initialDelay, TimeUnit.SECONDS);
+```
 
 ---
 ### `@I/O (ch09)`
