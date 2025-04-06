@@ -1711,7 +1711,9 @@ System.out.println("Name: " + path);                      // /land/hippo/harry.h
 System.out.println("Name Count: " + path.getNameCount()); // 3
 System.out.println("First Name: " + path.getName(0));     // land
 System.out.println("File Name: " + path.getFileName());   // harry.happy
-System.out.println("Exception: "  + path.getName(3));     // IllegalArgumentException
+System.out.println(path.subpath(1, 3));                   // hippo/harry.happy
+System.out.println(path.subpath(1, 4));                   // IllegalArgumentException
+System.out.println("Exception: " + path.getName(3));      // IllegalArgumentException
 ```
 
 ---
