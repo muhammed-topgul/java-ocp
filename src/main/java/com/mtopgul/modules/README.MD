@@ -149,3 +149,58 @@ module zoo.animal.talks {
 >    opens zoo.animal.talks.schedule; // DOES NOT COMPILE
 > }
 > ```
+
+---
+### `Creating a Service`
+
+**Figure 12.13** Modules in the tour application
+
+![img.png](../../../../resources/img/figure-13.13.png)
+
+1. `service-provider-interface` modulunu derle ve jar oluştur.
+
+- `> javac -d service-provider-interface service-provider-interface/zoo/tours/api/*.java service-provider-interface/module-info.java`
+- `> jar -cvf mods/zoo.tours.api.jar -C service-provider-interface/ .`
+
+2. `service-locator` modulunu derle ve jar oluştur.
+- `> javac -p mods -d service-locator service-locator/zoo/tours/reservations/*.java service-locator/module-info.java`
+- `> jar -cvf mods/zoo.tours.reservations.jar -C service-locator/ .`
+
+3. `service-consumer` modulunu derle, jar oluştur ve çalıştır.
+- `> javac -p mods -d service-consumer service-consumer/zoo/visitor/*.java service-consumer/module-info.java`
+- `> jar -cvf mods/zoo.tours.visitor.jar -C service-consumer/ .`
+- `> java -p mods -m zoo.visitor/zoo.visitor.Tourist`
+
+4. `service-provider` modulunu derle, jar oluştur ve çalıştır.
+- `> javac -p mods -d service-provider service-provider/zoo/tours/agency/*.java service-provider/module-info.java`
+- `> jar -cvf mods/zoo.tours.agency.jar -C service-provider/ .`
+- `> java -p mods -m zoo.visitor/zoo.visitor.Tourist`
+
+---
+### `Discovering Modules`
+
+Tüm Java modulleri varsayılan olarak `java.base` modulunu `requires` eder.
+
+### Getting Details with java
+
+#### Describing a Module
+
+`--describe-module` veya `-d` kullanılarak module bilgisi bastırılır.
+
+`> java -p mods -d zoo.animal.feeding` komutu çalıştırıldığında:
+
+```text
+zoo.animal.feeding file:///C:/Users/mtopgul/IdeaProjects/java-ocp/jpms/ex02/mods/zoo.animal.feeding.jar
+exports zoo.animal.feeding
+requires java.base mandated
+```
+
+#### Listing Available Modules
+
+JDK da bulunan tüm modulleri listelemek için kullanılır.
+
+`> java --list-modules`
+
+Ayrıca kendi istediğimiz bir dizinide verebiliriz. Bu şekilde bizim modulleride yazdırır.
+
+`> java -p mods --list-module`
