@@ -270,3 +270,38 @@ JDK Internal API Suggested Replacement
 
 sun.misc.Unsafe See http://openjdk.java.net/jeps/260
 ```
+
+---
+### `Comparing Types of Modules`
+
+3 tip module vardır; `Named Module`, `Automatic Module` and `Unnamed Module`.
+
+#### Named Modules
+
+Bir tane _module-info.java_ dosyası bulunur.
+
+#### Automatic Modules
+
+Module path'de yer alan normal bir jar dosyasıdır fakat içerisinde _module-info.java_ dosyası bulunmaz. Java module ismini 
+otomatik olarak belirler. Varsayılan olarak tüm paketler `exports` edilecektir.
+
+Otomatik module ismi belirlemek için Java'nın takip ettiği adımlar.
+
+1. Eğer `MANIFEST.MF` dosyasında `Automatic-Module-Name` ismi tanımlandıysa onu kullan. Yoksa diğer adımları takip et.
+2. _JAR_ isminden uzantıyı sil.
+3. İsmin sonunda ki versiyon bilgilerini sil. (-1.0.0 veya -1.0-RC)
+4. Harf ve numara dışında ki tüm karakterleri nokta (.) ile değiştir.
+5. Nokta dizilerini tek bir nokta ile değiştir.
+6. İlk veya son karakter nokta ise sil.
+
+- `holiday-calendar-1.0.0.jar` ismi otomatik olarak `holiday.calendar` olarak isimlendirilir.
+- `commons2-x-1.0.0-SNAPSHOT.jar` ismi `commons2.x` olarak değiştirilir.
+- `mod_$-1.0.jar` ismi `mod` olarak isimlendirilir.
+
+#### Unnamed Modules
+
+Normal _jar_ dosyalarıdır. _Automatic Module_ aksine module path de değil classpath de yer alır.
+
+_Unnamed Module_' de _module-info.java_ dosyası olmaz, eğer olsa bile ignore edilir.
+
+Hiçbir paketi _named_ veya _automatic_ module `exports` etmezler.
