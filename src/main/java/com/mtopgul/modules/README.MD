@@ -204,3 +204,69 @@ JDK da bulunan tüm modulleri listelemek için kullanılır.
 Ayrıca kendi istediğimiz bir dizinide verebiliriz. Bu şekilde bizim modulleride yazdırır.
 
 `> java -p mods --list-module`
+
+#### Showing Module Resolution
+
+`--show-module-resolution` modulu debug etmenin bir başka yolu olarak düşünebiliriz.
+
+Tüm modulleri listeler ve en sonunda programı çalıştırır.
+
+`> java --show-module-resolution -p feeding -m zoo.animal.feeding/zoo.animal.feeding.Task`
+
+#### Describing with jar
+
+`java` komutu gibi `jar` komutuda modulu describe edebilir.
+
+`> jar -f mods/zoo.animal.feeding.jar -d`
+
+`> jar --file mods/zoo.animal.feeding.jar --describe-module`
+
+`java` komutundan farklı olarak sadece `module-info.java` sınıf bilgisini de bastırır.
+
+```text
+zoo.animal.feeding jar:file:///C:/Users/muham/IdeaProjects/java-ocp/jpms/ex02/mods/zoo.animal.feeding.jar!/module-info.class
+exports zoo.animal.feeding
+requires java.base mandated
+```
+
+#### Learning about Dependencies with jdeps
+
+Öncesinde paketi derle `> javac zoo/dinos/*.java` ve jar oluştur `> jar -cvf zoo.dino.jar .`.
+
+`jdeps` komutu hangi modullerin ve paketlerin kullanıdığını, hangi paketlerin hangi modullerde yer aldığı bilgisini bastırır.
+ 
+`> jdeps zoo.dino.jar` komutu ile dependency'lere bak.
+```text
+zoo.dino.jar -> java.base
+zoo.dino.jar -> jdk.unsupported
+   zoo.dinos                        -> java.lang                                          java.base
+   zoo.dinos                        -> java.time                                          java.base
+   zoo.dinos                        -> java.util                                          java.base
+   zoo.dinos                        -> sun.misc                                           JDK internal API (jdk.unsupported)
+```
+
+Eğer sadece module bilgisini bastırmak ve paketleri görmek istemiyorsak.
+
+`> jdeps -s zoo.dino.jar` veya `> jdeps -summary zoo.dino.jar` komutunu kullanabiliriz.
+
+```text
+zoo.dino.jar -> java.base
+zoo.dino.jar -> jdk.unsupported
+```
+
+#### Using the --jdk-internals Flag
+
+`jdeps` komutu desteklenmeyenm _API_'ler hakkında detaylar verebilir.
+
+`> jdeps --jdk-internals zoo.dino.jar`
+
+```text
+zoo.dino.jar -> jdk.unsupported
+ zoo.dinos.Animatronic -> sun.misc.Unsafe
+ JDK internal API (jdk.unsupported)
+ 
+Warning: <omitted warning>
+JDK Internal API Suggested Replacement
+
+sun.misc.Unsafe See http://openjdk.java.net/jeps/260
+```
